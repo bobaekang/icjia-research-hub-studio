@@ -1,6 +1,6 @@
 <template>
     <div>
-        This is home
+        This is login form
     </div>
 </template>
 

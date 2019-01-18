@@ -1,20 +1,77 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+        <the-toolbar />
+
+        <router-view />
+        
+        <the-footer />
+    </v-app>
 </template>
 
+<script>
+import TheToolbar from './components/TheToolbar'
+import TheFooter from './components/TheFooter' 
+
+export default {
+    components: {
+        TheToolbar,
+        TheFooter
+    },
+}
+</script>
+
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=Oswald');
+@import url('https://fonts.googleapis.com/css?family=Gentium+Book+Basic');
+
+.application  {
+    color: #333;
+    font-family: 'Gentium Book Basic', serif;
+    font-size: 16px;
+}
+
+h1 {
+    font-family: 'Oswald', sans-serif;
+}
+
+h2, h3 {
+    font-family: 'Lato', sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+.v-btn {
+    font-family: 'Lato', sans-serif;
+}  
+
+.view-title {
+    font-size: 2em;
+    font-family: 'Oswald', sans-serif;
+    color: white;
+    background-color: #466c8c;
+}
+
+.section-title {
+    border-bottom: 1px #999 solid;
+    text-transform: uppercase; 
+}
+
+.sans-serif {
+    font-family: 'Lato', sans-serif;
+}
+
+.small {
+    font-size: 0.8em
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        This is home
+        This is manage
     </div>
 </template>
 
@@ -12,4 +12,4 @@ export default {
 
 <style>
     
-</style>
+</style>v
