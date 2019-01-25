@@ -9,27 +9,28 @@
                 md8
                 >
 
-                <h1>Manage submissions</h1>
+                <h1>Submit an update</h1>
                 <p class="py-2">
-                    Review and publish submissions 
+                    Submit an update to either a submission or a published item.
+                    Select an item to update, make changes, and submit the update.
                 </p>
 
-                <the-item-table type="manage"></the-item-table>
+                <update-stepper type="submit"></update-stepper>
             </v-flex>
         </v-layout>
     </v-container>
 </template>
 
 <script>
-import TheItemTable from '@/components/TheItemTable';
+import UpdateStepper from '@/components/UpdateStepper';
 
 export default {
     components: {
-        TheItemTable,
-    }
+        UpdateStepper,
+    },
 }
 </script>
 
 <style>
     
-</style>v
+</style>

@@ -9,27 +9,27 @@
                 md8
                 >
 
-                <h1>Manage submissions</h1>
+                <h1>Submit a new item</h1>
                 <p class="py-2">
-                    Review and publish submissions 
+                    You can fill out the following form, preview the result, and submit the item.
                 </p>
-
-                <the-item-table type="manage"></the-item-table>
+                
+                <submit-form></submit-form>
             </v-flex>
         </v-layout>
     </v-container>
 </template>
 
 <script>
-import TheItemTable from '@/components/TheItemTable';
+import SubmitForm from '@/components/SubmitForm';
 
 export default {
     components: {
-        TheItemTable,
+        SubmitForm,
     }
 }
 </script>
 
 <style>
     
-</style>v
+</style>
