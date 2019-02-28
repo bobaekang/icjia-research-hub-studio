@@ -1,8 +1,8 @@
 <template>
-    <!-- @/components/AppsItem.vue from icjia-data-portal-proto -->
-    <v-card class="ma-3">
-        DialogAppsItem
-        <!-- <v-img
+  <!-- @/components/AppsItem.vue from icjia-data-portal-proto -->
+  <v-card class="ma-3">
+    DialogAppsItem
+    <!-- <v-img
             height="200px"
             :src="app.image.url"
             lazy-src="https://via.placeholder.com/1/DDDDDD"
@@ -27,7 +27,7 @@
             </div>
         </v-card-title> -->
 
-        <!-- <v-btn
+    <!-- <v-btn
             v-if="simple"
             :href="app.url"
             flat
@@ -35,8 +35,8 @@
             Launch
         </v-btn> -->
 
-        <!-- <template v-else> -->
-            <!-- <v-card-actions>
+    <!-- <template v-else> -->
+    <!-- <v-card-actions>
                 <v-btn
                     :href="app.url"
                     flat
@@ -59,20 +59,17 @@
                     {{ app.description }}
                 </v-card-text>
             </v-slide-y-transition> -->
-        <!-- </template> -->
-    </v-card>
+    <!-- </template> -->
+  </v-card>
 </template>
 
 <script>
 export default {
-    props: {
-        item: Object,
-        // simple: Boolean,
-    },
-    computed: {
-        app () {
-            return this.item;
-        }
+  props: {},
+  computed: {
+    app() {
+      return this.item
     }
+  }
 }
 </script>

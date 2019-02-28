@@ -1,113 +1,94 @@
 <template>
-    <!-- @/components/DatasetItemDetail.vue from icjia-data-portal-proto -->
-    <v-card>
-        <v-card-title primary-title>
-            <h2>
-                <span
-                    class="small pl-2"
-                    style="color: #666"
-                    >
-                    Dataset
-                </span>
-                
-                <v-icon>chevron_right</v-icon>
-                
-                {{ dataset.title }}
-            </h2>
+  <!-- @/components/DatasetItemDetail.vue from icjia-data-portal-proto -->
+  <v-card>
+    <v-card-title primary-title>
+      <h2>
+        <span class="small pl-2" style="color: #666">
+          Dataset
+        </span>
 
-            <v-spacer />
+        <v-icon>chevron_right</v-icon>
 
-            <v-btn flat class="mr-0">
-                Download
-                <v-icon>file_download</v-icon>
-            </v-btn>
+        {{ dataset.title }}
+      </h2>
 
-            <v-btn flat class="mr-0">
-                API
-                <v-icon>code</v-icon>
-            </v-btn>
+      <v-spacer />
 
-            <v-btn
-                flat
-                exact
-                to="/dataset"
-                >
-                Back
-            </v-btn>
-        </v-card-title>
+      <v-btn flat class="mr-0">
+        Download
+        <v-icon>file_download</v-icon>
+      </v-btn>
 
-        <v-divider />
-        
-        <v-container>
-            <h3 class="pb-2">About this dataset</h3>
+      <v-btn flat class="mr-0">
+        API
+        <v-icon>code</v-icon>
+      </v-btn>
 
-            <div class="small sans-serif">
-                <div class="py-1">
-                    <span class="pr-2 bold">Updated</span>
-                    {{ dataset.date }}
-                </div>
+      <v-btn flat exact to="/dataset">
+        Back
+      </v-btn>
+    </v-card-title>
 
-                <div class="py-1">
-                    <span class="pr-2 bold">Sources</span>
-                    <span
-                        v-for="(source, i) in dataset.sources"
-                        :key="i"
-                        >
-                        <a :href="source.url">
-                            {{ source.name }}
-                        </a>
-                    </span>
-                </div>
+    <v-divider />
 
-                <div class="py-1">
-                    <span class="pr-2 bold">Categories</span>
-                    <span
-                        v-for="(category, i) in dataset.categories"
-                        :key="i"
-                        >
-                        {{ category }}
-                    </span>
-                </div>
+    <v-container>
+      <h3 class="pb-2">About this dataset</h3>
 
-                <div class="py-1">
-                    <span class="bold pr-2">Tags</span>
+      <div class="small sans-serif">
+        <div class="py-1">
+          <span class="pr-2 bold">Updated</span>
+          {{ dataset.date }}
+        </div>
 
-                    <span v-if="dataset.tags">
-                        <span
-                            class="pr-2"
-                            v-for="(keyword, i) in dataset.tags"
-                            :key="i"
-                            >
-                            {{ keyword.toUpperCase() }}
-                        </span>
-                    </span>
-                    
-                    <span v-else class="italic">No tags</span>
-                </div>
+        <div class="py-1">
+          <span class="pr-2 bold">Sources</span>
+          <span v-for="(source, i) in dataset.sources" :key="i">
+            <a :href="source.url">
+              {{ source.name }}
+            </a>
+          </span>
+        </div>
 
-                <div class="py-1">
-                    <span class="pr-2 bold">Time Period</span>
-                    {{ dataset.timePeriod }}
-                </div>
+        <div class="py-1">
+          <span class="pr-2 bold">Categories</span>
+          <span v-for="(category, i) in dataset.categories" :key="i">
+            {{ category }}
+          </span>
+        </div>
 
-                <div class="py-1">
-                    <span class="pr-2 bold">Age group</span>
-                    {{ dataset.ageGroup }}
-                </div>
-            </div>
-        </v-container>
-    </v-card>
+        <div class="py-1">
+          <span class="bold pr-2">Tags</span>
+
+          <span v-if="dataset.tags">
+            <span class="pr-2" v-for="(keyword, i) in dataset.tags" :key="i">
+              {{ keyword.toUpperCase() }}
+            </span>
+          </span>
+
+          <span v-else class="italic">No tags</span>
+        </div>
+
+        <div class="py-1">
+          <span class="pr-2 bold">Time Period</span>
+          {{ dataset.timePeriod }}
+        </div>
+
+        <div class="py-1">
+          <span class="pr-2 bold">Age group</span>
+          {{ dataset.ageGroup }}
+        </div>
+      </div>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
 export default {
-    props: {
-        item: Object,
-    },
-    computed: {
-        dataset () {
-            return this.item;
-        }
-    },
+  props: {},
+  computed: {
+    dataset() {
+      return this.item
+    }
+  }
 }
 </script>

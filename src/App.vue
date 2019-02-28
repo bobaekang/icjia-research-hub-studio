@@ -1,22 +1,22 @@
 <template>
   <v-app>
-        <the-toolbar></the-toolbar>
+    <the-toolbar></the-toolbar>
 
-        <router-view></router-view>
-        
-        <the-footer></the-footer>
-    </v-app>
+    <router-view></router-view>
+
+    <the-footer></the-footer>
+  </v-app>
 </template>
 
 <script>
 import TheToolbar from './components/TheToolbar'
-import TheFooter from './components/TheFooter' 
+import TheFooter from './components/TheFooter'
 
 export default {
-    components: {
-        TheToolbar,
-        TheFooter
-    },
+  components: {
+    TheToolbar,
+    TheFooter
+  }
 }
 </script>
 
@@ -25,53 +25,54 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Oswald');
 @import url('https://fonts.googleapis.com/css?family=Gentium+Book+Basic');
 
-.application  {
-    color: #333;
-    font-family: 'Gentium Book Basic', serif;
-    font-size: 16px;
+.application {
+  color: #333;
+  font-family: 'Gentium Book Basic', serif;
+  font-size: 16px;
 }
 
 h1 {
-    font-family: 'Oswald', sans-serif;
+  font-family: 'Oswald', sans-serif;
 }
 
-h2, h3 {
-    font-family: 'Lato', sans-serif;
+h2,
+h3 {
+  font-family: 'Lato', sans-serif;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .v-btn {
-    font-family: 'Lato', sans-serif;
-}  
+  font-family: 'Lato', sans-serif;
+}
 
 .view-title {
-    font-size: 2em;
-    font-family: 'Oswald', sans-serif;
-    color: white;
-    background-color: #466c8c;
+  font-size: 2em;
+  font-family: 'Oswald', sans-serif;
+  color: white;
+  background-color: #466c8c;
 }
 
 .section-title {
-    border-bottom: 1px #999 solid;
-    text-transform: uppercase; 
+  border-bottom: 1px #999 solid;
+  text-transform: uppercase;
 }
 
 .sans-serif {
-    font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 .small {
-    font-size: 0.8em
+  font-size: 0.8em;
 }
 
 .bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .italic {
-    font-style: italic;
+  font-style: italic;
 }
 </style>

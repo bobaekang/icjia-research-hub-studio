@@ -1,15 +1,12 @@
 <template>
-    <v-container>
-        This is result
-    </v-container>
+  <v-container>
+    This is result
+  </v-container>
 </template>
 
 <script>
-export default {
-    
-}
+export default {}
 </script>
 
 <style>
-    
 </style>

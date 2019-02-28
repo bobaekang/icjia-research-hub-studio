@@ -1,156 +1,127 @@
 <template>
-    <div>
-        <v-toolbar
-            id="toolbar"
-            :height="hpixel"
-            fixed
-            scroll-off-screen
-            >
-            <a
-                class="hidden-xs-only"
-                :href="logo.href"
-                target="_blank"
-                >
-                <img
-                    :src="logo.url"
-                    :height="logoHpixel"
-                    alt="logo"
-                    >
-            </a>
+  <div>
+    <v-toolbar id="toolbar" :height="hpixel" fixed scroll-off-screen>
+      <a class="hidden-xs-only" :href="logo.href" target="_blank">
+        <img :src="logo.url" :height="logoHpixel" alt="logo" />
+      </a>
 
-            <router-link to="/">
-                <v-toolbar-title>
-                    {{ titleUpper }}
-                </v-toolbar-title>
-            </router-link>
-        
-            <v-spacer></v-spacer>
+      <router-link to="/">
+        <v-toolbar-title>
+          {{ titleUpper }}
+        </v-toolbar-title>
+      </router-link>
 
-            <v-toolbar-items class="hidden-sm-and-down">
-                <template v-if="isLoggedIn">                    
-                    <v-btn
-                        v-for="(view, i) in views"
-                        :key="i"
-                        :to="view.name === 'home' ? '/' : `/${view.path}`"
-                        flat
-                        >
-                        {{ view.name }}
-                    </v-btn>
-                    
-                    <v-btn
-                        color="primary"
-                        flat
-                        @click="logout"
-                        >
-                        log out
-                    </v-btn>
-                </template>
+      <v-spacer></v-spacer>
 
-                <v-btn
-                    v-else
-                    to="/login"
-                    color="primary"
-                    flat
-                    >
-                    log in
-                </v-btn>
+      <v-toolbar-items class="hidden-sm-and-down">
+        <template v-if="isLoggedIn">
+          <v-btn
+            v-for="(view, i) in views"
+            :key="i"
+            :to="view.name === 'home' ? '/' : `/${view.path}`"
+            flat
+          >
+            {{ view.name }}
+          </v-btn>
 
-            </v-toolbar-items>
+          <v-btn color="primary" flat @click="logout">
+            log out
+          </v-btn>
+        </template>
 
-            <v-menu
-                offset-y
-                class="hidden-md-and-up"
-                >
-                <v-btn
-                    slot="activator"
-                    flat
-                    >
-                    <v-icon>menu</v-icon>
-                </v-btn>
-                
-                <v-list>
-                    <v-list-tile
-                        v-for="(view, i) in views"
-                        :key="i"
-                        :to="view.name === 'home' ? '/' : `/${view.path}`"
-                        >
-                        <v-list-tile-title class="slot">
-                            {{ view }}
-                        </v-list-tile-title>
-                    </v-list-tile>
-                </v-list>
-            </v-menu>
-        </v-toolbar>
+        <v-btn v-else to="/login" color="primary" flat>
+          log in
+        </v-btn>
+      </v-toolbar-items>
 
-        <div :style="{ height: hpixel, backgroundColor:'#466c8c' }"></div>
-    </div>
+      <v-menu offset-y class="hidden-md-and-up">
+        <v-btn slot="activator" flat>
+          <v-icon>menu</v-icon>
+        </v-btn>
+
+        <v-list>
+          <v-list-tile
+            v-for="(view, i) in views"
+            :key="i"
+            :to="view.name === 'home' ? '/' : `/${view.path}`"
+          >
+            <v-list-tile-title class="slot">
+              {{ view }}
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    </v-toolbar>
+
+    <div :style="{ height: hpixel, backgroundColor: '#466c8c' }"></div>
+  </div>
 </template>
 
 <script>
 export default {
-    data () {
-        return {
-            height: 75,
-            title: 'ICJIA data portal submission',
-            logo: {
-                url: 'http://www.icjia.state.il.us/_themes/icjia/img/logo-icjia-small-blue-3.png',
-                href: 'http://www.icjia.state.il.us'
-            },
-            views: [
-                {
-                    name: 'home',
-                    path: 'home'
-                },
-            ],
+  data() {
+    return {
+      height: 75,
+      title: 'ICJIA data portal submission',
+      logo: {
+        url:
+          'http://www.icjia.state.il.us/_themes/icjia/img/logo-icjia-small-blue-3.png',
+        href: 'http://www.icjia.state.il.us'
+      },
+      views: [
+        {
+          name: 'home',
+          path: 'home'
         }
-    },
-    computed: {
-        titleUpper () {
-            return this.title.toUpperCase()
-        },
-        hpixel () {
-            return `${this.height}px`
-        },
-        logoHpixel () {
-            return `${this.height * 0.85}px`
-        },
-        isLoggedIn () {
-            return this.$store.getters.isLoggedIn;
-        },
-    },
-    methods: {
-        login () {
-            this.$store.dispatch('login');
-        },
-        logout () {
-            this.$store.dispatch('logout').
-                then(() => {
-                    this.$router.push('/login');
-                });
-        }
+      ]
     }
+  },
+  computed: {
+    titleUpper() {
+      return this.title.toUpperCase()
+    },
+    hpixel() {
+      return `${this.height}px`
+    },
+    logoHpixel() {
+      return `${this.height * 0.85}px`
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn
+    }
+  },
+  methods: {
+    login() {
+      this.$store.dispatch('login')
+    },
+    logout() {
+      this.$store.dispatch('logout').then(() => {
+        this.$router.push('/login')
+      })
+    }
+  }
 }
 </script>
 
 <style scoped>
 a {
-    text-decoration: none;
-    color: rgba(0,0,0,.87);
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.87);
 }
 
 img {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 #toolbar {
-    font-family: 'Lato';
-    box-shadow: 0 2px rgba(0, 0, 0, 0.2);
+  font-family: 'Lato';
+  box-shadow: 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .slot {
-    font-family: 'Lato';
-    font-size: 0.8em;
-    text-transform: uppercase;
-    text-align: center;
+  font-family: 'Lato';
+  font-size: 0.8em;
+  text-transform: uppercase;
+  text-align: center;
 }
 </style>

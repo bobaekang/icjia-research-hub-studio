@@ -1,102 +1,93 @@
 <template>
-    <v-layout
-        row
-        wrap
-        >
-        <v-flex xs6>
-            <h3>
-                Markdown
-                <small>
-                    (use
-                    <a
-                        href="https://markdown.icjia.cloud/"
-                        target="_blank"
-                        >
-                        ICJIA markdown editor<v-icon small>launch</v-icon>
-                    </a>)
-                </small>
-            </h3>
-            <v-textarea
-                id="editor"
-                ref="myEditor"
-                height="400"
-                v-model="myInput"
-                box
-                @scroll="syncScrollEditor"
-                >
-            </v-textarea>
-        </v-flex>
-        
-        <v-flex xs6>
-            <h3>Result</h3>
-            <div
-                id="preview"
-                ref="myPreview"
-                v-html="compiledMarkdown"
-                @scroll="syncScrollPreview"
-                >
-            </div>
-        </v-flex>
-    </v-layout>
+  <v-layout row wrap>
+    <v-flex xs6>
+      <h3>
+        Markdown
+        <small>
+          (use
+          <a href="https://markdown.icjia.cloud/" target="_blank">
+            ICJIA markdown editor<v-icon small>launch</v-icon>
+          </a>
+          )
+        </small>
+      </h3>
+      <v-textarea
+        id="editor"
+        ref="myEditor"
+        height="400"
+        v-model="myInput"
+        box
+        @scroll="syncScrollEditor"
+      >
+      </v-textarea>
+    </v-flex>
+
+    <v-flex xs6>
+      <h3>Result</h3>
+      <div
+        id="preview"
+        ref="myPreview"
+        v-html="compiledMarkdown"
+        @scroll="syncScrollPreview"
+      ></div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
 const md = require('markdown-it')({
-        html: true,
-        linkify: true,
-        typographer: true
-    })
-    .use(require('markdown-it-footnote'));
+  html: true,
+  linkify: true,
+  typographer: true
+}).use(require('markdown-it-footnote'))
 
 function syncScroll(from, to) {
-    let sf = from.scrollHeight - from.clientHeight;
-    let st = to.scrollHeight - to.clientHeight;
+  let sf = from.scrollHeight - from.clientHeight
+  let st = to.scrollHeight - to.clientHeight
 
-    if (sf < 1) {
-        return;
-    }
+  if (sf < 1) {
+    return
+  }
 
-    let p = from.scrollTop / sf * 100;
+  let p = (from.scrollTop / sf) * 100
 
-    to.scrollTop = (st / 100) * p;
+  to.scrollTop = (st / 100) * p
 }
 
 export default {
-    data () {
-        return {
-            myInput: "",
-        }
+  props: {
+    myInput: String
+  },
+  computed: {
+    compiledMarkdown() {
+      return md.render(this.myInput)
     },
-    computed: {
-        compiledMarkdown () {
-            return md.render(this.myInput)
-        },
-        editor () {
-            return this.$refs.myEditor.$el.querySelector('#editor');
-        },
-        preview () {
-            return this.$refs.myPreview;
-        }
+    editor() {
+      return this.$refs.myEditor.$el.querySelector('#editor')
     },
-    methods: {
-        syncScrollEditor() {
-            syncScroll(this.editor, this.preview)
-        },
-        syncScrollPreview() {
-            syncScroll(this.preview, this.editor)
-        }
+    preview() {
+      return this.$refs.myPreview
     }
+  },
+  methods: {
+    syncScrollEditor() {
+      syncScroll(this.editor, this.preview)
+    },
+    syncScrollPreview() {
+      syncScroll(this.preview, this.editor)
+    }
+  }
 }
 </script>
 
 <style scoped>
 #preview {
-    font-family: 'Lato', sans-serif;
-    height: 400px;
-    overflow: auto;
-    vertical-align: top;
-    box-sizing: border-box;
-    padding: 20px 15px;
-    border: 1px solid #ccc;
+  font-family: 'Lato', sans-serif;
+  height: 400px;
+  overflow: auto;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding: 20px 15px;
+  border: 1px solid #ccc;
 }
 </style>

@@ -47,7 +47,11 @@
         </v-stepper-step>
 
         <v-stepper-content step="2">
-            <submit-form-metadata-input :contentType="contentType"></submit-form-metadata-input>
+            <submit-form-metadata-input
+                :contentType="contentType"
+                :update="this.update"
+                >
+            </submit-form-metadata-input>
 
             <v-divider class="mb-2"></v-divider>
 
@@ -74,7 +78,11 @@
         </v-stepper-step>
 
         <v-stepper-content step="3">
-            <submit-form-content-input :contentType="contentType"></submit-form-content-input>
+            <submit-form-content-input
+                :contentType="contentType"
+                :update="this.update"
+                >
+            </submit-form-content-input>
             
             <v-divider class="mb-2"></v-divider>
 
@@ -130,10 +138,13 @@ export default {
         SubmitFormResetDialog,
         SubmitFormSubmitDialog,
     },
+    props: {
+        update: Boolean,
+    },
     data () {
         return {
             contentType: 'article',
-            stepNum: 1
+            stepNum: 1,
         }
     },
     computed: {
