@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     item() {
-      return this.$store.getters.contentObj
+      return this.$store.state.content.item
     }
   }
 }

@@ -3,30 +3,30 @@
     <v-layout class="pl-3" row wrap>
       <v-flex class="pb-2" xs12>
         <p class="input-title">JSON file</p>
-        <file-reader class="pb-2" fileType="json"></file-reader>
+        <FileReader class="pb-2" fileType="json" />
       </v-flex>
 
-      <v-flex v-if="contentType === 'dataset'" class="pb-2" xs12>
+      <v-flex v-if="contentType === 'datasets'" class="pb-2" xs12>
         <p class="input-title">CSV data</p>
-        <file-reader class="pb-2" fileType="csv"></file-reader>
+        <FileReader class="pb-2" fileType="csv" />
       </v-flex>
 
-      <template v-if="contentType === 'article'">
+      <template v-if="contentType === 'articles'">
         <v-flex class="pb-2" xs12>
           <p class="input-title">Splash image</p>
-          <file-reader class="pb-2" fileType="img"></file-reader>
+          <FileReader class="pb-2" fileType="img" />
         </v-flex>
 
         <v-flex class="pb-2" xs12>
           <p class="input-title">Markdown file</p>
-          <file-reader class="pb-2" fileType="img"></file-reader>
+          <FileReader class="pb-2" fileType="img" />
         </v-flex>
 
         <v-flex class="pb-2" xs12>
           <p class="input-title">Article images</p>
 
           <div v-for="i in imgNum" :key="i">
-            <file-reader class="pb-4" fileType="img"></file-reader>
+            <FileReader class="pb-4" fileType="img" />
           </div>
 
           <v-btn outline @click="imgNum++">
@@ -39,10 +39,6 @@
         </v-flex>
       </template>
     </v-layout>
-
-    <v-btn class="mt-5" outline color="primary" @click="onSaveChanges">
-      Save changes
-    </v-btn>
   </v-form>
 </template>
 

@@ -49,7 +49,7 @@ import axios from 'axios'
 
 export default {
   created() {
-    this.$store.dispatch('logout')
+    this.$store.dispatch('auth/logout')
   },
   mounted() {
     this.$nextTick(this.$refs.username.focus)
@@ -62,7 +62,8 @@ export default {
       loginError: false,
       rules: {
         required: value => !!value || 'Required.'
-      }
+      },
+      valid: true
     }
   },
   methods: {
@@ -76,8 +77,9 @@ export default {
           .then(response => {
             // Handle success.
             const role = response.data.user.role.name
-            this.$store.dispatch('setRole', role).then(() => {
-              this.$store.dispatch('login')
+            // const role = response.data
+            this.$store.dispatch('auth/setRole', role).then(() => {
+              this.$store.dispatch('auth/login')
               this.$router.push('/')
             })
           })

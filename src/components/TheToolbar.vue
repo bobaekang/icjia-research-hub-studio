@@ -58,11 +58,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data() {
     return {
       height: 75,
-      title: 'ICJIA data portal submission',
+      title: 'ICJIA Research Hub CMS',
       logo: {
         url:
           'http://www.icjia.state.il.us/_themes/icjia/img/logo-icjia-small-blue-3.png',
@@ -77,6 +79,9 @@ export default {
     }
   },
   computed: {
+    ...mapState('auth', {
+      isLoggedIn: 'isLoggedIn'
+    }),
     titleUpper() {
       return this.title.toUpperCase()
     },
@@ -85,17 +90,14 @@ export default {
     },
     logoHpixel() {
       return `${this.height * 0.85}px`
-    },
-    isLoggedIn() {
-      return this.$store.getters.isLoggedIn
     }
   },
   methods: {
     login() {
-      this.$store.dispatch('login')
+      this.$store.dispatch('auth/login')
     },
     logout() {
-      this.$store.dispatch('logout').then(() => {
+      this.$store.dispatch('auth/logout').then(() => {
         this.$router.push('/login')
       })
     }

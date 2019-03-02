@@ -1,24 +1,23 @@
 <template>
-  <v-container>
-    <v-layout justify-center>
-      <v-flex xs12 sm10 md8>
-        <h1>Post a new item</h1>
-        <p class="py-2">
-          Create a new item to be published.
-        </p>
+  <BaseLayout>
+    <h1>Post a new item</h1>
 
-        <post-form></post-form>
-      </v-flex>
-    </v-layout>
-  </v-container>
+    <p class="py-2">
+      Create a new item to be published.
+    </p>
+
+    <PostStepper />
+  </BaseLayout>
 </template>
 
 <script>
-import PostForm from '@/components/PostForm'
+import BaseLayout from '@/components/BaseLayout'
+import PostStepper from '@/components/PostStepper'
 
 export default {
   components: {
-    PostForm
+    BaseLayout,
+    PostStepper
   }
 }
 </script>

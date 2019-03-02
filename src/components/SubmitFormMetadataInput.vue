@@ -80,8 +80,8 @@ export default {
     }
   },
   mouted() {
-    if (update) {
-      const contentObj = this.$store.getters.contentObj
+    if (this.update) {
+      const contentObj = this.$store.state.content.item
 
       this.title = contentObj.title
       this.slug = contentObj.slug
@@ -97,15 +97,15 @@ export default {
         .toLowerCase()
     },
     onSaveChanges() {
-      let obj = {}
+      let item = {}
 
-      obj.title = this.title
-      obj.slug = this.slug
-      obj.date = this.date
-      obj.categories = this.categories
-      obj.tags = this.tags ? this.tags.split(',').map(el => el.trim()) : []
+      item.title = this.title
+      item.slug = this.slug
+      item.date = this.date
+      item.categories = this.categories
+      item.tags = this.tags ? this.tags.split(',').map(el => el.trim()) : []
 
-      this.$store.dispatch('setItem', obj)
+      this.$store.dispatch('content/setItem', item)
     }
   }
 }

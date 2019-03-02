@@ -1,16 +1,16 @@
 <template>
   <v-form class="mb-2">
     <v-layout class="pl-3" row wrap>
-      <v-flex v-if="contentType === 'app'" xs12 md6 lg4>
+      <v-flex v-if="contentType === 'apps'" xs12 md6 lg4>
         <v-text-field v-model="url" :counter="max" :rules="rules" label="URL" />
       </v-flex>
 
-      <v-flex v-if="contentType !== 'dataset'" class="pb-2" xs12>
+      <v-flex v-if="contentType !== 'datasets'" class="pb-2" xs12>
         <p style="color:rgba(0,0,0,.54);">Splash image</p>
         <file-reader class="pb-2" fileType="img"></file-reader>
       </v-flex>
 
-      <template v-if="contentType === 'article'">
+      <template v-if="contentType === 'articles'">
         <v-flex xs12>
           <p class="pt-2 input-title">Article body</p>
           <the-markdown-editor :myInput="this.myInput"></the-markdown-editor>
@@ -33,12 +33,12 @@
         </v-flex>
       </template>
 
-      <v-flex v-if="contentType === 'dataset'" class="pb-2" xs12>
+      <v-flex v-if="contentType === 'datasets'" class="pb-2" xs12>
         <p class="input-title">Data in CSV format</p>
         <file-reader class="pb-2" fileType="csv"></file-reader>
       </v-flex>
 
-      <v-flex v-if="contentType !== 'dataset'" class="pr-3" xs12 md10 lg6>
+      <v-flex v-if="contentType !== 'datasets'" class="pr-3" xs12 md10 lg6>
         <v-textarea
           v-model="summary"
           :counter="max"
@@ -47,7 +47,7 @@
         />
       </v-flex>
 
-      <v-flex v-if="contentType !== 'article'" class="pr-3" xs12 md10 lg6>
+      <v-flex v-if="contentType !== 'articles'" class="pr-3" xs12 md10 lg6>
         <v-textarea
           v-model="description"
           :counter="max"
@@ -86,17 +86,17 @@ export default {
     }
   },
   mounted() {
-    if (update) {
-      const contentObj = this.$store.getters.contentObj
+    if (this.update) {
+      const contentObj = this.$store.state.content.item
 
-      if (this.contentType === 'app') {
+      if (this.contentType === 'apps') {
         this.url = contentObj.url
         this.summary = contentObj.summary
         this.description = contentObj.description
-      } else if (this.contentType === 'article') {
+      } else if (this.contentType === 'articles') {
         this.myInput = contentObj.body
         this.summary = contentObj.summary
-      } else if (this.contentType === 'dataset') {
+      } else if (this.contentType === 'datasets') {
         this.description = contentObj.description
       }
     }

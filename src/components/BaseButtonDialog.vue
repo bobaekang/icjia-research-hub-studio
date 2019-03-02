@@ -1,16 +1,16 @@
 <template>
   <v-dialog v-model="dialog" width="500">
-    <v-btn outline slot="activator" color="error">
-      reset
+    <v-btn outline slot="activator" :color="buttonType">
+      {{ buttonName }}
     </v-btn>
 
     <v-card>
       <v-card-title class="headline grey lighten-2">
-        <h3>Are you sure?</h3>
+        <slot name="title"></slot>
       </v-card-title>
 
       <v-card-text>
-        You will lose the saved work. Are you sure to proceed and reset?
+        <slot name="main"></slot>
       </v-card-text>
 
       <v-divider></v-divider>
@@ -21,8 +21,8 @@
           back
         </v-btn>
 
-        <v-btn color="error" flat @click="dialog = false">
-          reset
+        <v-btn :color="buttonType" flat @click="dialog = false">
+          {{ buttonName }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -31,6 +31,10 @@
 
 <script>
 export default {
+  props: {
+    buttonName: String,
+    buttonType: String
+  },
   data() {
     return {
       dialog: false
@@ -38,3 +42,6 @@ export default {
   }
 }
 </script>
+
+<style>
+</style>

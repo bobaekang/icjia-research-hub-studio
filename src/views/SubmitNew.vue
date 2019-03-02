@@ -1,28 +1,24 @@
 <template>
-  <v-container>
-    <v-layout justify-center>
-      <v-flex xs12 sm10 md8>
-        <h1>Submit a new item</h1>
-        <p class="py-2">
-          You can fill out the following form, preview the result, and submit
-          the item.
-        </p>
+  <BaseLayout>
+    <h1>Submit a new item</h1>
+    
+    <p class="py-2">
+      You can fill out the following form, preview the result, and submit the
+      item.
+    </p>
 
-        <submit-form update="false"></submit-form>
-      </v-flex>
-    </v-layout>
-  </v-container>
+    <SubmitStepper />
+  </BaseLayout>
 </template>
 
 <script>
-import SubmitForm from '@/components/SubmitForm'
+import BaseLayout from '@/components/BaseLayout'
+import SubmitStepper from '@/components/SubmitStepper'
 
 export default {
   components: {
-    SubmitForm
+    BaseLayout,
+    SubmitStepper
   }
 }
 </script>
-
-<style>
-</style>

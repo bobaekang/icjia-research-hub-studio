@@ -1,27 +1,26 @@
 <template>
-  <v-container>
-    <v-layout justify-center>
-      <v-flex xs12 sm10 md8>
-        <h1>Manage submissions</h1>
-        <p class="py-2">
-          Review and publish submissions
-        </p>
+  <BaseLayout>
+    <h1>Manage submissions</h1>
 
-        <the-item-table type="manage"></the-item-table>
-      </v-flex>
-    </v-layout>
-  </v-container>
+    <p class="py-2">
+      Review and publish submissions
+    </p>
+
+    <ManageStepper />
+  </BaseLayout>
 </template>
 
 <script>
-import TheItemTable from '@/components/TheItemTable'
+import BaseLayout from '@/components/BaseLayout'
+import ManageStepper from '@/components/ManageStepper'
 
 export default {
   components: {
-    TheItemTable
+    BaseLayout,
+    ManageStepper
   }
 }
 </script>
 
 <style>
-</style>v
+</style>

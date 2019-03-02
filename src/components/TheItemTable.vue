@@ -1,7 +1,10 @@
 <template>
   <v-card>
     <v-card-title>
+      <h3>Content type: {{ contentType }}</h3>
+
       <v-spacer></v-spacer>
+
       <v-text-field
         v-model="search"
         append-icon="search"
@@ -40,6 +43,7 @@
 <script>
 export default {
   props: {
+    contentType: String,
     type: String
   },
   data() {
@@ -100,13 +104,13 @@ export default {
       ]
     },
     previewItem(item) {
-      alert('preview this')
+      alert('preview this' + item)
     },
     publishItem(item) {
-      alert('publish this')
+      alert('publish this' + item)
     },
     editItem(item) {
-      alert('edit this')
+      alert('edit this' + item)
     }
   }
 }

@@ -7,7 +7,7 @@
         <v-layout row wrap justify-center>
           <template v-for="(task, i) in tasks">
             <v-flex :key="i" v-if="checkPermission(task)" xs12 sm6 md4>
-              <home-task-card :task="task"></home-task-card>
+              <HomeTaskCard :task="task" />
             </v-flex>
           </template>
         </v-layout>
@@ -25,12 +25,12 @@ export default {
   },
   computed: {
     tasks() {
-      return this.$store.getters.tasks
+      return this.$store.state.task.items
     }
   },
   methods: {
     checkPermission(card) {
-      const role = this.$store.getters.role
+      const role = this.$store.state.auth.role
       if (role === 'Administrator') {
         return true
       } else {
@@ -44,6 +44,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

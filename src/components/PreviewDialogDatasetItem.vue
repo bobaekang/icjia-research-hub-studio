@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     dataset() {
-      return this.$store.getters.contentObj
+      return this.$store.state.content.item
     }
   }
 }

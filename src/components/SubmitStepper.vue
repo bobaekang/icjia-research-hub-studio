@@ -1,7 +1,11 @@
 <template>
-  <BaseStepper :stepNumTotal="3">
+  <BaseStepper :stepNumTotal="2">
     <template v-slot:stepHeader1>
       Select content type
+    </template>
+
+    <template v-slot:stepHeader2>
+      Submit
     </template>
 
     <template v-slot:stepItem1>
@@ -11,44 +15,22 @@
       />
     </template>
 
-    <template v-slot:stepHeader2>
-      Select item
-    </template>
-
     <template v-slot:stepItem2>
-      <TheItemTable type="update" :contentType="contentType" />
-    </template>
-
-    <template v-slot:stepHeader3>
-      Update
-    </template>
-
-    <template v-slot:stepItem3>
-      <v-flex class="no-shadow">
-        <SubmitForm v-if="type === 'submit'" :update="true" />
-        <PostForm v-if="type === 'post'" :contentType="contentType" />
-      </v-flex>
+      <SubmitForm :contentType="contentType" :update="false" />
     </template>
   </BaseStepper>
 </template>
 
 <script>
 import BaseStepper from '@/components/BaseStepper'
-import PostForm from '@/components/PostForm'
 import SubmitForm from '@/components/SubmitForm'
-import TheItemTable from '@/components/TheItemTable'
 import TheContentTypeSelector from '@/components/TheContentTypeSelector'
 
 export default {
   components: {
     BaseStepper,
-    PostForm,
     SubmitForm,
-    TheItemTable,
     TheContentTypeSelector
-  },
-  props: {
-    type: String
   },
   data() {
     return {

@@ -17,14 +17,12 @@
           </v-btn>
           <v-toolbar-title>Preview</v-toolbar-title>
         </v-toolbar>
-        <preview-dialog-apps-item v-if="contentType === 'app'" :item="item">
-        </preview-dialog-apps-item>
 
-        <preview-dialog-article v-if="contentType === 'article'" :item="item">
-        </preview-dialog-article>
+        <PreviewDialogAppsItem v-if="contentType === 'apps'" :item="item" />
 
-        <preview-dialog-dataset v-if="contentType === 'dataset'" :item="item">
-        </preview-dialog-dataset>
+        <PreviewDialogArticle v-if="contentType === 'articles'" :item="item" />
+
+        <PreviewDialogDataset v-if="contentType === 'datasets'" :item="item" />
       </v-card>
     </v-dialog>
   </v-layout>
