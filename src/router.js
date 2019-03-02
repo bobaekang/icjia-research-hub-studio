@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '@/store.js'
+import store from '@/store/index'
 
 Vue.use(Router)
 
@@ -63,7 +63,7 @@ const router = new Router({
     },
     {
       path: '/submit-update',
-      name: 'submit',
+      name: 'submit-update',
       component: () => import('./views/SubmitUpdate.vue'),
       meta: {
         requiresAuth: true,
@@ -85,24 +85,24 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   // let jwt = localStorage.getItem('jwt')
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isLoggedIn) {
-      if (store.getters.role === 'ICJIA R&A User') {
+    if (store.state.auth.isLoggedIn) {
+      if (store.state.auth.role === 'R&A User') {
         if (to.matched.some(record => record.meta.userNotAllowed)) {
           next('/')
         } else {
           next()
         }
-      } else if (store.getters.role === 'ICJIA R&A Manager') {
+      } else if (store.state.auth.role === 'R&A Manager') {
         if (to.matched.some(record => record.meta.managerNotAllowed)) {
           next('/')
         } else {
           next()
         }
-      } else if (store.getters.role === 'Administrator') {
+      } else if (store.state.auth.role === 'Administrator') {
         next()
       }
     } else {
-      store.dispatch('logout')
+      store.dispatch('auth/logout')
       next('/login')
     }
   } else {
