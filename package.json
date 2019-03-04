@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --host localhost",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -13,6 +13,7 @@
     "file-saver": "^2.0.1",
     "markdown-it": "^8.4.2",
     "markdown-it-footnote": "^3.0.1",
+    "nprogress": "^0.2.0",
     "vue": "^2.6.8",
     "vue-router": "^3.0.1",
     "vuetify": "^1.5.4",

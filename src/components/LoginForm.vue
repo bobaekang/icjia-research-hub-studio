@@ -45,8 +45,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   created() {
     this.$store.dispatch('auth/logout')
@@ -69,22 +67,15 @@ export default {
   methods: {
     login() {
       if (this.$refs.form.validate()) {
-        axios
-          .post('http://localhost:1337/auth/local', {
-            identifier: this.username,
-            password: this.password
-          })
-          .then(response => {
-            // Handle success.
-            const role = response.data.user.role.name
-            // const role = response.data
-            this.$store.dispatch('auth/setRole', role).then(() => {
-              this.$store.dispatch('auth/login')
-              this.$router.push('/')
-            })
-          })
-          .catch(error => {
-            // Handle error.
+        const user = {
+          identifier: this.username,
+          password: this.password
+        }
+
+        this.$store
+          .dispatch('auth/login', user)
+          .then(() => this.$router.push('/'))
+          .catch(() => {
             this.loginError = true
           })
       }
