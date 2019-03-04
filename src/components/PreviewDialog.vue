@@ -1,50 +1,72 @@
 <template>
-  <v-layout row>
-    <v-dialog
-      v-model="dialog"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-    >
-      <v-btn outline slot="activator" color="primary">
-        Preview
-      </v-btn>
+  <v-dialog
+    v-model="dialog"
+    fullscreen
+    hide-overlay
+    transition="dialog-bottom-transition"
+  >
+    <v-btn outline slot="activator">
+      Preview
+    </v-btn>
 
-      <v-card>
-        <v-toolbar class="toolbar">
-          <v-btn icon @click="dialog = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Preview</v-toolbar-title>
-        </v-toolbar>
+    <v-card>
+      <v-toolbar class="toolbar">
+        <v-btn icon @click="dialog = false">
+          <v-icon>close</v-icon>
+        </v-btn>
 
-        <PreviewDialogAppsItem v-if="contentType === 'apps'" :item="item" />
+        <v-btn flat @click="view = !view">
+          {{ view ? 'show card' : 'show view' }}
+        </v-btn>
 
-        <PreviewDialogArticle v-if="contentType === 'articles'" :item="item" />
+        <v-toolbar-title style="text-transform: uppercase">
+          Preview type: {{ contentType }} {{ view ? 'view' : '' }}
+        </v-toolbar-title>
+      </v-toolbar>
 
-        <PreviewDialogDataset v-if="contentType === 'datasets'" :item="item" />
-      </v-card>
-    </v-dialog>
-  </v-layout>
+      <template v-if="contentType == 'apps'">
+        <AppItem v-if="!view" />
+        <AppItemView v-if="view" />
+      </template>
+
+      <template :v-if="contentType == 'articles'">
+        <ArticleItem v-if="!view" />
+        <ArticleItemView v-if="view" />
+      </template>
+
+      <template :v-if="contentType == 'datasets'">
+        <DatasetItem v-if="!view" />
+        <DatasetItemView v-if="view" />
+      </template>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
-import PreviewDialogAppsItem from '@/components/PreviewDialogAppsItem'
-import PreviewDialogArticle from '@/components/PreviewDialogArticle'
-import PreviewDialogDataset from '@/components/PreviewDialogDataset'
+import AppItem from '@/components/research-hub/AppItem'
+import AppItemView from '@/components/research-hub/AppItemView'
+import ArticleItem from '@/components/research-hub/ArticleItem'
+import ArticleItemView from '@/components/research-hub/ArticleItemView'
+import DatasetItem from '@/components/research-hub/DatasetItem'
+import DatasetItemView from '@/components/research-hub/DatasetItemView'
 
 export default {
   components: {
-    PreviewDialogAppsItem,
-    PreviewDialogArticle,
-    PreviewDialogDataset
+    AppItem,
+    AppItemView,
+    ArticleItem,
+    ArticleItemView,
+    DatasetItem,
+    DatasetItemView
   },
   props: {
-    contentType: String
+    contentType: String,
+    item: Object
   },
   data() {
     return {
-      dialog: false
+      dialog: false,
+      view: false
     }
   }
 }

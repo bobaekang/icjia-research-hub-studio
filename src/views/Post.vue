@@ -1,5 +1,5 @@
 <template>
-  <BaseLayout>
+  <BaseViewLayout>
     <h1>Post a new item</h1>
 
     <p class="py-2">
@@ -7,20 +7,17 @@
     </p>
 
     <PostStepper />
-  </BaseLayout>
+  </BaseViewLayout>
 </template>
 
 <script>
-import BaseLayout from '@/components/BaseLayout'
+import BaseViewLayout from '@/components/BaseViewLayout'
 import PostStepper from '@/components/PostStepper'
 
 export default {
   components: {
-    BaseLayout,
+    BaseViewLayout,
     PostStepper
   }
 }
 </script>
-
-<style>
-</style>

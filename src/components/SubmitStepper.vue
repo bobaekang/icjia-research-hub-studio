@@ -9,7 +9,7 @@
     </template>
 
     <template v-slot:stepItem1>
-      <TheContentTypeSelector
+      <ContentTypeSelector
         :contentTypes="contentTypes"
         :contentType.sync="contentType"
       />
@@ -24,18 +24,18 @@
 <script>
 import BaseStepper from '@/components/BaseStepper'
 import SubmitForm from '@/components/SubmitForm'
-import TheContentTypeSelector from '@/components/TheContentTypeSelector'
+import ContentTypeSelector from '@/components/ContentTypeSelector'
 
 export default {
   components: {
     BaseStepper,
     SubmitForm,
-    TheContentTypeSelector
+    ContentTypeSelector
   },
   data() {
     return {
-      contentTypes: this.$store.state.content.types,
-      contentType: 'apps'
+      contentType: 'apps',
+      contentTypes: this.$store.state.content.types
     }
   }
 }

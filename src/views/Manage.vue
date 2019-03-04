@@ -1,5 +1,5 @@
 <template>
-  <BaseLayout>
+  <BaseViewLayout>
     <h1>Manage submissions</h1>
 
     <p class="py-2">
@@ -7,20 +7,17 @@
     </p>
 
     <ManageStepper />
-  </BaseLayout>
+  </BaseViewLayout>
 </template>
 
 <script>
-import BaseLayout from '@/components/BaseLayout'
+import BaseViewLayout from '@/components/BaseViewLayout'
 import ManageStepper from '@/components/ManageStepper'
 
 export default {
   components: {
-    BaseLayout,
+    BaseViewLayout,
     ManageStepper
   }
 }
 </script>
-
-<style>
-</style>

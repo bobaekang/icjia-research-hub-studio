@@ -5,7 +5,7 @@
     </template>
 
     <template v-slot:stepItem1>
-      <TheContentTypeSelector
+      <ContentTypeSelector
         :contentTypes="contentTypes"
         :contentType.sync="contentType"
       />
@@ -16,7 +16,7 @@
     </template>
 
     <template v-slot:stepItem2>
-      <TheItemTable type="update" :contentType="contentType" />
+      <ItemTable type="update" :contentType="contentType" />
     </template>
 
     <template v-slot:stepHeader3>
@@ -34,25 +34,28 @@
 
 <script>
 import BaseStepper from '@/components/BaseStepper'
+import ContentTypeSelector from '@/components/ContentTypeSelector'
+import ItemTable from '@/components/ItemTable'
 import PostForm from '@/components/PostForm'
 import SubmitForm from '@/components/SubmitForm'
-import TheItemTable from '@/components/TheItemTable'
-import TheContentTypeSelector from '@/components/TheContentTypeSelector'
 
 export default {
   components: {
     BaseStepper,
+    ContentTypeSelector,
+    ItemTable,
     PostForm,
-    SubmitForm,
-    TheItemTable,
-    TheContentTypeSelector
+    SubmitForm
   },
   props: {
     type: String
   },
   data() {
     return {
-      contentTypes: this.$store.state.content.types,
+      contentTypes:
+        this.type === 'post'
+          ? this.$store.state.content.allTypes
+          : this.$store.state.content.types,
       contentType: 'apps'
     }
   }

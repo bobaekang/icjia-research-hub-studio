@@ -1,23 +1,22 @@
 <template>
-  <BaseLayout>
+  <BaseViewLayout>
     <h1>Submit a new item</h1>
-    
     <p class="py-2">
       You can fill out the following form, preview the result, and submit the
       item.
     </p>
 
     <SubmitStepper />
-  </BaseLayout>
+  </BaseViewLayout>
 </template>
 
 <script>
-import BaseLayout from '@/components/BaseLayout'
+import BaseViewLayout from '@/components/BaseViewLayout'
 import SubmitStepper from '@/components/SubmitStepper'
 
 export default {
   components: {
-    BaseLayout,
+    BaseViewLayout,
     SubmitStepper
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-stepper v-model="stepNum">
+  <v-stepper v-model="stepNum" class="mb-5">
     <v-stepper-header>
       <template v-for="step in stepNumTotal">
         <v-stepper-step :key="step" :complete="stepNum > step" :step="step">

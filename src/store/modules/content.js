@@ -2,7 +2,8 @@ export const namespaced = true
 
 export const state = {
   item: {},
-  types: ['apps', 'articles', 'authors', 'datasets']
+  types: ['apps', 'articles', 'datasets'],
+  allTypes: ['apps', 'authors', 'articles', 'datasets']
 }
 
 export const mutations = {

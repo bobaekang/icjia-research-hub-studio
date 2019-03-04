@@ -5,7 +5,7 @@
     </template>
 
     <template v-slot:stepItem1>
-      <TheContentTypeSelector
+      <ContentTypeSelector
         :contentTypes="contentTypes"
         :contentType.sync="contentType"
       />
@@ -16,21 +16,21 @@
     </template>
 
     <template v-slot:stepItem2>
-      <TheItemTable type="manage" :contentType="contentType" />
+      <ItemTable type="manage" :contentType="contentType" />
     </template>
   </BaseStepper>
 </template>
 
 <script>
 import BaseStepper from '@/components/BaseStepper'
-import TheContentTypeSelector from '@/components/TheContentTypeSelector'
-import TheItemTable from '@/components/TheItemTable'
+import ContentTypeSelector from '@/components/ContentTypeSelector'
+import ItemTable from '@/components/ItemTable'
 
 export default {
   components: {
     BaseStepper,
-    TheContentTypeSelector,
-    TheItemTable
+    ContentTypeSelector,
+    ItemTable
   },
   props: {
     type: String

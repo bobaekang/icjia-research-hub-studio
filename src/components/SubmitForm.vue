@@ -1,149 +1,206 @@
 <template>
-  <BaseForm :stepNumTotal="3">
-    <template v-slot:stepHeader1>
-      Provide metadata
-    </template>
+  <BaseForm :contentType="contentType" formType="submit">
+    <v-form>
+      <v-layout row wrap>
+        <v-flex class="px-3" xs12 md6 lg4>
+          <v-text-field
+            v-model="title"
+            :rules="rules"
+            label="Title"
+            @keyup="titleToSlug"
+            counter
+          />
+        </v-flex>
 
-    <template v-slot:stepItem1>
-      <SubmitFormMetadataInput :contentType="contentType" :update="update" />
-    </template>
+        <v-flex class="px-3" xs12 md6 lg4>
+          <v-text-field v-model="slug" :rules="rules" label="Slug" counter />
+        </v-flex>
+      </v-layout>
 
-    <template v-slot:stepHeader2>
-      Provide content
-    </template>
+      <v-layout row>
+        <v-flex class="px-3" xs12 md6 lg4>
+          <DatePicker />
+        </v-flex>
+      </v-layout>
 
-    <template v-slot:stepItem2>
-      <SubmitFormContentInput :contentType="contentType" :update="update" />
-    </template>
+      <v-layout row wrap>
+        <v-flex class="px-3" xs12 md6 lg4>
+          <v-select
+            :items="categoryOptions"
+            v-model="categories"
+            label="Categories"
+            hint="Select categories"
+            persistent-hint
+            multiple
+          />
+        </v-flex>
 
-    <template v-slot:stepHeader3>
-      Preview and submit
-    </template>
+        <v-flex class="px-3" xs12 md6 lg4>
+          <v-text-field
+            v-model="tags"
+            label="Tags"
+            hint="Separate tags with commas"
+            persistent-hint
+          />
+        </v-flex>
 
-    <template v-slot:stepItem3>
-      <PreviewDialog :contentType="contentType" />
-    </template>
+        <v-flex v-if="contentType === 'apps'" class="px-3" xs12 md6 lg4>
+          <v-text-field
+            v-model="url"
+            :counter="max"
+            :rules="rules"
+            label="URL"
+          />
+        </v-flex>
+
+        <v-flex v-if="contentType !== 'datasets'" class="px-3 pt-3" xs12>
+          <p style="color:rgba(0,0,0,.54);">Splash image</p>
+          <FileReader class="pb-2" fileType="img" />
+        </v-flex>
+
+        <template v-if="contentType === 'articles'">
+          <v-flex class="px-3 pt-3" xs12>
+            <p class="pt-2 input-title">Article body</p>
+            <MarkdownEditor :myInput="this.myInput" />
+          </v-flex>
+
+          <v-flex class="px-3 pb-2" xs12>
+            <p class="input-title">Article images</p>
+
+            <div v-for="i in imgNum" :key="i">
+              <FileReader class="pb-4" fileType="img" />
+            </div>
+
+            <v-btn outline @click="imgNum++">
+              add image
+            </v-btn>
+
+            <v-btn v-if="imgNum > 0" outline color="error" @click="imgNum--">
+              remove image
+            </v-btn>
+          </v-flex>
+        </template>
+
+        <v-flex v-if="contentType === 'datasets'" class="pb-2" xs12>
+          <p class="input-title">Data in CSV format</p>
+          <FileReader class="pb-2" fileType="csv" />
+        </v-flex>
+
+        <v-flex v-if="contentType !== 'datasets'" class="px-3" xs12 md10 lg6>
+          <v-textarea
+            v-model="summary"
+            :counter="max"
+            :rules="rules"
+            label="Summary"
+          />
+        </v-flex>
+
+        <v-flex v-if="contentType !== 'articles'" class="px-3" xs12 md10 lg6>
+          <v-textarea
+            v-model="description"
+            :counter="max"
+            :rules="rules"
+            label="Description"
+          />
+        </v-flex>
+      </v-layout>
+
+      <v-btn outline color="" @click="onSaveChanges">
+        Save
+      </v-btn>
+
+      <PreviewDialog :contentType="contentType" :item="item" />
+    </v-form>
   </BaseForm>
-
-  <!-- <v-stepper v-model="stepNum" vertical non-linear>
-    <v-layout justify-end>
-      <div class="mt-3 mr-3">
-        <submit-form-reset-dialog></submit-form-reset-dialog>
-      </div>
-    </v-layout>
-
-    <v-stepper-step :complete="stepNum > 1" step="1">
-      Select content type: {{ contentTypeCapitalized }}
-    </v-stepper-step>
-
-    <v-stepper-content step="1">
-      <v-radio-group v-model="contentType" row>
-        <v-radio label="App" value="app" />
-        <v-radio label="Article" value="article" />
-        <v-radio label="Dataset" value="dataset" />
-      </v-radio-group>
-
-      <v-btn outline color="primary" @click="stepNum = 2">
-        Continue
-      </v-btn>
-    </v-stepper-content>
-
-    <v-stepper-step editable :complete="stepNum > 2" step="2">
-      Provide metadata
-    </v-stepper-step>
-
-    <v-stepper-content step="2">
-      <submit-form-metadata-input
-        :contentType="contentType"
-        :update="this.update"
-      >
-      </submit-form-metadata-input>
-
-      <v-divider class="mb-2"></v-divider>
-
-      <v-btn outline @click="stepNum = 1">
-        Back
-      </v-btn>
-      <v-btn outline color="primary" @click="stepNum = 3">
-        Continue
-      </v-btn>
-    </v-stepper-content>
-
-    <v-stepper-step editable :complete="stepNum > 3" step="3">
-      Provide content
-    </v-stepper-step>
-
-    <v-stepper-content step="3">
-      <submit-form-content-input
-        :contentType="contentType"
-        :update="this.update"
-      >
-      </submit-form-content-input>
-
-      <v-divider class="mb-2"></v-divider>
-
-      <v-btn outline @click="stepNum = 2">
-        Back
-      </v-btn>
-      <v-btn outline color="primary" @click="stepNum = 4">
-        Continue
-      </v-btn>
-    </v-stepper-content>
-
-    <v-stepper-step step="4">
-      Preview and submit
-    </v-stepper-step>
-
-    <v-stepper-content step="4">
-      <preview-dialog :contentType="contentType"></preview-dialog>
-
-      <v-divider class="my-2"></v-divider>
-
-      <v-btn outline @click="stepNum = 3">
-        Back
-      </v-btn>
-
-      <submit-form-submit-dialog></submit-form-submit-dialog>
-    </v-stepper-content>
-  </v-stepper> -->
 </template>
 
 <script>
 import BaseForm from '@/components/BaseForm'
+import DatePicker from '@/components/DatePicker'
+import FileReader from '@/components/FileReader'
+import MarkdownEditor from '@/components/MarkdownEditor'
 import PreviewDialog from '@/components/PreviewDialog'
-import SubmitFormContentInput from '@/components/SubmitFormContentInput'
-import SubmitFormMetadataInput from '@/components/SubmitFormMetadataInput'
-// import SubmitFormSubmitDialog from '@/components/SubmitFormSubmitDialog'
 
 export default {
   components: {
     BaseForm,
-    PreviewDialog,
-    SubmitFormContentInput,
-    SubmitFormMetadataInput
-    // SubmitFormSubmitDialog
+    DatePicker,
+    FileReader,
+    MarkdownEditor,
+    PreviewDialog
   },
   props: {
     contentType: String,
     update: Boolean
   },
-  computed: {
-    contentTypeCapitalized() {
-      let type = this.contentType
-      return type.charAt(0).toUpperCase() + type.slice(1)
+  data() {
+    return {
+      title: '',
+      slug: '',
+      date: '',
+      categories: [],
+      categoryOptions: [
+        'corrections',
+        'courts',
+        'crimes',
+        'law enforcement',
+        'other'
+      ],
+      tags: '',
+      description: '',
+      imgNum: 0,
+      myInput: '',
+      summary: '',
+      url: 'https://'
     }
   },
   mounted() {
-    console.log(this.update)
+    if (this.update) {
+      const contentObj = this.$store.state.content.item
+
+      this.title = contentObj.title
+      this.slug = contentObj.slug
+      this.categories = contentObj.categories
+      this.tags = contentObj.tags
+
+      if (this.contentType === 'apps') {
+        this.url = contentObj.url
+        this.summary = contentObj.summary
+        this.description = contentObj.description
+      } else if (this.contentType === 'articles') {
+        this.myInput = contentObj.body
+        this.summary = contentObj.summary
+      } else if (this.contentType === 'datasets') {
+        this.description = contentObj.description
+      }
+    }
   },
   methods: {
-    reset() {
-      alert('clear all!')
-      this.stepNum = 1
+    titleToSlug() {
+      this.slug = this.title
+        .replace(/[^\w\s]/gi, '')
+        .replace(/\s/gi, '-')
+        .toLowerCase()
     },
-    submit() {
-      alert('submit')
+    onSaveChanges() {
+      let item = {}
+
+      // item.title = this.title
+      // item.slug = this.slug
+      // item.date = this.date
+      // item.categories = this.categories
+      // item.tags = this.tags ? this.tags.split(',').map(el => el.trim()) : []
+
+      this.$store.dispatch('content/setItem', item)
+
+      alert('changes saved')
     }
   }
 }
 </script>
+
+<style scoped>
+.input-title {
+  color: rgba(0, 0, 0, 0.54);
+}
+</style>
