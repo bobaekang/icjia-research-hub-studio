@@ -1,0 +1,139 @@
+<template>
+  <v-card>
+    <v-layout row>
+      <v-img
+        class="hidden-sm-and-down"
+        :src="article.splash"
+        lazy-src="https://via.placeholder.com/1/DDDDDD"
+      >
+        <v-layout
+          slot="placeholder"
+          fill-height
+          align-center
+          justify-center
+          ma-0
+        >
+          <v-progress-circular indeterminate color="grey lighten-3" />
+        </v-layout>
+      </v-img>
+      <v-layout column justify-space-between class="article-body">
+        <div>
+          <v-container class="py-2">
+            <v-layout row wrap>
+              <BaseItemTitleDisplay :to="getArticlePath(article.slug)">
+                {{ article.title }}
+              </BaseItemTitleDisplay>
+
+              <BaseItemPropChip v-for="type of article.type" :key="type">
+                {{ type.toUpperCase() }}
+              </BaseItemPropChip>
+
+              <BaseItemPropChip
+                v-for="category of article.categories"
+                :key="category"
+              >
+                {{ category.toUpperCase() }}
+              </BaseItemPropChip>
+            </v-layout>
+          </v-container>
+
+          <v-divider />
+
+          <v-container class="py-2">
+            <BaseItemPropDisplay name="Updated">
+              {{ article.date.slice(0, 10) }}
+            </BaseItemPropDisplay>
+
+            <BaseItemPropDisplay name="Authors">
+              <span
+                v-for="(author, i) in article.authors"
+                :key="author"
+                class="uppercase"
+              >
+                <span v-if="isBeforeLastAuthor(article.authors.length, i)">
+                  &nbsp;and&nbsp;
+                </span>
+
+                <router-link :to="getAuthorPath(author.slug)">
+                  {{ author.title }}
+                </router-link>
+
+                <span v-if="i + 2 < article.authors.length">
+                  ,&nbsp;
+                </span>
+              </span>
+            </BaseItemPropDisplay>
+          </v-container>
+        </div>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            v-if="article.summary"
+            @click="article.showSummary = !article.showSummary"
+            flat
+            >summary
+            <v-icon>
+              {{
+                article.showSummary
+                  ? 'keyboard_arrow_down'
+                  : 'keyboard_arrow_up'
+              }}
+            </v-icon>
+          </v-btn>
+
+          <BaseButton :to="getArticlePath(article.slug)" icon="more_horiz">
+            more
+          </BaseButton>
+        </v-card-actions>
+
+        <v-slide-y-transition>
+          <v-card-text v-if="article.showSummary">
+            {{ article.summary }}
+          </v-card-text>
+        </v-slide-y-transition>
+      </v-layout>
+    </v-layout>
+  </v-card>
+</template>
+
+<script>
+import BaseButton from '@/components/research-hub/BaseButton'
+import BaseItemPropChip from '@/components/research-hub/BaseItemPropChip'
+import BaseItemPropDisplay from '@/components/research-hub/BaseItemPropDisplay'
+import BaseItemTitleDisplay from '@/components/research-hub/BaseItemTitleDisplay'
+
+export default {
+  components: {
+    BaseButton,
+    BaseItemPropChip,
+    BaseItemPropDisplay,
+    BaseItemTitleDisplay
+  },
+  props: {
+    item: Object
+  },
+  computed: {
+    article() {
+      return this.item
+    }
+  },
+  methods: {
+    isBeforeLastAuthor(length, i) {
+      return length > 1 && length === i + 1
+    },
+    getArticlePath(slug) {
+      return `/articles/${slug}`
+    },
+    getAuthorPath(slug) {
+      return `/authors/${slug}`
+    }
+  }
+}
+</script>
+
+<style scoped>
+.article-body {
+  width: 100px;
+}
+</style>
