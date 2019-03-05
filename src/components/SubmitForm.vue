@@ -5,7 +5,6 @@
         <v-flex class="px-3" xs12 md6 lg4>
           <v-text-field
             v-model="title"
-            :rules="rules"
             label="Title"
             @keyup="titleToSlug"
             counter
@@ -13,7 +12,7 @@
         </v-flex>
 
         <v-flex class="px-3" xs12 md6 lg4>
-          <v-text-field v-model="slug" :rules="rules" label="Slug" counter />
+          <v-text-field v-model="slug" label="Slug" counter />
         </v-flex>
       </v-layout>
 
@@ -45,12 +44,7 @@
         </v-flex>
 
         <v-flex v-if="contentType === 'apps'" class="px-3" xs12 md6 lg4>
-          <v-text-field
-            v-model="url"
-            :counter="max"
-            :rules="rules"
-            label="URL"
-          />
+          <v-text-field v-model="url" label="URL" />
         </v-flex>
 
         <v-flex v-if="contentType !== 'datasets'" class="px-3 pt-3" xs12>
@@ -67,17 +61,7 @@
           <v-flex class="px-3 pb-2" xs12>
             <p class="input-title">Article images</p>
 
-            <div v-for="i in imgNum" :key="i">
-              <FileReader class="pb-4" fileType="img" />
-            </div>
-
-            <v-btn outline @click="imgNum++">
-              add image
-            </v-btn>
-
-            <v-btn v-if="imgNum > 0" outline color="error" @click="imgNum--">
-              remove image
-            </v-btn>
+            <ImgDropzone />
           </v-flex>
         </template>
 
@@ -87,21 +71,11 @@
         </v-flex>
 
         <v-flex v-if="contentType !== 'datasets'" class="px-3" xs12 md10 lg6>
-          <v-textarea
-            v-model="summary"
-            :counter="max"
-            :rules="rules"
-            label="Summary"
-          />
+          <v-textarea v-model="summary" label="Summary" />
         </v-flex>
 
         <v-flex v-if="contentType !== 'articles'" class="px-3" xs12 md10 lg6>
-          <v-textarea
-            v-model="description"
-            :counter="max"
-            :rules="rules"
-            label="Description"
-          />
+          <v-textarea v-model="description" label="Description" />
         </v-flex>
       </v-layout>
 
@@ -109,7 +83,11 @@
         Save
       </v-btn>
 
-      <PreviewDialog :contentType="contentType" :item="item" />
+      <PreviewDialog
+        v-if="!isItemEmpty"
+        :contentType="contentType"
+        :item="item"
+      />
     </v-form>
   </BaseForm>
 </template>
@@ -117,6 +95,7 @@
 <script>
 import BaseForm from '@/components/BaseForm'
 import DatePicker from '@/components/DatePicker'
+import ImgDropzone from '@/components/ImgDropzone'
 import FileReader from '@/components/FileReader'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import PreviewDialog from '@/components/PreviewDialog'
@@ -125,6 +104,7 @@ export default {
   components: {
     BaseForm,
     DatePicker,
+    ImgDropzone,
     FileReader,
     MarkdownEditor,
     PreviewDialog
@@ -139,39 +119,47 @@ export default {
       slug: '',
       date: '',
       categories: [],
+      tags: '',
+      description: '',
+      imgNum: 0,
+      myInput: '',
+      summary: '',
+      url: 'https://',
       categoryOptions: [
         'corrections',
         'courts',
         'crimes',
         'law enforcement',
         'other'
-      ],
-      tags: '',
-      description: '',
-      imgNum: 0,
-      myInput: '',
-      summary: '',
-      url: 'https://'
+      ]
+    }
+  },
+  computed: {
+    isItemEmpty() {
+      const item = this.$store.state.content.item
+      return Object.entries(item).length === 0
     }
   },
   mounted() {
     if (this.update) {
-      const contentObj = this.$store.state.content.item
+      const content = this.$store.state.content.item
 
-      this.title = contentObj.title
-      this.slug = contentObj.slug
-      this.categories = contentObj.categories
-      this.tags = contentObj.tags
+      if (Object.entries(content).length !== 0) {
+        this.title = content.title
+        this.slug = content.slug
+        this.categories = content.categories
+        this.tags = content.tags
 
-      if (this.contentType === 'apps') {
-        this.url = contentObj.url
-        this.summary = contentObj.summary
-        this.description = contentObj.description
-      } else if (this.contentType === 'articles') {
-        this.myInput = contentObj.body
-        this.summary = contentObj.summary
-      } else if (this.contentType === 'datasets') {
-        this.description = contentObj.description
+        if (this.contentType === 'apps') {
+          this.url = content.url
+          this.summary = content.summary
+          this.description = content.description
+        } else if (this.contentType === 'articles') {
+          this.myInput = content.body
+          this.summary = content.summary
+        } else if (this.contentType === 'datasets') {
+          this.description = content.description
+        }
       }
     }
   },
@@ -185,11 +173,11 @@ export default {
     onSaveChanges() {
       let item = {}
 
-      // item.title = this.title
-      // item.slug = this.slug
-      // item.date = this.date
-      // item.categories = this.categories
-      // item.tags = this.tags ? this.tags.split(',').map(el => el.trim()) : []
+      item.title = this.title
+      item.slug = this.slug
+      item.date = this.date
+      item.categories = this.categories
+      item.tags = this.tags ? this.tags.split(',').map(el => el.trim()) : []
 
       this.$store.dispatch('content/setItem', item)
 
