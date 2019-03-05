@@ -92,22 +92,6 @@ export default {
       })
   },
 
-  // authors
-  async getAuthorList() {
-    return await client
-      .post('/graphql', {
-        query: `{
-        authors (sort: "title") {
-          _id
-          title
-        }
-      }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },
-
   // articles
   async getArticle(id) {
     return await client
@@ -140,6 +124,22 @@ export default {
       .post('/graphql', {
         query: `{
         articles (sort: "date:desc", where: { publish: ${publish} }) {
+          _id
+          title
+        }
+      }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  },
+
+  // authors
+  async getAuthorList() {
+    return await client
+      .post('/graphql', {
+        query: `{
+        authors (sort: "title") {
           _id
           title
         }

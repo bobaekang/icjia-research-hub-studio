@@ -14,9 +14,17 @@
       ></v-text-field>
     </v-card-title>
 
-    <v-data-table :headers="headers" :items="items" :search="search">
+    <v-data-table
+      class="item-table"
+      :headers="headers"
+      :items="items"
+      :search="search"
+    >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
+        <td class="item-title">
+          {{ props.item.title }}
+        </td>
+
         <td class="justify-end layout px-3">
           <v-icon class="mr-2" @click="previewItem(props.item)">
             visibility
@@ -33,6 +41,7 @@
           </v-icon>
         </td>
       </template>
+
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
         Your search for "{{ search }}" found no results.
       </v-alert>
@@ -44,6 +53,7 @@
 export default {
   props: {
     contentType: String,
+    publish: Boolean,
     type: String
   },
   data() {
@@ -52,66 +62,57 @@ export default {
         {
           text: 'Title',
           align: 'left',
-          value: 'name'
+          value: 'title'
         },
         {
           text: 'Actions',
           align: 'right',
-          value: 'name',
+          value: 'title',
           sortable: false
         }
       ],
-      items: [],
       search: ''
     }
   },
+  computed: {
+    items() {
+      return this.$store.state.content.itemlist
+    }
+  },
+  watch: {
+    contentType() {
+      const payload = {
+        contentType: this.contentType,
+        publish: this.publish
+      }
+      this.$store.dispatch('content/fetchItemList', payload)
+    }
+  },
   created() {
-    this.initialize()
+    const payload = {
+      contentType: this.contentType,
+      publish: this.publish
+    }
+    this.$store.dispatch('content/fetchItemList', payload)
   },
   methods: {
-    initialize() {
-      this.items = [
-        {
-          name: 'Frozen Yogurt'
-        },
-        {
-          name: 'Ice cream sandwich'
-        },
-        {
-          name: 'Eclair'
-        },
-        {
-          name: 'Cupcake'
-        },
-        {
-          name: 'Gingerbread'
-        },
-        {
-          name: 'Jelly bean'
-        },
-        {
-          name: 'Lollipop'
-        },
-        {
-          name: 'Honeycomb'
-        },
-        {
-          name: 'Donut'
-        },
-        {
-          name: 'KitKat'
-        }
-      ]
-    },
     previewItem(item) {
       alert('preview this' + item)
     },
     publishItem(item) {
-      alert('publish this' + item)
+      alert(item + 'now publisehd')
+      // this.$store.dispatch('content/publishItem', item.id)
     },
     editItem(item) {
-      alert('edit this' + item)
+      this.$store.dispatch('content/setItem', item)
+      alert('Item is selected. Proceed to edit.')
     }
   }
 }
 </script>
+
+<style scoped>
+.item-title {
+  font-size: 1em;
+}
+</style>

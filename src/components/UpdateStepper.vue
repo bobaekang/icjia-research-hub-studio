@@ -16,7 +16,7 @@
     </template>
 
     <template v-slot:stepItem2>
-      <ItemTable type="update" :contentType="contentType" />
+      <ItemTable type="update" :contentType="contentType" :publish="publish" />
     </template>
 
     <template v-slot:stepHeader3>
@@ -60,7 +60,8 @@ export default {
         this.type === 'post'
           ? this.$store.state.content.allTypes
           : this.$store.state.content.types,
-      contentType: 'apps'
+      contentType: 'apps',
+      publish: true
     }
   }
 }

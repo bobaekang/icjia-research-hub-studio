@@ -16,7 +16,7 @@
     </template>
 
     <template v-slot:stepItem2>
-      <ItemTable type="manage" :contentType="contentType" />
+      <ItemTable type="manage" :contentType="contentType" :publish="publish" />
     </template>
   </BaseStepper>
 </template>
@@ -39,7 +39,8 @@ export default {
     return {
       stepNum: 1,
       contentTypes: this.$store.state.content.types,
-      contentType: 'apps'
+      contentType: 'apps',
+      publish: false
     }
   }
 }
