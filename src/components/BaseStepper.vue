@@ -2,17 +2,24 @@
   <v-stepper v-model="stepNum" class="mb-5">
     <v-stepper-header>
       <template v-for="step in stepNumTotal">
-        <v-stepper-step :key="step" :complete="stepNum > step" :step="step">
+        <v-stepper-step
+          :key="`step${step}`"
+          :complete="stepNum > step"
+          :step="step"
+        >
           <slot :name="`stepHeader${step}`"></slot>
         </v-stepper-step>
 
-        <v-divider :key="step" v-if="step < stepNumTotal"></v-divider>
+        <v-divider
+          :key="`divider${step}`"
+          v-if="step < stepNumTotal"
+        ></v-divider>
       </template>
     </v-stepper-header>
 
     <v-stepper-items>
       <template v-for="step in stepNumTotal">
-        <v-stepper-content :key="step" :step="step">
+        <v-stepper-content :key="`content${step}`" :step="step">
           <v-layout align-center>
             <v-icon v-if="stepNum > 1" @click="stepNum--">
               navigate_before

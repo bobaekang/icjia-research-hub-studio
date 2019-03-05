@@ -25,7 +25,11 @@
 
     <template v-slot:stepItem3>
       <v-flex class="no-shadow">
-        <SubmitForm v-if="type === 'submit'" :update="true" />
+        <SubmitForm
+          v-if="type === 'submit'"
+          :contentType="contentType"
+          :update="true"
+        />
         <PostForm v-if="type === 'post'" :contentType="contentType" />
       </v-flex>
     </template>
