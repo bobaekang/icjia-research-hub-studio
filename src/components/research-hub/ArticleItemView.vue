@@ -1,85 +1,163 @@
 <template>
   <div>
-    <v-img height="500px" :src="article.splash"></v-img>
+    <SocialSharing :url="baseUrl + item.slug" :title="item.title" />
 
-    <v-container>
-      <v-layout justify-center row>
-        <v-flex xs12 sm10 md8>
-          <v-layout align-center justify-space-between row>
-            <div class="article-type font-lato">
-              <span v-for="type in article.type" :key="type">{{ type }}</span>
-              &nbsp;|&nbsp;
-              <span v-for="category in article.categories" :key="category">
-                {{ category }}
-              </span>
+    <v-img :height="splashHeight" :src="article.splash"></v-img>
+
+    <v-layout row wrap>
+      <v-flex md2 class="hidden-sm-and-down">
+        <div
+          :class="{
+            'sidebar-sticky': isTOCSticky,
+            'sidebar-md-only': isMedium,
+            'sidebar-lg-and-up': !isMedium
+          }"
+        >
+          <ArticleItemViewTOC
+            :headings="headings"
+            :activeHeading="activeHeading"
+            v-scroll="onScrollTOC"
+          />
+
+          <v-divider class="my-3"></v-divider>
+
+          <v-btn v-if="article.reportpdf" block outline class="small">
+            Get PDF
+            <v-icon>get_app</v-icon>
+          </v-btn>
+
+          <v-btn v-if="article.slidespdf" block outline class="small">
+            Get slides
+            <v-icon>get_app</v-icon>
+          </v-btn>
+        </div>
+      </v-flex>
+
+      <v-flex md10>
+        <v-layout justify-center row id="article-view">
+          <v-flex xs12 sm10 pt-4>
+            <v-layout align-center justify-space-between row>
+              <div class="article-type font-lato">
+                <span v-for="type in article.type" :key="type">{{ type }}</span>
+                &nbsp;|&nbsp;
+                <span v-for="category in article.categories" :key="category">
+                  {{ category }}
+                </span>
+              </div>
+
+              <BaseButton to="/articles">
+                back
+              </BaseButton>
+            </v-layout>
+
+            <h1 class="article-title">{{ article.title }}</h1>
+
+            <div class="article-summary font-lato my-3">
+              {{ article.summary }}
             </div>
 
-            <BaseButton to="/articles">
-              back
-            </BaseButton>
-          </v-layout>
+            <div>
+              <span
+                v-for="(author, i) in article.authors"
+                :key="i"
+                class="uppercase font-oswald"
+              >
+                <span v-if="isBeforeLastAuthor(article.authors.length, i)">
+                  &nbsp;and&nbsp;
+                </span>
 
-          <h1 class="article-title">{{ article.title }}</h1>
+                <router-link :to="getAuthorPath(author.slug)">
+                  {{ author.title }}
+                </router-link>
 
-          <div class="article-summary font-lato my-3">
-            {{ article.summary }}
-          </div>
-
-          <div>
-            <span
-              v-for="(author, i) in article.authors"
-              :key="i"
-              class="uppercase font-oswald"
-            >
-              <span v-if="isBeforeLastAuthor(article.authors.length, i)">
-                &nbsp;and&nbsp;
+                <span v-if="i + 2 < article.authors.length">,&nbsp;</span>
               </span>
+              &nbsp;|&nbsp;
+              <span class="uppercase font-oswald">
+                {{ article.date ? article.date.slice(0, 10) : '' }}
+              </span>
+              &nbsp;|&nbsp;
+              <v-icon id="print-button" @click="printArticle">fa-print</v-icon>
+            </div>
 
-              <router-link :to="getAuthorPath(author.slug)">
-                {{ author.title }}
-              </router-link>
+            <v-divider />
 
-              <span v-if="i + 2 < article.authors.length">,&nbsp;</span>
-            </span>
-            &nbsp;|&nbsp;
-            <span class="uppercase font-oswald">
-              {{ article.date.slice(0, 10) }}
-            </span>
-          </div>
+            <div
+              ref="article-body"
+              class="article-body py-3"
+              v-html="articleBody"
+              v-scroll="onScroll"
+            />
 
-          <v-divider />
-
-          <div class="article-body py-3" v-html="compliedBody" />
-
-          <div style="height: 100px"></div>
-        </v-flex>
-      </v-layout>
-    </v-container>
+            <div style="height: 100px"></div>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
 <script>
+import ArticleItemViewTOC from '@/components/research-hub/ArticleItemViewTOC'
 import BaseButton from '@/components/research-hub/BaseButton'
+import SocialSharing from '@/components/research-hub/SocialSharing'
 
-const md = require('markdown-it')({
+const mdOpts = {
   html: true,
   linkify: true,
   typographer: true
-}).use(require('markdown-it-footnote'))
+}
+
+const mdAnchorOpts = {
+  level: 2,
+  slugify: s =>
+    String(s)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-zA-Z0-9-_]/g, '')
+}
+
+const md = require('markdown-it')(mdOpts)
+  .use(require('markdown-it-footnote'))
+  .use(require('markdown-it-anchor'), mdAnchorOpts)
 
 export default {
   components: {
-    BaseButton
+    ArticleItemViewTOC,
+    BaseButton,
+    SocialSharing
   },
   props: {
     item: Object
+  },
+  data() {
+    return {
+      activeHeading: 'introduction',
+      articleBody: null,
+      baseUrl: 'localhost:8080/',
+      headings: null,
+      isTOCSticky: false,
+      splashHeight: 500,
+      viewTitleHeight: 60 + 80
+    }
   },
   computed: {
     article() {
       return this.item
     },
-    compliedBody() {
-      return md.render(this.item.markdown)
+    isMedium() {
+      return this.$vuetify.breakpoint.name === 'md'
+    }
+  },
+  watch: {
+    article() {
+      this.articleBody = md.render(this.item.markdown)
+    },
+    articleBody() {
+      this.$nextTick(() => {
+        this.headings = this.$refs['article-body'].querySelectorAll('h2')
+      })
     }
   },
   methods: {
@@ -88,6 +166,50 @@ export default {
     },
     getAuthorPath(slug) {
       return `/authors/${slug}`
+    },
+    onScroll(e) {
+      if (typeof window === 'undefined') return
+
+      const top = window.pageYOffset || e.target.scrollTop || 0
+
+      if (top === 0) {
+        this.activeHeading = this.headings[0].id
+      } else if (this.headings) {
+        this.headings.forEach(heading => {
+          let elHeading = this.$el.querySelector(`#${heading.id}`)
+          let rect = elHeading.getBoundingClientRect()
+          if (rect.top < 91 && this.activeHeading !== heading.id) {
+            this.activeHeading = heading.id
+          }
+        })
+      }
+    },
+    onScrollTOC(e) {
+      if (typeof window === 'undefined') return
+      const top = window.pageYOffset || e.target.scrollTop || 0
+      const threshold = this.splashHeight + this.viewTitleHeight
+
+      this.isTOCSticky = top > threshold
+    },
+    printArticle() {
+      const win = window.open('', '')
+      const html = document.getElementById('article-view').innerHTML
+      let style = ''
+
+      document
+        .querySelectorAll('link[rel="stylesheet"], style')
+        .forEach(node => {
+          console.log(node)
+          style += node.outerHTML
+        })
+
+      win.document.write(
+        `<!DOCTYPE html><html><head>${style}</head><body>${html}</body></html>`
+      )
+      win.document.close()
+      win.focus()
+      win.print()
+      win.close()
     }
   }
 }
@@ -272,5 +394,38 @@ export default {
 
 .article-body >>> blockquote > :last-child {
   margin-bottom: 0;
+}
+
+/* others */
+#print-button:hover {
+  color: #1976d2;
+}
+
+.sidebar-md-only {
+  padding-top: 90px !important;
+  padding-left: 45px !important;
+  max-width: 150px;
+}
+
+.sidebar-lg-and-up {
+  padding-top: 90px !important;
+  padding-left: 90px !important;
+  max-width: 300px;
+}
+
+.sidebar-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.v-btn.v-btn--outline {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+@media screen and (max-width: 600px) {
+  #article-view {
+    padding-left: 32px;
+  }
 }
 </style>

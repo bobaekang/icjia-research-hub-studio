@@ -20,7 +20,7 @@
         <div>
           <v-container class="py-2">
             <v-layout row wrap>
-              <BaseItemTitleDisplay :to="getArticlePath(article.slug)">
+              <BaseItemTitleDisplay :to="articlePath">
                 {{ article.title }}
               </BaseItemTitleDisplay>
 
@@ -47,14 +47,14 @@
             <BaseItemPropDisplay name="Authors">
               <span
                 v-for="(author, i) in article.authors"
-                :key="author"
+                :key="author.title"
                 class="uppercase"
               >
                 <span v-if="isBeforeLastAuthor(article.authors.length, i)">
                   &nbsp;and&nbsp;
                 </span>
 
-                <router-link :to="getAuthorPath(author.slug)">
+                <router-link :to="`/authors/${author.slug}`">
                   {{ author.title }}
                 </router-link>
 
@@ -70,25 +70,22 @@
           <v-spacer></v-spacer>
           <v-btn
             v-if="article.summary"
-            @click="article.showSummary = !article.showSummary"
+            @click="showSummary = !showSummary"
             flat
-            >summary
+          >
+            summary
             <v-icon>
-              {{
-                article.showSummary
-                  ? 'keyboard_arrow_down'
-                  : 'keyboard_arrow_up'
-              }}
+              {{ showSummary ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
             </v-icon>
           </v-btn>
 
-          <BaseButton :to="getArticlePath(article.slug)" icon="more_horiz">
+          <BaseButton :to="articlePath" icon="more_horiz">
             more
           </BaseButton>
         </v-card-actions>
 
         <v-slide-y-transition>
-          <v-card-text v-if="article.showSummary">
+          <v-card-text v-if="showSummary">
             {{ article.summary }}
           </v-card-text>
         </v-slide-y-transition>
@@ -113,20 +110,22 @@ export default {
   props: {
     item: Object
   },
+  data() {
+    return {
+      showSummary: false
+    }
+  },
   computed: {
     article() {
       return this.item
+    },
+    articlePath() {
+      return `/articles/${this.article.slug}`
     }
   },
   methods: {
     isBeforeLastAuthor(length, i) {
       return length > 1 && length === i + 1
-    },
-    getArticlePath(slug) {
-      return `/articles/${slug}`
-    },
-    getAuthorPath(slug) {
-      return `/authors/${slug}`
     }
   }
 }
