@@ -83,11 +83,7 @@
         Save
       </v-btn>
 
-      <PreviewDialog
-        v-if="!isItemEmpty"
-        :contentType="contentType"
-        :item="item"
-      />
+      <PreviewDialog :contentType="contentType" :icon="false" />
     </v-form>
   </BaseForm>
 </template>

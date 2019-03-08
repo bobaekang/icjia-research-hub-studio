@@ -45,7 +45,7 @@
         Save
       </v-btn>
 
-      <PreviewDialog :contentType="contentType" :item="item" />
+      <PreviewDialog :contentType="contentType" :icon="false" />
     </v-form>
   </BaseForm>
 </template>

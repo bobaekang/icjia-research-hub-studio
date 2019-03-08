@@ -31,7 +31,7 @@ export default {
         url: 'https://httpbin.org/post',
         thumbnailWidth: 150,
         maxFilesize: 0.5,
-        acceptedFiles: '.jpg, .jepg, .png',
+        acceptedFiles: '.jpg, .jpeg, .png',
         addRemoveLinks: true,
         autoProcessQueue: false,
         accept(file, done) {
@@ -52,7 +52,7 @@ export default {
     vfileAdded(file) {
       this.files.push(file)
       this.fileAdded = true
-        this.$refs.ImgDropzone.$el.querySelector('.dz-progress').remove()
+      this.$refs.ImgDropzone.$el.querySelector('.dz-progress').remove()
     },
     verror(file) {
       this.files = this.files.filter((value, index, arr) => {

@@ -21,14 +21,17 @@
       :search="search"
     >
       <template slot="items" slot-scope="props">
-        <td class="item-title">
-          {{ props.item.title }}
-        </td>
+        <td>{{ props.item.title }}</td>
 
         <td class="justify-end layout px-3">
-          <v-icon class="mr-2" @click="previewItem(props.item)">
-            visibility
-          </v-icon>
+          <PreviewDialog :contentType="contentType" :icon="true">
+            <v-icon
+              style="color:rgba(0,0,0,.54)"
+              @click="previewItem(props.item)"
+            >
+              visibility
+            </v-icon>
+          </PreviewDialog>
           <v-icon
             v-if="type === 'manage'"
             class="mr-2"
@@ -50,7 +53,12 @@
 </template>
 
 <script>
+import PreviewDialog from '@/components/PreviewDialog'
+
 export default {
+  components: {
+    PreviewDialog
+  },
   props: {
     contentType: String,
     publish: Boolean,
@@ -97,7 +105,12 @@ export default {
   },
   methods: {
     previewItem(item) {
-      alert('preview this' + item)
+      const payload = {
+        contentType: this.contentType,
+        id: item._id
+      }
+      this.$store.dispatch('content/fetchItem', payload)
+      console.log(item)
     },
     publishItem(item) {
       alert(item + 'now publisehd')
@@ -112,7 +125,7 @@ export default {
 </script>
 
 <style scoped>
-.item-title {
+.item-table >>> td {
   font-size: 1em;
 }
 </style>

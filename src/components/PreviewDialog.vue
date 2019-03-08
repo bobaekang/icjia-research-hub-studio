@@ -5,8 +5,8 @@
     hide-overlay
     transition="dialog-bottom-transition"
   >
-    <v-btn outline slot="activator">
-      Preview
+    <v-btn slot="activator" :outline="!icon" :icon="icon">
+      <slot>Preview</slot>
     </v-btn>
 
     <v-card>
@@ -25,18 +25,18 @@
       </v-toolbar>
 
       <template v-if="contentType == 'apps'">
-        <AppItem v-if="!view" />
-        <AppItemView v-if="view" />
+        <AppItem v-if="!view" :item="item" />
+        <AppItemView v-if="view" :item="item" />
       </template>
 
       <template :v-if="contentType == 'articles'">
-        <ArticleItem v-if="!view" />
-        <ArticleItemView v-if="view" />
+        <ArticleItem v-if="!view" :item="item"/>
+        <ArticleItemView v-if="view" :item="item"/>
       </template>
 
       <template :v-if="contentType == 'datasets'">
-        <DatasetItem v-if="!view" />
-        <DatasetItemView v-if="view" />
+        <DatasetItem v-if="!view" :item="item" />
+        <DatasetItemView v-if="view" :item="item" />
       </template>
     </v-card>
   </v-dialog>
@@ -61,12 +61,17 @@ export default {
   },
   props: {
     contentType: String,
-    item: Object
+    icon: Boolean
   },
   data() {
     return {
       dialog: false,
       view: false
+    }
+  },
+  computed: {
+    item() {
+      return this.$store.state.content.item
     }
   }
 }
