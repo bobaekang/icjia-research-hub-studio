@@ -22,6 +22,22 @@ export const actions = {
   setItem({ commit }, item) {
     commit('SET_ITEM', item)
   },
+  async fetchItem({ commit }, { contentType, id }) {
+    let res
+    let item
+
+    if (contentType === 'apps') {
+      res = await client.getApp(id)
+      item = res.data.data.app
+    } else if (contentType === 'articles') {
+      res = await client.getArticle(id)
+      item = res.data.data.article
+    } else if (contentType === 'datasets') {
+      res = await client.getDataset(id)
+      item = res.data.data.dataset
+    }
+    commit('SET_ITEM', item)
+  },
   async fetchItemList({ commit }, { contentType, publish }) {
     let res
     let itemlist
