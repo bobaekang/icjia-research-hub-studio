@@ -4,6 +4,7 @@ export const namespaced = true
 
 export const state = {
   item: {},
+  itemId: '',
   itemlist: [],
   types: ['apps', 'articles', 'datasets'],
   allTypes: ['apps', 'authors', 'articles', 'datasets']
@@ -13,6 +14,9 @@ export const mutations = {
   SET_ITEM(state, payload) {
     state.item = payload
   },
+  SET_ITEM_ID(state, payload) {
+    state.itemId = payload
+  },
   FETCH_ITEM_LIST(state, payload) {
     state.itemlist = payload
   }
@@ -21,6 +25,9 @@ export const mutations = {
 export const actions = {
   setItem({ commit }, item) {
     commit('SET_ITEM', item)
+  },
+  setItemId({ commit }, id) {
+    commit('SET_ITEM_ID', id)
   },
 
   async fetchItem({ commit }, { contentType, id }) {
@@ -39,6 +46,7 @@ export const actions = {
     }
 
     commit('SET_ITEM', item)
+    commit('SET_ITEM_ID', id)
 
     return res
   },
