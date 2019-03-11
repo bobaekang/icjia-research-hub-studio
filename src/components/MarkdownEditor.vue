@@ -15,7 +15,7 @@
         id="editor"
         ref="myEditor"
         height="400"
-        v-model="myInput"
+        v-model="markdown"
         box
         @scroll="syncScrollEditor"
       >
@@ -56,11 +56,11 @@ function syncScroll(from, to) {
 
 export default {
   props: {
-    myInput: String
+    markdown: String
   },
   computed: {
     compiledMarkdown() {
-      return md.render(this.myInput)
+      return md.render(this.markdown)
     },
     editor() {
       return this.$refs.myEditor.$el.querySelector('#editor')

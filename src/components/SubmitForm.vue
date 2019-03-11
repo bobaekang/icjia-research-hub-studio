@@ -49,18 +49,17 @@
 
         <v-flex v-if="contentType !== 'datasets'" class="px-3 pt-3" xs12>
           <p style="color:rgba(0,0,0,.54);">Splash image</p>
-          <FileReader class="pb-2" fileType="img" />
+          <ImgDropzone :splash="true" />
         </v-flex>
 
         <template v-if="contentType === 'articles'">
           <v-flex class="px-3 pt-3" xs12>
             <p class="pt-2 input-title">Article body</p>
-            <MarkdownEditor :myInput="this.myInput" />
+            <MarkdownEditor :markdown="this.markdown" />
           </v-flex>
 
           <v-flex class="px-3 pb-2" xs12>
             <p class="input-title">Article images</p>
-
             <ImgDropzone />
           </v-flex>
         </template>
@@ -70,7 +69,7 @@
           <FileReader class="pb-2" fileType="csv" />
         </v-flex>
 
-        <v-flex v-if="contentType !== 'datasets'" class="px-3" xs12 md10 lg6>
+        <v-flex v-if="contentType === 'articles'" class="px-3" xs12 md10 lg6>
           <v-textarea v-model="summary" label="Summary" />
         </v-flex>
 
@@ -117,8 +116,7 @@ export default {
       categories: [],
       tags: '',
       description: '',
-      imgNum: 0,
-      myInput: '',
+      markdown: '',
       summary: '',
       url: 'https://',
       categoryOptions: [
@@ -144,14 +142,13 @@ export default {
         this.title = content.title
         this.slug = content.slug
         this.categories = content.categories
-        this.tags = content.tags
+        this.tags = content.tags.join(', ')
 
         if (this.contentType === 'apps') {
-          this.url = content.url
-          this.summary = content.summary
+          this.url = content.url ? content.url : 'https://'
           this.description = content.description
         } else if (this.contentType === 'articles') {
-          this.myInput = content.body
+          this.markdown = content.body
           this.summary = content.summary
         } else if (this.contentType === 'datasets') {
           this.description = content.description
@@ -174,6 +171,15 @@ export default {
       item.date = this.date
       item.categories = this.categories
       item.tags = this.tags ? this.tags.split(',').map(el => el.trim()) : []
+
+      if (this.contentType === 'apps') {
+        item.url = this.url
+        item.description = this.description
+      } else if (this.contentType === 'articles') {
+        console.log('articles')
+      } else if (this.contentType === 'datasets') {
+        console.log('datasets')
+      }
 
       this.$store.dispatch('content/setItem', item)
 

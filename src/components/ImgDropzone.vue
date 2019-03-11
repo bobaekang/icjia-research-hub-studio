@@ -12,7 +12,11 @@
       :options="dropzoneOptions"
       :duplicateCheck="true"
     >
-      Drop images (JPEG/GIF/PNG files) here to upload
+      {{
+        splash
+          ? 'Drop a splash image (JPEG or PNG only) here to upload'
+          : 'Drop images (JPEG or PNG only) here to upload'
+      }}
     </BaseDropzone>
   </div>
 </template>
@@ -24,6 +28,12 @@ export default {
   components: {
     BaseDropzone
   },
+  props: {
+    splash: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       files: [],
@@ -31,6 +41,7 @@ export default {
         url: 'https://httpbin.org/post',
         thumbnailWidth: 150,
         maxFilesize: 0.5,
+        maxFiles: this.splash ? 1 : null,
         acceptedFiles: '.jpg, .jpeg, .png',
         addRemoveLinks: true,
         autoProcessQueue: false,
