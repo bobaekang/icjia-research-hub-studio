@@ -11,7 +11,7 @@
 
     <v-card>
       <v-toolbar class="toolbar">
-        <v-btn icon @click="dialog = false">
+        <v-btn icon @click="closePreview">
           <v-icon>close</v-icon>
         </v-btn>
 
@@ -24,40 +24,37 @@
         </v-toolbar-title>
       </v-toolbar>
 
-      <template v-if="contentType == 'apps'">
-        <AppItem v-if="!view" :item="item" />
-        <AppItemView v-if="view" :item="item" />
-      </template>
+      <PreviewDialogApp
+        v-if="contentType == 'apps'"
+        :item="item"
+        :view="view"
+      />
 
-      <template :v-if="contentType == 'articles'">
-        <ArticleItem v-if="!view" :item="item"/>
-        <ArticleItemView v-if="view" :item="item"/>
-      </template>
+      <PreviewDialogArticle
+        v-if="contentType == 'articles'"
+        :item="item"
+        :view="view"
+      />
 
-      <template :v-if="contentType == 'datasets'">
-        <DatasetItem v-if="!view" :item="item" />
-        <DatasetItemView v-if="view" :item="item" />
-      </template>
+      <PreviewDialogDataset
+        v-if="contentType == 'datasets'"
+        :item="item"
+        :view="view"
+      />
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import AppItem from '@/components/research-hub/AppItem'
-import AppItemView from '@/components/research-hub/AppItemView'
-import ArticleItem from '@/components/research-hub/ArticleItem'
-import ArticleItemView from '@/components/research-hub/ArticleItemView'
-import DatasetItem from '@/components/research-hub/DatasetItem'
-import DatasetItemView from '@/components/research-hub/DatasetItemView'
+import PreviewDialogApp from '@/components/PreviewDialogApp'
+import PreviewDialogArticle from '@/components/PreviewDialogArticle'
+import PreviewDialogDataset from '@/components/PreviewDialogDataset'
 
 export default {
   components: {
-    AppItem,
-    AppItemView,
-    ArticleItem,
-    ArticleItemView,
-    DatasetItem,
-    DatasetItemView
+    PreviewDialogApp,
+    PreviewDialogArticle,
+    PreviewDialogDataset
   },
   props: {
     contentType: String,
@@ -72,6 +69,13 @@ export default {
   computed: {
     item() {
       return this.$store.state.content.item
+    }
+  },
+  methods: {
+    closePreview() {
+      this.dialog = false
+      this.view = false
+      this.$store.dispatch('content/setItem', {})
     }
   }
 }
