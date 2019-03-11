@@ -16,6 +16,15 @@
     </template>
 
     <template v-slot:stepItem2>
+      <v-btn
+        v-if="type === 'post' && contentType !== 'authors'"
+        outline
+        color="primary"
+        @click="publish = !publish"
+      >
+        {{ publish ? 'published' : 'submitted' }}
+      </v-btn>
+
       <ItemTable type="update" :contentType="contentType" :publish="publish" />
     </template>
 
@@ -30,6 +39,7 @@
           :contentType="contentType"
           :update="true"
         />
+
         <PostForm v-if="type === 'post'" :contentType="contentType" />
       </v-flex>
     </template>
@@ -61,7 +71,12 @@ export default {
           ? this.$store.state.content.allTypes
           : this.$store.state.content.types,
       contentType: 'apps',
-      publish: true
+      publish: false
+    }
+  },
+  watch: {
+    contentType() {
+      this.publish = false
     }
   }
 }

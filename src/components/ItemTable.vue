@@ -32,13 +32,20 @@
               visibility
             </v-icon>
           </PreviewDialog>
-          <v-icon
-            v-if="type === 'manage'"
-            class="mr-2"
-            @click="publishItem(props.item)"
-          >
-            publish
-          </v-icon>
+
+          <template v-if="type === 'manage'">
+            <v-icon
+              v-if="publish"
+              class="mr-2"
+              @click="unpublishItem(props.item)"
+            >
+              close
+            </v-icon>
+            <v-icon v-else class="mr-2" @click="publishItem(props.item)">
+              check
+            </v-icon>
+          </template>
+
           <v-icon v-if="type === 'update'" @click="editItem(props.item)">
             edit
           </v-icon>
@@ -89,32 +96,63 @@ export default {
   },
   watch: {
     contentType() {
-      const payload = {
+      this.$store.dispatch('content/fetchItemList', {
         contentType: this.contentType,
         publish: this.publish
-      }
-      this.$store.dispatch('content/fetchItemList', payload)
+      })
+    },
+    publish() {
+      this.$store.dispatch('content/fetchItemList', {
+        contentType: this.contentType,
+        publish: this.publish
+      })
     }
   },
   created() {
-    const payload = {
+    this.$store.dispatch('content/fetchItemList', {
       contentType: this.contentType,
       publish: this.publish
-    }
-    this.$store.dispatch('content/fetchItemList', payload)
+    })
   },
   methods: {
-    previewItem(item) {
-      const payload = {
+    async previewItem(item) {
+      await this.$store.dispatch('content/fetchItem', {
         contentType: this.contentType,
         id: item._id
-      }
-      this.$store.dispatch('content/fetchItem', payload)
+      })
       console.log(item)
     },
-    publishItem(item) {
-      alert(item + 'now publisehd')
-      // this.$store.dispatch('content/publishItem', item.id)
+    async publishItem(item) {
+      const res = await this.$store.dispatch('content/publishItem', {
+        contentType: this.contentType,
+        id: item._id
+      })
+
+      if (res.status === 200) {
+        alert('Now publisehd: ' + item.title)
+        this.$store.dispatch('content/fetchItemList', {
+          contentType: this.contentType,
+          publish: this.publish
+        })
+      } else {
+        alert('Failed to publish: ' + item.title)
+      }
+    },
+    async unpublishItem(item) {
+      const res = await this.$store.dispatch('content/unpublishItem', {
+        contentType: this.contentType,
+        id: item._id
+      })
+
+      if (res.status === 200) {
+        alert('Now unpublisehd: ' + item.title)
+        this.$store.dispatch('content/fetchItemList', {
+          contentType: this.contentType,
+          publish: this.publish
+        })
+      } else {
+        alert('Failed to unpublish: ' + item.title)
+      }
     },
     editItem(item) {
       this.$store.dispatch('content/setItem', item)

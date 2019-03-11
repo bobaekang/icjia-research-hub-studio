@@ -55,6 +55,32 @@ export default {
       .catch(err => console.log(err))
   },
 
+  async updateItemPublishStatus(contentType, id, publish) {
+    const type = contentType.slice(0, contentType.length - 1)
+    const updateType = `update${type[0].toUpperCase()}${type.slice(1)}`
+
+    return await client
+      .post('/graphql', {
+        query: `mutation {
+          ${updateType}(input: {
+            where: {
+              id: "${id}"
+            },
+            data: {
+              publish: ${publish.toString()}
+            }
+          }) {
+            ${type} {
+              publish
+            }
+          }
+        }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  },
+
   // apps
   async getApp(id) {
     return await client

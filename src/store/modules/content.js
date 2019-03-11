@@ -22,6 +22,7 @@ export const actions = {
   setItem({ commit }, item) {
     commit('SET_ITEM', item)
   },
+
   async fetchItem({ commit }, { contentType, id }) {
     let res
     let item
@@ -46,7 +47,7 @@ export const actions = {
       res = await client.getAppList(publish)
       itemlist = res.data.data.apps
     } else if (contentType === 'authors') {
-      res = await client.getAuthorsList()
+      res = await client.getAuthorList()
       itemlist = res.data.data.authors
     } else if (contentType === 'articles') {
       res = await client.getArticleList(publish)
@@ -57,5 +58,12 @@ export const actions = {
     }
 
     commit('FETCH_ITEM_LIST', itemlist)
+  },
+
+  async publishItem({ commit }, { contentType, id }) {
+    return await client.updateItemPublishStatus(contentType, id, true)
+  },
+  async unpublishItem({ commit }, { contentType, id }) {
+    return await client.updateItemPublishStatus(contentType, id, false)
   }
 }

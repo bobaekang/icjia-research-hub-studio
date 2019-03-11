@@ -16,6 +16,10 @@
     </template>
 
     <template v-slot:stepItem2>
+      <v-btn outline color="primary" @click="publish = !publish">
+        {{ publish ? 'published' : 'submitted' }}
+      </v-btn>
+
       <ItemTable type="manage" :contentType="contentType" :publish="publish" />
     </template>
   </BaseStepper>
@@ -37,10 +41,14 @@ export default {
   },
   data() {
     return {
-      stepNum: 1,
       contentTypes: this.$store.state.content.types,
       contentType: 'apps',
       publish: false
+    }
+  },
+  watch: {
+    contentType() {
+      this.publish = false
     }
   }
 }
