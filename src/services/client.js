@@ -155,7 +155,7 @@ export default {
     return await client
       .post('graphql', {
         query: `{
-        dataset (id: ${id}) {
+        dataset (id: "${id}") {
           title
           slug
           date
@@ -168,7 +168,11 @@ export default {
           variables
           description
           notes
-          datacsv,
+          datacsv
+          datafile {
+            name
+            url
+          }
           apps (sort: "date:desc", where: { publish: false }) {
             title
             slug
