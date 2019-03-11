@@ -60,7 +60,11 @@ a {
   text-transform: uppercase;
 }
 
-.sans-serif {
+.font-oswald {
+  font-family: 'Oswald', sans-serif;
+}
+
+.font-lato {
   font-family: 'Lato', sans-serif;
 }
 
@@ -74,5 +78,9 @@ a {
 
 .italic {
   font-style: italic;
+}
+
+.uppercase {
+  text-transform: uppercase;
 }
 </style>
