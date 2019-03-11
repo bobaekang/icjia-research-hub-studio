@@ -1,10 +1,15 @@
 <template>
-  <BaseForm :contentType="contentType" formType="submit">
+  <BaseForm
+    :contentType="contentType"
+    formType="submit"
+    @form-main="onMain"
+    @form-reset="onReset"
+  >
     <v-form>
       <v-layout row wrap>
         <v-flex class="px-3" xs12 md6 lg4>
           <v-text-field
-            v-model="title"
+            v-model="item.title"
             label="Title"
             @keyup="titleToSlug"
             counter
@@ -12,7 +17,12 @@
         </v-flex>
 
         <v-flex class="px-3" xs12 md6 lg4>
-          <v-text-field v-model="slug" label="Slug" counter />
+          <v-text-field
+            :disabled="update"
+            v-model="item.slug"
+            label="Slug"
+            counter
+          />
         </v-flex>
       </v-layout>
 
@@ -26,7 +36,7 @@
         <v-flex class="px-3" xs12 md6 lg4>
           <v-select
             :items="categoryOptions"
-            v-model="categories"
+            v-model="item.categories"
             label="Categories"
             hint="Select categories"
             persistent-hint
@@ -36,7 +46,7 @@
 
         <v-flex class="px-3" xs12 md6 lg4>
           <v-text-field
-            v-model="tags"
+            v-model="item.tags"
             label="Tags"
             hint="Separate tags with commas"
             persistent-hint
@@ -44,7 +54,7 @@
         </v-flex>
 
         <v-flex v-if="contentType === 'apps'" class="px-3" xs12 md6 lg4>
-          <v-text-field v-model="url" label="URL" />
+          <v-text-field v-model="item.url" label="URL" />
         </v-flex>
 
         <v-flex v-if="contentType !== 'datasets'" class="px-3 pt-3" xs12>
@@ -55,7 +65,7 @@
         <template v-if="contentType === 'articles'">
           <v-flex class="px-3 pt-3" xs12>
             <p class="pt-2 input-title">Article body</p>
-            <MarkdownEditor :markdown="this.markdown" />
+            <MarkdownEditor :markdown="this.item.markdown" />
           </v-flex>
 
           <v-flex class="px-3 pb-2" xs12>
@@ -70,11 +80,11 @@
         </v-flex>
 
         <v-flex v-if="contentType === 'articles'" class="px-3" xs12 md10 lg6>
-          <v-textarea v-model="summary" label="Summary" />
+          <v-textarea v-model="item.summary" label="Summary" />
         </v-flex>
 
         <v-flex v-if="contentType !== 'articles'" class="px-3" xs12 md10 lg6>
-          <v-textarea v-model="description" label="Description" />
+          <v-textarea v-model="item.description" label="Description" />
         </v-flex>
       </v-layout>
 
@@ -88,6 +98,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import BaseForm from '@/components/BaseForm'
 import DatePicker from '@/components/DatePicker'
 import ImgDropzone from '@/components/ImgDropzone'
@@ -110,15 +121,18 @@ export default {
   },
   data() {
     return {
-      title: '',
-      slug: '',
-      date: '',
-      categories: [],
-      tags: '',
-      description: '',
-      markdown: '',
-      summary: '',
-      url: 'https://',
+      id: '',
+      item: {
+        title: '',
+        slug: '',
+        date: '',
+        categories: [],
+        tags: '',
+        description: null,
+        markdown: null,
+        summary: null,
+        url: null
+      },
       categoryOptions: [
         'corrections',
         'courts',
@@ -129,29 +143,31 @@ export default {
     }
   },
   computed: {
-    isItemEmpty() {
-      const item = this.$store.state.content.item
-      return Object.entries(item).length === 0
-    }
+    ...mapState('content', {
+      content: 'item',
+      contentId: 'itemId'
+    })
   },
-  mounted() {
-    if (this.update) {
-      const content = this.$store.state.content.item
+  watch: {
+    content(newContent, oldContent) {
+      if (this.update) {
+        const content = newContent
 
-      if (Object.entries(content).length !== 0) {
-        this.title = content.title
-        this.slug = content.slug
-        this.categories = content.categories
-        this.tags = content.tags.join(', ')
+        if (Object.entries(content).length !== 0) {
+          this.item.title = content.title
+          this.item.slug = content.slug
+          this.item.categories = content.categories
+          this.item.tags = content.tags
 
-        if (this.contentType === 'apps') {
-          this.url = content.url ? content.url : 'https://'
-          this.description = content.description
-        } else if (this.contentType === 'articles') {
-          this.markdown = content.body
-          this.summary = content.summary
-        } else if (this.contentType === 'datasets') {
-          this.description = content.description
+          if (this.contentType === 'apps') {
+            this.item.url = content.url ? content.url : 'https://'
+            this.item.description = content.description
+          } else if (this.contentType === 'articles') {
+            this.item.markdown = content.body
+            this.item.summary = content.summary
+          } else if (this.contentType === 'datasets') {
+            this.item.description = content.description
+          }
         }
       }
     }
@@ -164,26 +180,60 @@ export default {
         .toLowerCase()
     },
     onSaveChanges() {
-      let item = {}
+      const tags = this.item.tags
+        ? this.item.tags.split(',').map(el => el.trim())
+        : []
 
-      item.title = this.title
-      item.slug = this.slug
-      item.date = this.date
-      item.categories = this.categories
-      item.tags = this.tags ? this.tags.split(',').map(el => el.trim()) : []
-
-      if (this.contentType === 'apps') {
-        item.url = this.url
-        item.description = this.description
-      } else if (this.contentType === 'articles') {
-        console.log('articles')
-      } else if (this.contentType === 'datasets') {
-        console.log('datasets')
-      }
+      let item = this.item
+      item.tags = tags
 
       this.$store.dispatch('content/setItem', item)
 
       alert('changes saved')
+    },
+    onReset() {
+      if (this.update) {
+        this.$store.dispatch('content/fetchItem', {
+          contentType: this.contentType,
+          id: this.contentId
+        })
+      } else {
+        this.item = {
+          title: '',
+          slug: '',
+          date: '',
+          categories: [],
+          tags: '',
+          description: null,
+          markdown: null,
+          summary: null,
+          url: null
+        }
+      }
+    },
+    onMain() {
+      if (this.update) {
+        console.log('main event caught: update')
+      } else {
+        console.log('main event caught: new')
+        this.title = ''
+        this.slug = ''
+        this.date = ''
+        this.categories = []
+        this.tags = ''
+
+        if (this.contentType === 'apps') {
+          this.url = 'https://'
+          this.description = ''
+        } else if (this.contentType === 'articles') {
+          // this.markdown = ''
+          // this.summary = ''
+          console.log('articles')
+        } else if (this.contentType === 'datasets') {
+          // this.description = ''
+          console.log('datasets')
+        }
+      }
     }
   }
 }

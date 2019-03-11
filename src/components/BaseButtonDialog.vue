@@ -21,7 +21,7 @@
           back
         </v-btn>
 
-        <v-btn :color="buttonType" flat @click="formAction">
+        <v-btn :color="buttonType" flat @click="onClick">
           {{ buttonName }}
         </v-btn>
       </v-card-actions>
@@ -33,8 +33,7 @@
 export default {
   props: {
     buttonName: String,
-    buttonType: String,
-    buttonAction: Function
+    buttonType: String
   },
   data() {
     return {
@@ -42,11 +41,8 @@ export default {
     }
   },
   methods: {
-    formAction() {
-      if (this.buttonType === 'primary') {
-        this.buttonAction(this.buttonName)
-      }
-      this.buttonAction()
+    onClick() {
+      this.$emit('base-event')
       this.dialog = false
     }
   }

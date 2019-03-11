@@ -7,9 +7,9 @@
         <v-spacer></v-spacer>
 
         <BaseButtonDialog
-          :buttonAction="resetAction"
           buttonName="reset"
           buttonType="error"
+          @base-event="$emit('form-reset')"
         >
           <template v-slot:title>
             <h3>Are you sure?</h3>
@@ -21,9 +21,9 @@
         </BaseButtonDialog>
 
         <BaseButtonDialog
-          :buttonAction="formAction"
           :buttonName="formType"
           buttonType="primary"
+          @base-event="$emit('form-main')"
         >
           <template v-slot:title>
             <h3>Ready to {{ formType }}?</h3>
@@ -63,18 +63,6 @@ export default {
   data() {
     return {
       stepNum: 1
-    }
-  },
-  methods: {
-    formAction(formType) {
-      if (formType === 'submit') {
-        alert('submit')
-      } else if (formType === 'post') {
-        alert('post')
-      }
-    },
-    resetAction() {
-      alert('reset')
     }
   }
 }
