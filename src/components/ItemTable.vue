@@ -25,30 +25,24 @@
 
         <td class="justify-end layout px-3">
           <PreviewDialog :contentType="contentType" :icon="true">
-            <v-icon
-              style="color:rgba(0,0,0,.54)"
-              @click="previewItem(props.item)"
-            >
+            <v-icon class="greyicon" @click="previewItem(props.item)">
               visibility
             </v-icon>
           </PreviewDialog>
 
           <template v-if="type === 'manage'">
-            <v-icon
-              v-if="publish"
-              class="mr-2"
-              @click="unpublishItem(props.item)"
-            >
-              close
-            </v-icon>
-            <v-icon v-else class="mr-2" @click="publishItem(props.item)">
-              check
-            </v-icon>
+            <v-btn v-if="publish" icon @click="unpublishItem(props.item)">
+              <v-icon class="greyicon">close</v-icon>
+            </v-btn>
+
+            <v-btn v-else icon @click="publishItem(props.item)">
+              <v-icon class="greyicon">check</v-icon>
+            </v-btn>
           </template>
 
-          <v-icon v-if="type === 'update'" @click="editItem(props.item)">
-            edit
-          </v-icon>
+          <v-btn v-if="type === 'update'" icon @click="editItem(props.item)">
+            <v-icon class="greyicon">edit</v-icon>
+          </v-btn>
         </td>
       </template>
 
@@ -120,7 +114,6 @@ export default {
         contentType: this.contentType,
         id: item._id
       })
-      console.log(item)
     },
     async publishItem(item) {
       const res = await this.$store.dispatch('content/publishItem', {
@@ -154,9 +147,17 @@ export default {
         alert('Failed to unpublish: ' + item.title)
       }
     },
-    editItem(item) {
-      this.$store.dispatch('content/setItem', item)
-      alert('Item is selected. Proceed to edit.')
+    async editItem(item) {
+      const res = await this.$store.dispatch('content/fetchItem', {
+        contentType: this.contentType,
+        id: item._id
+      })
+
+      if (res.status === 200) {
+        alert('Item is selected. Proceed to edit.')
+      } else {
+        alert('Failed to select: ' + item.title)
+      }
     }
   }
 }
@@ -165,5 +166,9 @@ export default {
 <style scoped>
 .item-table >>> td {
   font-size: 1em;
+}
+
+.greyicon {
+  color: rgba(0, 0, 0, 0.54) !important;
 }
 </style>
