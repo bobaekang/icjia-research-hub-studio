@@ -37,7 +37,10 @@ export const actions = {
       res = await client.getDataset(id)
       item = res.data.data.dataset
     }
+
     commit('SET_ITEM', item)
+
+    return res
   },
   async fetchItemList({ commit }, { contentType, publish }) {
     let res
