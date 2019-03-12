@@ -1,9 +1,10 @@
 <template>
   <BaseViewLayout>
-    <h1>Manage submissions</h1>
+    <h1>Manage contents</h1>
 
     <p class="py-2">
-      Review and publish submissions
+      Review and publish submissions or take down published items to make
+      changes.
     </p>
 
     <ManageStepper />

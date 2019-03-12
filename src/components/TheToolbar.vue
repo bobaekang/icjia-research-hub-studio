@@ -8,6 +8,7 @@
       <router-link to="/">
         <v-toolbar-title>
           {{ titleUpper }}
+          <span class="thin">Studio</span>
         </v-toolbar-title>
       </router-link>
 
@@ -64,7 +65,7 @@ export default {
   data() {
     return {
       height: 75,
-      title: 'ICJIA Research Hub CMS',
+      title: 'Research Hub',
       logo: {
         url:
           'http://www.icjia.state.il.us/_themes/icjia/img/logo-icjia-small-blue-3.png',
@@ -125,5 +126,9 @@ img {
   font-size: 0.8em;
   text-transform: uppercase;
   text-align: center;
+}
+
+.thin {
+  font-weight: 300;
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
   <v-container>
     <router-link :to="`/${task.path}`">
-      <v-card hover height="150">
-        <v-container align-center justify-center fill-height>
-          <h3>{{ task.title.toUpperCase() }}</h3>
+      <v-card class="task-card font-lato uppercase" hover height="150">
+        <v-container align-center justify-center fill-height class="">
+          {{ task.title }}
         </v-container>
       </v-card>
     </router-link>
@@ -18,5 +18,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.task-card {
+  font-size: 1.2em;
+}
+
+.task-card:hover {
+  font-weight: 600;
+}
 </style>

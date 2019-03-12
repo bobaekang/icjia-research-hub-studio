@@ -2,7 +2,10 @@
   <v-container>
     <v-layout row wrap align-center justify-center fill-height>
       <v-flex xs12 sm10 md8>
-        <h1 class="text-xs-center">Choose your task</h1>
+        <div class="text-xs-center font-lato">
+          <h1 class="uppercase font-lato">Choose your task</h1>
+          <p>Permission level: {{ role }}</p>
+        </div>
 
         <v-layout row wrap justify-center>
           <template v-for="(task, i) in tasks">
@@ -26,6 +29,9 @@ export default {
   computed: {
     tasks() {
       return this.$store.state.task.items
+    },
+    role() {
+      return this.$store.state.auth.role
     }
   },
   methods: {

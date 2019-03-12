@@ -3,7 +3,7 @@ export const namespaced = true
 export const state = {
   items: [
     {
-      title: 'manage submissions',
+      title: 'manage contents',
       path: 'manage',
       permission: 'R&A Manager'
     },
