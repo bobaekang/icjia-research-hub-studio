@@ -85,6 +85,8 @@
         </template>
       </v-layout>
 
+      <div style="height: 50px;"></div>
+
       <v-btn outline @click="onSaveChanges">
         Save
       </v-btn>

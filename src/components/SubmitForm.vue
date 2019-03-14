@@ -129,6 +129,8 @@
         </template>
       </v-layout>
 
+      <div style="height: 50px;"></div>
+
       <v-btn outline color="" @click="onSaveChanges">
         Save
       </v-btn>
