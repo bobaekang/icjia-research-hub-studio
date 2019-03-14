@@ -8,10 +8,6 @@ export const state = {
       permission: 'R&A Manager'
     },
     {
-      title: 'post new',
-      path: 'post'
-    },
-    {
       title: 'submit new',
       path: 'submit-new',
       permission: 'R&A User'
@@ -22,8 +18,12 @@ export const state = {
       permission: 'R&A User'
     },
     {
-      title: 'update',
-      path: 'update'
+      title: 'post new',
+      path: 'post-new'
+    },
+    {
+      title: 'post update',
+      path: 'post-update'
     }
   ]
 }

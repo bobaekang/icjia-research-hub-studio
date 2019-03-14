@@ -22,8 +22,8 @@ const router = new Router({
       component: () => import('./views/Login.vue')
     },
     {
-      path: '/post',
-      name: 'post',
+      path: '/post-new',
+      name: 'post-new',
       component: () => import('./views/Post.vue'),
       meta: {
         requiresAuth: true,
@@ -32,8 +32,8 @@ const router = new Router({
       }
     },
     {
-      path: '/update',
-      name: 'update',
+      path: '/post-update',
+      name: 'post-update',
       component: () => import('./views/Update.vue'),
       meta: {
         requiresAuth: true,
