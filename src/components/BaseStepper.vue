@@ -21,17 +21,26 @@
       <template v-for="step in stepNumTotal">
         <v-stepper-content :key="`content${step}`" :step="step">
           <v-layout align-center>
-            <v-icon v-if="stepNum > 1" @click="stepNum--">
-              navigate_before
-            </v-icon>
+            <v-btn v-if="stepNum > 1" icon @click="navigateBefore">
+              <v-icon>
+                navigate_before
+              </v-icon>
+            </v-btn>
 
             <v-flex class="no-shadow mx-3">
               <slot :name="`stepItem${step}`"></slot>
             </v-flex>
 
-            <v-icon v-if="stepNum < stepNumTotal" @click="stepNum++">
-              navigate_next
-            </v-icon>
+            <v-btn
+              v-if="stepNum < stepNumTotal"
+              icon
+              @click="navigateNext"
+              :disabled="itemNotSelected"
+            >
+              <v-icon>
+                navigate_next
+              </v-icon>
+            </v-btn>
           </v-layout>
         </v-stepper-content>
       </template>
@@ -47,6 +56,34 @@ export default {
   data() {
     return {
       stepNum: 1
+    }
+  },
+  computed: {
+    itemNotSelected() {
+      const item = this.$store.state.content.item
+      return this.stepNumTotal === 3 && this.stepNum == 2 && Object.keys(item).length === 0
+    }
+  },
+  methods: {
+    navigateBefore() {
+      const from = this.stepNum
+      this.stepNum--
+      const to = this.stepNum
+
+      this.$emit('stepper-navigate-before', {
+        from,
+        to
+      })
+    },
+    navigateNext() {
+      const from = this.stepNum
+      this.stepNum++
+      const to = this.stepNum
+
+      this.$emit('stepper-navigate-next', {
+        from,
+        to
+      })
     }
   }
 }
