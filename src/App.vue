@@ -83,4 +83,8 @@ a {
 .uppercase {
   text-transform: uppercase;
 }
+
+.greycolor {
+  color: rgba(0, 0, 0, 0.54);
+}
 </style>

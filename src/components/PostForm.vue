@@ -3,9 +3,9 @@
     <v-form>
       <v-layout class="pl-3" row wrap>
         <v-flex class="px-3 pt-3" xs12>
-          <p class="input-title">
+          <p class="greycolor">
             JSON file
-            <span v-if="update">(Use the original if not provided)</span>
+            <span v-if="update">(No change if not provided)</span>
           </p>
           <MyDropzone
             key="DropzoneJson"
@@ -20,7 +20,7 @@
 
         <template v-if="contentType === 'apps'">
           <v-flex class="px-3 pt-3" xs12>
-            <p style="color:rgba(0,0,0,.54);">Splash image</p>
+            <p class="greycolor">Splash image</p>
             <MyDropzone
               key="DropzoneSplashApp"
               ref="DropzoneSplash"
@@ -34,7 +34,7 @@
 
         <template v-if="contentType === 'articles'">
           <v-flex class="px-3 pt-3" xs12>
-            <p style="color:rgba(0,0,0,.54);">Splash image</p>
+            <p style="greycolor">Splash image</p>
             <MyDropzone
               key="DropzoneSplashArticle"
               ref="DropzoneSplash"
@@ -46,7 +46,7 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="input-title">Article images</p>
+            <p class="greycolor">Article images</p>
             <MyDropzone
               key="DropzoneImages"
               ref="DropzoneImages"
@@ -57,7 +57,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p style="color:rgba(0,0,0,.54);">Article body</p>
+            <p class="greycolor">
+              Article body
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
               key="DropzoneMarkdown"
               ref="DropzoneMarkdown"
@@ -71,7 +74,7 @@
 
         <template v-if="contentType === 'datasets'">
           <v-flex class="px-3 pt-3" xs12>
-            <p class="input-title">Data file</p>
+            <p class="greycolor">Data file</p>
             <MyDropzone
               key="DropzoneData"
               ref="DropzoneData"
@@ -193,9 +196,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.input-title {
-  color: rgba(0, 0, 0, 0.54);
-}
-</style>

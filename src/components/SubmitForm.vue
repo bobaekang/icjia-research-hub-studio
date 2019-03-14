@@ -59,7 +59,7 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p style="color:rgba(0,0,0,.54);">Splash image</p>
+            <p class="greycolor">Splash image</p>
             <MyDropzone
               key="DropzoneSplashApp"
               ref="DropzoneSplash"
@@ -77,7 +77,7 @@
 
         <template v-if="contentType === 'articles'">
           <v-flex class="px-3 pt-3" xs12>
-            <p style="color:rgba(0,0,0,.54);">Splash image</p>
+            <p class="greycolor">Splash image</p>
             <MyDropzone
               key="DropzoneSplashArticle"
               ref="DropzoneSplash"
@@ -89,7 +89,7 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="input-title">Article images</p>
+            <p class="greycolor">Article images</p>
             <MyDropzone
               key="DropzoneImages"
               ref="DropzoneImages"
@@ -100,7 +100,7 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="pt-2 input-title">Article body</p>
+            <p class="pt-2 greycolor">Article body</p>
             <MarkdownEditor :markdown="item.markdown ? item.markdown : ''" />
           </v-flex>
 
@@ -111,7 +111,7 @@
 
         <template v-if="contentType === 'datasets'">
           <v-flex class="px-3 pt-3" xs12>
-            <p class="input-title">Data file</p>
+            <p class="greycolor">Data file</p>
             <MyDropzone
               key="DropzoneData"
               ref="DropzoneData"
@@ -342,9 +342,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.input-title {
-  color: rgba(0, 0, 0, 0.54);
-}
-</style>
