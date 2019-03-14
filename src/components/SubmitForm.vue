@@ -53,39 +53,80 @@
           />
         </v-flex>
 
-        <v-flex v-if="contentType === 'apps'" class="px-3" xs12 md6 lg4>
-          <v-text-field v-model="item.url" label="URL" />
-        </v-flex>
-
-        <v-flex v-if="contentType !== 'datasets'" class="px-3 pt-3" xs12>
-          <p style="color:rgba(0,0,0,.54);">Splash image</p>
-          <ImgDropzone :splash="true" />
-        </v-flex>
-
-        <template v-if="contentType === 'articles'">
-          <v-flex class="px-3 pt-3" xs12>
-            <p class="pt-2 input-title">Article body</p>
-            <MarkdownEditor :markdown="this.item.markdown" />
+        <template v-if="contentType === 'apps'">
+          <v-flex class="px-3" xs12 md6 lg4>
+            <v-text-field v-model="item.url" label="URL" />
           </v-flex>
 
-          <v-flex class="px-3 pb-2" xs12>
-            <p class="input-title">Article images</p>
-            <ImgDropzone />
+          <v-flex class="px-3 pt-3" xs12>
+            <p style="color:rgba(0,0,0,.54);">Splash image</p>
+            <MyDropzone
+              key="DropzoneSplashApp"
+              ref="DropzoneSplash"
+              fileTypes=".jpg, .jpeg, .png"
+              :maxOne="true"
+            >
+              Drop a splash image (JPEG or PNG only) here to upload
+            </MyDropzone>
+          </v-flex>
+
+          <v-flex class="px-3" xs12 md10 lg6>
+            <v-textarea v-model="item.description" label="Description" />
           </v-flex>
         </template>
 
-        <v-flex v-if="contentType === 'datasets'" class="pb-2" xs12>
-          <p class="input-title">Data in CSV format</p>
-          <FileReader class="pb-2" fileType="csv" />
-        </v-flex>
+        <template v-if="contentType === 'articles'">
+          <v-flex class="px-3 pt-3" xs12>
+            <p style="color:rgba(0,0,0,.54);">Splash image</p>
+            <MyDropzone
+              key="DropzoneSplashArticle"
+              ref="DropzoneSplash"
+              fileTypes=".jpg, .jpeg, .png"
+              :maxOne="true"
+            >
+              Drop a splash image (JPEG or PNG only) here to upload
+            </MyDropzone>
+          </v-flex>
 
-        <v-flex v-if="contentType === 'articles'" class="px-3" xs12 md10 lg6>
-          <v-textarea v-model="item.summary" label="Summary" />
-        </v-flex>
+          <v-flex class="px-3 pt-3" xs12>
+            <p class="input-title">Article images</p>
+            <MyDropzone
+              key="DropzoneImages"
+              ref="DropzoneImages"
+              fileTypes=".jpg, .jpeg, .png"
+            >
+              Drop images (JPEG or PNG only) here to upload
+            </MyDropzone>
+          </v-flex>
 
-        <v-flex v-if="contentType !== 'articles'" class="px-3" xs12 md10 lg6>
-          <v-textarea v-model="item.description" label="Description" />
-        </v-flex>
+          <v-flex class="px-3 pt-3" xs12>
+            <p class="pt-2 input-title">Article body</p>
+            <MarkdownEditor :markdown="item.markdown ? item.markdown : ''" />
+          </v-flex>
+
+          <v-flex class="px-3" xs12 md10 lg6>
+            <v-textarea v-model="item.summary" label="Summary" />
+          </v-flex>
+        </template>
+
+        <template v-if="contentType === 'datasets'">
+          <v-flex class="px-3 pt-3" xs12>
+            <p class="input-title">Data file</p>
+            <MyDropzone
+              key="DropzoneData"
+              ref="DropzoneData"
+              fileTypes=".csv"
+              :maxOne="true"
+              :limitFilesize="false"
+            >
+              Drop a CSV file here to upload
+            </MyDropzone>
+          </v-flex>
+
+          <v-flex class="px-3" xs12 md10 lg6>
+            <v-textarea v-model="item.description" label="Description" />
+          </v-flex>
+        </template>
       </v-layout>
 
       <v-btn outline color="" @click="onSaveChanges">
@@ -101,8 +142,7 @@
 import { mapState } from 'vuex'
 import BaseForm from '@/components/BaseForm'
 import DatePicker from '@/components/DatePicker'
-import ImgDropzone from '@/components/ImgDropzone'
-import FileReader from '@/components/FileReader'
+import MyDropzone from '@/components/MyDropzone'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import PreviewDialog from '@/components/PreviewDialog'
 
@@ -110,8 +150,7 @@ export default {
   components: {
     BaseForm,
     DatePicker,
-    ImgDropzone,
-    FileReader,
+    MyDropzone,
     MarkdownEditor,
     PreviewDialog
   },
@@ -129,9 +168,10 @@ export default {
         categories: [],
         tags: '',
         description: null,
-        markdown: null,
+        markdown: '',
         summary: null,
-        url: null
+        url: null,
+        datacsv: null
       },
       categoryOptions: [
         'corrections',
@@ -146,9 +186,34 @@ export default {
     ...mapState('content', {
       content: 'item',
       contentId: 'itemId'
-    })
+    }),
+    dropzoneSplashVm() {
+      if (this.contentType !== 'datasets') {
+        return this.$refs.DropzoneSplash.$refs.MyDropzone
+      }
+      return null
+    },
+    dropzoneImagesVm() {
+      if (this.contentType === 'articles') {
+        return this.$refs.DropzoneImages.$refs.MyDropzone
+      }
+      return null
+    },
+    dropzoneDataVm() {
+      if (this.contentType === 'datasets') {
+        return this.$refs.DropzoneData.$refs.MyDropzone
+      }
+      return null
+    }
   },
   watch: {
+    contentType(newContentType, oldContentType) {
+      this.onReset()
+
+      this.dropzoneSplashVm.removeAllFiles(true)
+      this.dropzoneImagesVm.removeAllFiles(true)
+      this.dropzoneDataVm.removeAllFiles(true)
+    },
     content(newContent, oldContent) {
       if (this.update) {
         const content = newContent
@@ -180,18 +245,55 @@ export default {
         .toLowerCase()
     },
     onSaveChanges() {
-      const tags = this.item.tags
-        ? this.item.tags.split(',').map(el => el.trim())
-        : []
+      if (this.contentType === 'apps') {
+        // const splash = this.dropzoneSplashVm.getAcceptedFiles()[0].dataURL
+        console.log(this.dropzoneSplashVm.getAcceptedFiles())
+      } else if (this.contentType === 'articles') {
+        // const splash = this.dropzoneSplashVm.getAcceptedFiles()[0].dataURL
+        // const images = this.dropzoneImagesVm.getAcceptedFiles().map(file => {
+        //   return {
+        //     title: file.name,
+        //     src: file.dataURL
+        //   }
+        // })
+        console.log(this.dropzoneSplashVm.getAcceptedFiles())
+        console.log(this.dropzoneImagesVm.getAcceptedFiles())
+      } else if (this.contentType === 'datasets') {
+        console.log(this.dropzoneDataVm.getAcceptedFiles())
+        // const file = this.dropzoneDataVm.getAcceptedFiles()[0]
+        // const reader = new FileReader()
 
-      let item = this.item
-      item.tags = tags
+        // reader.onload = e => this.$emit('load', e.target.result)
+        // reader.onload = e => {
+        //   this.$emit('load', e.target.result)
+        //   this.datacsv = e.target.result
+        // }
+        // reader.readAsText(file)
+      }
 
-      this.$store.dispatch('content/setItem', item)
+      // const tags = this.item.tags
+      //   ? this.item.tags.split(',').map(el => el.trim())
+      //   : []
+
+      // let item = this.item
+      // item.tags = tags
+
+      // this.$store.dispatch('content/setItem', item)
 
       alert('changes saved')
     },
     onReset() {
+      console.log('reset')
+
+      if (this.contentType === 'datasets') {
+        this.dropzoneDataVm.removeAllFiles(true)
+      } else {
+        this.dropzoneSplashVm.removeAllFiles(true)
+        if (this.contentType === 'articles') {
+          this.dropzoneImagesVm.removeAllFiles(true)
+        }
+      }
+
       if (this.update) {
         this.$store.dispatch('content/fetchItem', {
           contentType: this.contentType,

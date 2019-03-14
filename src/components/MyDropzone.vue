@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseDropzone
-      ref="ImgDropzone"
+      ref="MyDropzone"
       id="dropzone"
       @vdropzone-file-added="vfileAdded"
       @vdropzone-error="verror"
@@ -12,11 +12,7 @@
       :options="dropzoneOptions"
       :duplicateCheck="true"
     >
-      {{
-        splash
-          ? 'Drop a splash image (JPEG or PNG only) here to upload'
-          : 'Drop images (JPEG or PNG only) here to upload'
-      }}
+      <slot></slot>
     </BaseDropzone>
   </div>
 </template>
@@ -29,20 +25,24 @@ export default {
     BaseDropzone
   },
   props: {
-    splash: {
+    fileTypes: String,
+    limitFilesize: {
+      type: Boolean,
+      default: true
+    },
+    maxOne: {
       type: Boolean,
       default: false
     }
   },
   data() {
     return {
-      files: [],
       dropzoneOptions: {
         url: 'https://httpbin.org/post',
         thumbnailWidth: 150,
-        maxFilesize: 0.5,
-        maxFiles: this.splash ? 1 : null,
-        acceptedFiles: '.jpg, .jpeg, .png',
+        maxFilesize: this.limitFilesize ? 0.5 : null,
+        maxFiles: this.maxOne ? 1 : null,
+        acceptedFiles: this.fileTypes,
         addRemoveLinks: true,
         autoProcessQueue: false,
         accept(file, done) {
@@ -61,9 +61,8 @@ export default {
   },
   methods: {
     vfileAdded(file) {
-      this.files.push(file)
       this.fileAdded = true
-      this.$refs.ImgDropzone.$el.querySelector('.dz-progress').remove()
+      this.$refs.MyDropzone.$el.querySelector('.dz-progress').remove()
     },
     verror(file) {
       this.files = this.files.filter((value, index, arr) => {
