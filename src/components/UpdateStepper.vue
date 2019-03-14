@@ -40,7 +40,11 @@
           :update="true"
         />
 
-        <PostForm v-if="type === 'post'" :contentType="contentType" />
+        <PostForm
+          v-if="type === 'post'"
+          :contentType="contentType"
+          :update="true"
+        />
       </v-flex>
     </template>
   </BaseStepper>

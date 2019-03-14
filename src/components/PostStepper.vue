@@ -16,7 +16,7 @@
     </template>
 
     <template v-slot:stepItem2>
-      <PostForm :contentType="contentType" />
+      <PostForm :contentType="contentType" :update="false" />
     </template>
   </BaseStepper>
 </template>

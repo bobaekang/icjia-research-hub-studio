@@ -5,6 +5,7 @@
         <v-flex class="px-3 pt-3" xs12>
           <p class="input-title">
             JSON file
+            <span v-if="update">(Use the original if not provided)</span>
           </p>
           <MyDropzone
             key="DropzoneJson"
@@ -106,7 +107,8 @@ export default {
     PreviewDialog
   },
   props: {
-    contentType: String
+    contentType: String,
+    update: String
   },
   computed: {
     ...mapState('content', {
@@ -148,13 +150,13 @@ export default {
       const removeAllFiles = dropzoneVm => {
         if (dropzoneVm) dropzoneVm.removeAllFiles(true)
       }
-      
+
       removeAllFiles(this.dropzoneJsonVm)
       removeAllFiles(this.dropzoneSplashVm)
       removeAllFiles(this.dropzoneImagesVm)
       removeAllFiles(this.dropzoneMarkdownVm)
       removeAllFiles(this.dropzoneDataVm)
-    },
+    }
     // content(newContent, oldContent) {
     //   if (this.update) {
     //     const content = newContent
