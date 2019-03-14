@@ -34,7 +34,10 @@
 
         <template v-if="contentType === 'articles'">
           <v-flex class="px-3 pt-3" xs12>
-            <p style="greycolor">Splash image</p>
+            <p class="greycolor">
+              Splash image
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
               key="DropzoneSplashArticle"
               ref="DropzoneSplash"
@@ -46,7 +49,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">Article images</p>
+            <p class="greycolor">
+              Article images
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
               key="DropzoneImages"
               ref="DropzoneImages"
@@ -74,7 +80,10 @@
 
         <template v-if="contentType === 'datasets'">
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">Data file</p>
+            <p class="greycolor">
+              Data file
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
               key="DropzoneData"
               ref="DropzoneData"
