@@ -42,19 +42,23 @@ export default {
   },
 
   // all
-  submitItem(contentType, item) {
-    client
-      .post(`/${contentType}`, item)
-      .then(res => console.log(res.status))
+  async deleteItem(contentType, id) {
+    return await client
+      .delete(`/${contentType}/${id}`)
       .catch(err => console.log(err))
   },
-  updateItem(contentType, item) {
-    client
-      .put(`/${contentType}/${item._id}`, item)
-      .then(res => console.log(res.status))
-      .catch(err => console.log(err))
-  },
+  async submitItem(contentType, item) {
+    item.publish = false
 
+    return await client
+      .post(`/${contentType}`, item)
+      .catch(err => console.log(err))
+  },
+  async updateItem(contentType, item, id) {
+    return await client
+      .put(`/${contentType}/${id}`, item)
+      .catch(err => console.log(err))
+  },
   async updateItemPublishStatus(contentType, id, publish) {
     const type = contentType.slice(0, contentType.length - 1)
     const updateType = `update${type[0].toUpperCase()}${type.slice(1)}`
@@ -109,6 +113,7 @@ export default {
         query: `{
         apps (sort: "date:desc", where: { publish: ${publish} }) {
           _id
+          date
           title
         }
       }`
@@ -151,6 +156,7 @@ export default {
         query: `{
         articles (sort: "date:desc", where: { publish: ${publish} }) {
           _id
+          date
           title
         }
       }`
@@ -220,6 +226,7 @@ export default {
         query: `{
         datasets (sort: "date:desc", where: { publish: ${publish} }) {
           _id
+          date
           title
         }
       }`

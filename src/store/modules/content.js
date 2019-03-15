@@ -17,7 +17,7 @@ export const mutations = {
   SET_ITEM_ID(state, payload) {
     state.itemId = payload
   },
-  FETCH_ITEM_LIST(state, payload) {
+  SET_ITEM_LIST(state, payload) {
     state.itemlist = payload
   }
 }
@@ -28,6 +28,11 @@ export const actions = {
   },
   setItemId({ commit }, id) {
     commit('SET_ITEM_ID', id)
+  },
+  clearAll({ commit }) {
+    commit('SET_ITEM', {})
+    commit('SET_ITEM_ID', '')
+    commit('SET_ITEM_LIST', [])
   },
 
   async fetchItem({ commit }, { contentType, id }) {
@@ -68,7 +73,7 @@ export const actions = {
       itemlist = res.data.data.datasets
     }
 
-    commit('FETCH_ITEM_LIST', itemlist)
+    commit('SET_ITEM_LIST', itemlist)
   },
 
   async publishItem({ commit }, { contentType, id }) {
@@ -76,5 +81,15 @@ export const actions = {
   },
   async unpublishItem({ commit }, { contentType, id }) {
     return await client.updateItemPublishStatus(contentType, id, false)
+  },
+
+  async deleteItem({ commit, state }, contentType) {
+    return await client.deleteItem(contentType, state.itemIid)
+  },
+  async submitItem({ commit, state }, contentType) {
+    return await client.submitItem(contentType, state.item)
+  },
+  async updateItem({ commit, state }, contentType) {
+    return await client.updateItem(contentType, state.item, state.itemId)
   }
 }
