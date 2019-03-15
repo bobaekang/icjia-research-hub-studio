@@ -61,7 +61,11 @@ export default {
   computed: {
     itemNotSelected() {
       const item = this.$store.state.content.item
-      return this.stepNumTotal === 3 && this.stepNum == 2 && Object.keys(item).length === 0
+      return (
+        this.stepNumTotal === 3 &&
+        this.stepNum == 2 &&
+        !Object.keys(item).length
+      )
     }
   },
   methods: {

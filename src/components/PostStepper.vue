@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       contentType: 'apps',
-      contentTypes: this.$store.state.content.allTypes
+      contentTypes: this.$store.state.content.typesAll
     }
   }
 }

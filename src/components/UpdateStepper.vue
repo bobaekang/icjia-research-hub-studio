@@ -72,7 +72,7 @@ export default {
     return {
       contentTypes:
         this.type === 'post'
-          ? this.$store.state.content.allTypes
+          ? this.$store.state.content.typesAll
           : this.$store.state.content.types,
       contentType: 'apps',
       publish: false
@@ -85,7 +85,6 @@ export default {
   },
   methods: {
     navigateBefore(step) {
-      console.log(step)
       if (step.to === 2) {
         this.$store.dispatch('content/setItem', {})
       }
