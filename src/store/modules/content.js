@@ -7,7 +7,7 @@ export const state = {
   itemId: '',
   itemlist: [],
   types: ['apps', 'articles', 'datasets'],
-  allTypes: ['apps', 'authors', 'articles', 'datasets']
+  typesAll: ['apps', 'authors', 'articles', 'datasets']
 }
 
 export const mutations = {
