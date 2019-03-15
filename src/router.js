@@ -88,6 +88,8 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // let jwt = localStorage.getItem('jwt')
+  store.dispatch('content/clearAll')
+
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (store.state.auth.isLoggedIn) {
       if (store.state.auth.role === 'R&A User') {
