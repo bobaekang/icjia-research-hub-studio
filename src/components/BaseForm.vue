@@ -21,8 +21,9 @@
         </BaseButtonDialog>
 
         <BaseButtonDialog
-          :buttonName="formType"
           buttonType="primary"
+          :buttonName="formType"
+          :buttonCondition="itemReady"
           @base-event="$emit('form-main')"
         >
           <template v-slot:title>
@@ -63,6 +64,11 @@ export default {
   data() {
     return {
       stepNum: 1
+    }
+  },
+  computed: {
+    itemReady() {
+      return Object.keys(this.$store.state.content.item).length !== 0
     }
   }
 }

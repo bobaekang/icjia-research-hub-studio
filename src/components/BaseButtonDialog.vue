@@ -1,6 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" width="500">
-    <v-btn outline slot="activator" :color="buttonType">
+  <v-dialog v-model="dialog" width="500" :disabled="!buttonCondition">
+    <v-btn
+      outline
+      slot="activator"
+      :color="buttonType"
+      :disabled="!buttonCondition"
+    >
       {{ buttonName }}
     </v-btn>
 
@@ -33,7 +38,11 @@
 export default {
   props: {
     buttonName: String,
-    buttonType: String
+    buttonType: String,
+    buttonCondition: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
