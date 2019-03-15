@@ -5,42 +5,46 @@
     @form-main="onMain"
     @form-reset="onReset"
   >
-    <v-form>
+    <v-form ref="form" v-model="valid" lazy-validation>
       <v-layout row wrap>
         <v-flex class="px-3" xs12 md6 lg4>
           <v-text-field
             v-model="item.title"
             label="Title"
-            @keyup="titleToSlug"
             counter
+            :rules="[rules.required]"
+            @keyup="titleToSlug"
           />
         </v-flex>
 
         <v-flex class="px-3" xs12 md6 lg4>
           <v-text-field
-            :disabled="update"
             v-model="item.slug"
             label="Slug"
             counter
+            :hint="update ? '' : 'Automatically generated from title'"
+            :readonly="!update"
+            :disabled="update"
+            :rules="[rules.required]"
           />
         </v-flex>
       </v-layout>
 
       <v-layout row>
         <v-flex class="px-3" xs12 md6 lg4>
-          <DatePicker />
+          <DatePicker :date.sync="item.date" />
         </v-flex>
       </v-layout>
 
       <v-layout row wrap>
         <v-flex class="px-3" xs12 md6 lg4>
           <v-select
-            :items="categoryOptions"
             v-model="item.categories"
             label="Categories"
-            hint="Select categories"
-            persistent-hint
+            clearable
             multiple
+            :items="categoryOptions"
+            :rules="[rules.required]"
           />
         </v-flex>
 
@@ -49,13 +53,16 @@
             v-model="item.tags"
             label="Tags"
             hint="Separate tags with commas"
-            persistent-hint
           />
         </v-flex>
 
         <template v-if="contentType === 'apps'">
           <v-flex class="px-3" xs12 md6 lg4>
-            <v-text-field v-model="item.url" label="URL" />
+            <v-text-field
+              v-model="item.url"
+              label="URL"
+              :rules="[rules.required]"
+            />
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
@@ -71,11 +78,28 @@
           </v-flex>
 
           <v-flex class="px-3" xs12 md10 lg6>
-            <v-textarea v-model="item.description" label="Description" />
+            <v-textarea
+              v-model="item.description"
+              label="Description"
+              :rules="[rules.required]"
+            />
           </v-flex>
         </template>
 
         <template v-if="contentType === 'articles'">
+          <v-flex class="px-3" xs12 md6 lg4>
+            <v-select
+              v-model="item.authors"
+              item-text="title"
+              item-value="_id"
+              label="Authors"
+              clearable
+              multiple
+              :items="authorOptions"
+              :rules="[rules.required]"
+            />
+          </v-flex>
+
           <v-flex class="px-3 pt-3" xs12>
             <p class="greycolor">Splash image</p>
             <MyDropzone
@@ -101,15 +125,40 @@
 
           <v-flex class="px-3 pt-3" xs12>
             <p class="pt-2 greycolor">Article body</p>
-            <MarkdownEditor :markdown="item.markdown ? item.markdown : ''" />
+            <MarkdownEditor
+              :markdown="item.markdown ? item.markdown : ''"
+              :rules="[rules.required]"
+            />
           </v-flex>
 
           <v-flex class="px-3" xs12 md10 lg6>
-            <v-textarea v-model="item.summary" label="Summary" />
+            <v-textarea
+              v-model="item.summary"
+              label="Summary"
+              :rules="[rules.required]"
+            />
           </v-flex>
         </template>
 
         <template v-if="contentType === 'datasets'">
+          <v-flex class="px-3" xs12 md6 lg4>
+            <v-select
+              v-model="item.agegroup"
+              label="Age group"
+              clearable
+              :items="agegroupOptions"
+            />
+          </v-flex>
+
+          <v-flex class="px-3" xs12 md6 lg4>
+            <v-text-field
+              v-model="item.timeperiod"
+              label="Time period"
+              hint="Format: yyyy-yyyy"
+              :rules="[rules.timeperiod]"
+            />
+          </v-flex>
+
           <v-flex class="px-3 pt-3" xs12>
             <p class="greycolor">Data file</p>
             <MyDropzone
@@ -131,11 +180,14 @@
 
       <div style="height: 50px;"></div>
 
-      <v-btn outline color="" @click="onSaveChanges">
+      <v-btn outline @click="onSave">
         Save
       </v-btn>
 
-      <PreviewDialog :contentType="contentType" :icon="false" />
+      <PreviewDialog v-if="saved" :contentType="contentType" :icon="false" />
+      <v-btn v-else outline disabled>
+        Preview
+      </v-btn>
     </v-form>
   </BaseForm>
 </template>
@@ -147,6 +199,10 @@ import DatePicker from '@/components/DatePicker'
 import MyDropzone from '@/components/MyDropzone'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import PreviewDialog from '@/components/PreviewDialog'
+
+import client from '@/services/client.js'
+
+const today = new Date().toISOString().substr(0, 10)
 
 export default {
   components: {
@@ -166,28 +222,32 @@ export default {
       item: {
         title: '',
         slug: '',
-        date: '',
+        date: today,
         categories: [],
         tags: '',
+        authors: null,
+        agegroup: null,
+        timeperiod: null,
         description: null,
         markdown: '',
         summary: null,
-        url: null,
-        datacsv: null
+        url: null
       },
-      categoryOptions: [
-        'corrections',
-        'courts',
-        'crimes',
-        'law enforcement',
-        'other'
-      ]
+      authorOptions: [],
+      saved: false,
+      valid: false
     }
   },
   computed: {
     ...mapState('content', {
       content: 'item',
-      contentId: 'itemId'
+      contentId: 'itemId',
+      rules: 'rules'
+    }),
+    ...mapState('form', {
+      agegroupOptions: 'agegroupOptions',
+      categoryOptions: 'categoryOptions',
+      rules: 'rules'
     }),
     dropzoneSplashVm() {
       if (this.contentType !== 'datasets') {
@@ -210,133 +270,145 @@ export default {
   },
   watch: {
     contentType(newContentType, oldContentType) {
-      this.onReset()
+      this.resetItem()
 
-      this.dropzoneSplashVm.removeAllFiles(true)
-      this.dropzoneImagesVm.removeAllFiles(true)
-      this.dropzoneDataVm.removeAllFiles(true)
+      if (newContentType === 'articles' && !this.authorOptions.length) {
+        client.getAuthorList().then(res => {
+          this.authorOptions = res.data.data.authors
+        })
+      }
     },
     content(newContent, oldContent) {
       if (this.update) {
         const content = newContent
 
-        if (Object.entries(content).length !== 0) {
+        if (Object.keys(content).length) {
           this.item.title = content.title
           this.item.slug = content.slug
           this.item.categories = content.categories
-          this.item.tags = content.tags
+          this.item.tags = content.tags.join(', ')
 
           if (this.contentType === 'apps') {
             this.item.url = content.url ? content.url : 'https://'
             this.item.description = content.description
           } else if (this.contentType === 'articles') {
-            this.item.markdown = content.body
+            this.item.markdown = content.markdown
             this.item.summary = content.summary
           } else if (this.contentType === 'datasets') {
             this.item.description = content.description
           }
         }
+        this.saved = true
       }
     }
   },
   methods: {
-    titleToSlug() {
-      this.slug = this.title
-        .replace(/[^\w\s]/gi, '')
-        .replace(/\s/gi, '-')
-        .toLowerCase()
-    },
-    onSaveChanges() {
+    addContentTypeProperties(item) {
       if (this.contentType === 'apps') {
-        // const splash = this.dropzoneSplashVm.getAcceptedFiles()[0].dataURL
-        console.log(this.dropzoneSplashVm.getAcceptedFiles())
+        if (this.dropzoneSplashVm.getAcceptedFiles().length) {
+          item.image = this.dropzoneSplashVm.getAcceptedFiles()[0].dataURL
+        }
       } else if (this.contentType === 'articles') {
-        // const splash = this.dropzoneSplashVm.getAcceptedFiles()[0].dataURL
-        // const images = this.dropzoneImagesVm.getAcceptedFiles().map(file => {
-        //   return {
-        //     title: file.name,
-        //     src: file.dataURL
-        //   }
-        // })
-        console.log(this.dropzoneSplashVm.getAcceptedFiles())
-        console.log(this.dropzoneImagesVm.getAcceptedFiles())
+        if (this.dropzoneSplashVm.getAcceptedFiles().length) {
+          item.splash = this.dropzoneSplashVm.getAcceptedFiles()[0].dataURL
+        }
+
+        if (this.dropzoneImagesVm.getAcceptedFiles()) {
+          item.images = this.dropzoneImagesVm.getAcceptedFiles().map(file => {
+            return {
+              title: file.name,
+              src: file.dataURL
+            }
+          })
+        }
       } else if (this.contentType === 'datasets') {
-        console.log(this.dropzoneDataVm.getAcceptedFiles())
-        // const file = this.dropzoneDataVm.getAcceptedFiles()[0]
-        // const reader = new FileReader()
+        if (this.dropzoneDataVm.getAcceptedFiles()) {
+          const file = this.dropzoneDataVm.getAcceptedFiles()[0]
+          const reader = new FileReader()
 
-        // reader.onload = e => this.$emit('load', e.target.result)
-        // reader.onload = e => {
-        //   this.$emit('load', e.target.result)
-        //   this.datacsv = e.target.result
-        // }
-        // reader.readAsText(file)
-      }
+          reader.onload = e => this.$emit('load', e.target.result)
+          reader.readAsText(file)
 
-      // const tags = this.item.tags
-      //   ? this.item.tags.split(',').map(el => el.trim())
-      //   : []
-
-      // let item = this.item
-      // item.tags = tags
-
-      // this.$store.dispatch('content/setItem', item)
-
-      alert('changes saved')
-    },
-    onReset() {
-      console.log('reset')
-
-      if (this.contentType === 'datasets') {
-        this.dropzoneDataVm.removeAllFiles(true)
-      } else {
-        this.dropzoneSplashVm.removeAllFiles(true)
-        if (this.contentType === 'articles') {
-          this.dropzoneImagesVm.removeAllFiles(true)
+          item.datacsv = reader.result
         }
       }
+    },
+    removeAllDropzonFiles() {
+      const dropzoneVms = [
+        this.dropzoneDataVm,
+        this.dropzoneSplashVm,
+        this.dropzoneImagesVm
+      ]
 
+      dropzoneVms.forEach(vm => {
+        if (vm) vm.removeAllFiles()
+      })
+    },
+    removeEmptyProperties(obj) {
+      Object.keys(obj).forEach(key => {
+        ;(obj[key] === undefined || obj[key] === null) && delete obj[key]
+      })
+    },
+    resetItem() {
       if (this.update) {
         this.$store.dispatch('content/fetchItem', {
           contentType: this.contentType,
           id: this.contentId
         })
       } else {
+        this.$store.dispatch('content/setItem', {})
         this.item = {
           title: '',
           slug: '',
-          date: '',
+          date: today,
           categories: [],
           tags: '',
+          authors: null,
           description: null,
-          markdown: null,
+          markdown: '',
           summary: null,
-          url: null
+          url: null,
+          datacsv: null
         }
       }
+      this.saved = false
+      this.valid = false
+    },
+    titleToSlug() {
+      this.item.slug = this.item.title
+        .replace(/[^\w\s]/gi, '')
+        .replace(/\s/gi, '-')
+        .toLowerCase()
     },
     onMain() {
       if (this.update) {
-        console.log('main event caught: update')
+        console.log(this.contentType)
+        this.$store.dispatch('content/updateItem', this.contentType)
+        alert('Update submitted--back to home!')
       } else {
-        console.log('main event caught: new')
-        this.title = ''
-        this.slug = ''
-        this.date = ''
-        this.categories = []
-        this.tags = ''
+        this.$store.dispatch('content/submitItem', this.contentType)
+        alert('New item submitted--back to home!')
+      }
+      this.$router.push('/')
+    },
+    onReset() {
+      this.resetItem()
+      this.removeAllDropzonFiles()
+    },
+    onSave() {
+      if (this.$refs.form.validate()) {
+        const item = { ...this.item }
 
-        if (this.contentType === 'apps') {
-          this.url = 'https://'
-          this.description = ''
-        } else if (this.contentType === 'articles') {
-          // this.markdown = ''
-          // this.summary = ''
-          console.log('articles')
-        } else if (this.contentType === 'datasets') {
-          // this.description = ''
-          console.log('datasets')
-        }
+        item.tags = item.tags ? item.tags.split(',').map(el => el.trim()) : []
+        item.markdown = this.contentType === 'articles' ? item.markdown : null
+
+        this.removeEmptyProperties(item)
+        this.addContentTypeProperties(item)
+
+        this.$store.dispatch('content/setItem', item)
+        this.saved = true
+
+        alert('Changes saved. Try preview.')
       }
     }
   }

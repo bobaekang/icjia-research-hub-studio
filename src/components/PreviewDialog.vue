@@ -75,7 +75,6 @@ export default {
     closePreview() {
       this.dialog = false
       this.view = false
-      this.$store.dispatch('content/setItem', {})
     }
   }
 }

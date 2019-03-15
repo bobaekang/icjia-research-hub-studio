@@ -19,8 +19,11 @@
       :headers="headers"
       :items="items"
       :search="search"
+      :pagination.sync="paginationSync"
     >
       <template slot="items" slot-scope="props">
+        <td>{{ props.item.date ? props.item.date.slice(0, 10) : '' }}</td>
+
         <td>{{ props.item.title }}</td>
 
         <td class="justify-end layout px-3">
@@ -37,6 +40,10 @@
 
             <v-btn v-else icon @click="publishItem(props.item)">
               <v-icon class="greyicon">check</v-icon>
+            </v-btn>
+
+            <v-btn v-if="isAdmin" icon @click="deleteItem(props.item)">
+              <v-icon color="error">delete_forever</v-icon>
             </v-btn>
           </template>
 
@@ -69,6 +76,11 @@ export default {
     return {
       headers: [
         {
+          text: 'Date',
+          align: 'left',
+          value: 'date'
+        },
+        {
           text: 'Title',
           align: 'left',
           value: 'title'
@@ -80,12 +92,19 @@ export default {
           sortable: false
         }
       ],
+      paginationSync: {
+        descending: true,
+        sortBy: 'date'
+      },
       search: ''
     }
   },
   computed: {
     items() {
       return this.$store.state.content.itemlist
+    },
+    isAdmin() {
+      return this.$store.state.auth.role === 'Administrator'
     }
   },
   watch: {
@@ -145,6 +164,22 @@ export default {
         })
       } else {
         alert('Failed to unpublish: ' + item.title)
+      }
+    },
+    async deleteItem(item) {
+      const res = await this.$store.dispatch('content/deleteItem', {
+        contentType: this.contentType,
+        id: item._id
+      })
+
+      if (res.status === 200) {
+        alert('Item is deleted.')
+        this.$store.dispatch('content/fetchItemList', {
+          contentType: this.contentType,
+          publish: this.publish
+        })
+      } else {
+        alert('Failed to delete: ' + item.title)
       }
     },
     async editItem(item) {

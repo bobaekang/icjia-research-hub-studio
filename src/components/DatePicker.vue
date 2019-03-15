@@ -18,18 +18,25 @@
       readonly
     />
 
-    <v-date-picker v-model="date" no-title scrollable @input="menu = false" />
+    <v-date-picker v-model="date" no-title scrollable @input="onInput" />
   </v-menu>
 </template>
 
 <script>
 export default {
+  props: {
+    date: String
+  },
   data() {
     return {
-      menu: false,
-      date: new Date().toISOString().substr(0, 10)
+      menu: false
+    }
+  },
+  methods: {
+    onInput(e) {
+      this.menu = false
+      this.$emit('update:date', e)
     }
   }
 }
 </script>
-
