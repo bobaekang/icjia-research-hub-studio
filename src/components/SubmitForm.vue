@@ -126,7 +126,7 @@
           <v-flex class="px-3 pt-3" xs12>
             <p class="pt-2 greycolor">Article body</p>
             <MarkdownEditor
-              :markdown="item.markdown ? item.markdown : ''"
+              :markdown.sync="item.markdown"
               :rules="[rules.required]"
             />
           </v-flex>
@@ -270,7 +270,7 @@ export default {
   },
   watch: {
     contentType(newContentType, oldContentType) {
-      this.resetItem()
+      this.resetItem(false)
 
       if (newContentType === 'articles' && !this.authorOptions.length) {
         client.getAuthorList().then(res => {
@@ -279,25 +279,25 @@ export default {
       }
     },
     content(newContent, oldContent) {
-      if (this.update) {
-        const content = newContent
+      const content = newContent
 
-        if (Object.keys(content).length) {
-          this.item.title = content.title
-          this.item.slug = content.slug
-          this.item.categories = content.categories
-          this.item.tags = content.tags.join(', ')
+      if (this.update && content && Object.keys(content).length) {
+        this.item.title = newContent.title
+        this.item.slug = content.slug
+        this.item.categories = content.categories
+        this.item.tags = content.tags ? content.tags.join(', ') : ''
 
-          if (this.contentType === 'apps') {
-            this.item.url = content.url ? content.url : 'https://'
-            this.item.description = content.description
-          } else if (this.contentType === 'articles') {
-            this.item.markdown = content.markdown
-            this.item.summary = content.summary
-          } else if (this.contentType === 'datasets') {
-            this.item.description = content.description
-          }
+        if (this.contentType === 'apps') {
+          this.item.url = content.url ? content.url : 'https://'
+          this.item.description = content.description
+        } else if (this.contentType === 'articles') {
+          console.log(content.markdown)
+          this.item.markdown = content.markdown
+          this.item.summary = content.summary
+        } else if (this.contentType === 'datasets') {
+          this.item.description = content.description
         }
+
         this.saved = true
       }
     }
@@ -349,8 +349,8 @@ export default {
         ;(obj[key] === undefined || obj[key] === null) && delete obj[key]
       })
     },
-    resetItem() {
-      if (this.update) {
+    resetItem(update) {
+      if (update) {
         this.$store.dispatch('content/fetchItem', {
           contentType: this.contentType,
           id: this.contentId
@@ -392,7 +392,7 @@ export default {
       this.$router.push('/')
     },
     onReset() {
-      this.resetItem()
+      this.resetItem(this.update)
       this.removeAllDropzonFiles()
     },
     onSave() {

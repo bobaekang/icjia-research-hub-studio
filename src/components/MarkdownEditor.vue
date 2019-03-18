@@ -18,6 +18,7 @@
         v-model="markdown"
         box
         @scroll="syncScrollEditor"
+        @input="onInput"
       >
       </v-textarea>
     </v-flex>
@@ -70,6 +71,10 @@ export default {
     }
   },
   methods: {
+    onInput(e) {
+      console.log(e)
+      this.$emit('update:markdown', e)
+    },
     syncScrollEditor() {
       syncScroll(this.editor, this.preview)
     },
