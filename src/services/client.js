@@ -140,8 +140,8 @@ export default {
           images
           markdown
           authors {
+            _id
             title
-            slug
           }
         }
       }`
