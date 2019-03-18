@@ -65,15 +65,9 @@ export default {
       this.$refs.MyDropzone.$el.querySelector('.dz-progress').remove()
     },
     verror(file) {
-      this.files = this.files.filter((value, index, arr) => {
-        return value.name !== file.name
-      })
       this.error = true
     },
     vremoved(file, xhr, error) {
-      this.files = this.files.filter((value, index, arr) => {
-        return value.name !== file.name
-      })
       this.removedFile = true
     },
     vprogress(totalProgress, totalBytes, totalBytesSent) {
