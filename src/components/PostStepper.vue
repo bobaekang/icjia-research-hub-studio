@@ -37,6 +37,11 @@ export default {
       contentType: 'apps',
       contentTypes: this.$store.state.content.typesAll
     }
+  },
+  methods: {
+    navigateBefore() {
+      this.$store.dispatch('content/setItem', {})
+    }
   }
 }
 </script>
