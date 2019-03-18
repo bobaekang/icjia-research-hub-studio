@@ -1,5 +1,10 @@
 <template>
-  <BaseForm :contentType="contentType" formType="post">
+  <BaseForm
+    :contentType="contentType"
+    formType="post"
+    @form-main="onMain"
+    @form-reset="onReset"
+  >
     <v-form>
       <v-layout class="pl-3" row wrap>
         <v-flex class="px-3 pt-3" xs12>
@@ -20,14 +25,16 @@
 
         <template v-if="contentType === 'apps'">
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">Splash image</p>
+            <p class="greycolor">
+              Image
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
-              key="DropzoneSplashApp"
-              ref="DropzoneSplash"
+              ref="DropzoneImage"
               fileTypes=".jpg, .jpeg, .png"
               :maxOne="true"
             >
-              Drop a splash image (JPEG or PNG only) here to upload
+              Drop an Image (JPEG or PNG only) here to upload
             </MyDropzone>
           </v-flex>
         </template>
@@ -39,7 +46,6 @@
               <span v-if="update">(No change if not provided)</span>
             </p>
             <MyDropzone
-              key="DropzoneSplashArticle"
               ref="DropzoneSplash"
               fileTypes=".jpg, .jpeg, .png"
               :maxOne="true"
@@ -99,22 +105,28 @@
 
       <div style="height: 50px;"></div>
 
-      <v-btn outline @click="onSaveChanges">
+      <v-btn outline @click="saveItem">
         Save
       </v-btn>
 
-      <PreviewDialog :contentType="contentType" :icon="false" />
+      <PreviewDialog v-if="saved" :contentType="contentType" :icon="false" />
+      <v-btn v-else outline disabled>
+        Preview
+      </v-btn>
     </v-form>
   </BaseForm>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { baseActionMixin, dropzoneMixin } from '@/mixins/formMixin'
 import BaseForm from '@/components/BaseForm'
 import MyDropzone from '@/components/MyDropzone'
 import PreviewDialog from '@/components/PreviewDialog'
 
 export default {
+  name: 'postform',
+  mixins: [baseActionMixin, dropzoneMixin],
   components: {
     BaseForm,
     MyDropzone,
@@ -122,85 +134,80 @@ export default {
   },
   props: {
     contentType: String,
-    update: String
+    update: Boolean
+  },
+  data() {
+    return {
+      item: {},
+      saved: false
+    }
   },
   computed: {
     ...mapState('content', {
       content: 'item',
       contentId: 'itemId'
     }),
-    dropzoneJsonVm() {
-      return this.$refs.DropzoneJson.$refs.MyDropzone
-    },
-    dropzoneSplashVm() {
-      if (this.contentType !== 'datasets') {
-        return this.$refs.DropzoneSplash.$refs.MyDropzone
+    dropzoneList() {
+      const contentType = this.contentType
+      return {
+        json: this.$refs.DropzoneJson.$refs.MyDropzone,
+        image:
+          contentType === 'apps'
+            ? this.$refs.DropzoneImage.$refs.MyDropzone
+            : null,
+        splash:
+          contentType === 'articles'
+            ? this.$refs.DropzoneSplash.$refs.MyDropzone
+            : null,
+        images:
+          contentType === 'articles'
+            ? this.$refs.DropzoneImages.$refs.MyDropzone
+            : null,
+        markdown:
+          contentType === 'articles'
+            ? this.$refs.DropzoneMarkdown.$refs.MyDropzone
+            : null,
+        data:
+          contentType === 'datasets'
+            ? this.$refs.DropzoneData.$refs.MyDropzone
+            : null
       }
-      return null
-    },
-    dropzoneImagesVm() {
-      if (this.contentType === 'articles') {
-        return this.$refs.DropzoneImages.$refs.MyDropzone
-      }
-      return null
-    },
-    dropzoneMarkdownVm() {
-      if (this.contentType === 'articles') {
-        return this.$refs.DropzoneMarkdown.$refs.MyDropzone
-      }
-      return null
-    },
-    dropzoneDataVm() {
-      if (this.contentType === 'datasets') {
-        return this.$refs.DropzoneData.$refs.MyDropzone
-      }
-      return null
     }
   },
   watch: {
     contentType() {
-      this.onReset()
-
-      const removeAllFiles = dropzoneVm => {
-        if (dropzoneVm) dropzoneVm.removeAllFiles(true)
+      this.resetItem(false)
+    },
+    content() {
+      if (this.update) {
+        this.item = this.content
+        this.saved = true
       }
-
-      removeAllFiles(this.dropzoneJsonVm)
-      removeAllFiles(this.dropzoneSplashVm)
-      removeAllFiles(this.dropzoneImagesVm)
-      removeAllFiles(this.dropzoneMarkdownVm)
-      removeAllFiles(this.dropzoneDataVm)
     }
-    // content(newContent, oldContent) {
-    //   if (this.update) {
-    //     const content = newContent
-
-    //     if (Object.entries(content).length !== 0) {
-    //       this.item.title = content.title
-    //       this.item.slug = content.slug
-    //       this.item.categories = content.categories
-    //       this.item.tags = content.tags
-
-    //       if (this.contentType === 'apps') {
-    //         this.item.url = content.url ? content.url : 'https://'
-    //         this.item.description = content.description
-    //       } else if (this.contentType === 'articles') {
-    //         this.item.markdown = content.body
-    //         this.item.summary = content.summary
-    //       } else if (this.contentType === 'datasets') {
-    //         this.item.description = content.description
-    //       }
-    //     }
-    //   }
-    // }
   },
   methods: {
-    onSaveChanges() {
-      let item = {}
+    resetItem(update) {
+      if (update) {
+        this.$store.dispatch('content/fetchItem', {
+          contentType: this.contentType,
+          id: this.contentId
+        })
+      } else {
+        this.$store.dispatch('content/setItem', {})
+        this.item = {}
+      }
+      this.saved = false
+    },
+    saveItem() {
+      let item = { ...this.item }
+
+      this.addDropzoneFiles(item, this.contentType, this.dropzoneList)
+      console.log(item)
 
       this.$store.dispatch('content/setItem', item)
+      this.saved = true
 
-      alert('changes saved')
+      alert('Changes saved. Try preview.')
     }
   }
 }

@@ -66,14 +66,16 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">Splash image</p>
+            <p class="greycolor">
+              Image
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
-              key="DropzoneSplashApp"
-              ref="DropzoneSplash"
+              ref="DropzoneImage"
               fileTypes=".jpg, .jpeg, .png"
               :maxOne="true"
             >
-              Drop a splash image (JPEG or PNG only) here to upload
+              Drop an Image (JPEG or PNG only) here to upload
             </MyDropzone>
           </v-flex>
 
@@ -101,9 +103,11 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">Splash image</p>
+            <p class="greycolor">
+              Splash image
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
-              key="DropzoneSplashArticle"
               ref="DropzoneSplash"
               fileTypes=".jpg, .jpeg, .png"
               :maxOne="true"
@@ -113,7 +117,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">Article images</p>
+            <p class="greycolor">
+              Article images
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
               key="DropzoneImages"
               ref="DropzoneImages"
@@ -160,7 +167,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">Data file</p>
+            <p class="greycolor">
+              Data file
+              <span v-if="update">(No change if not provided)</span>
+            </p>
             <MyDropzone
               key="DropzoneData"
               ref="DropzoneData"
@@ -180,7 +190,7 @@
 
       <div style="height: 50px;"></div>
 
-      <v-btn outline @click="onSave">
+      <v-btn outline @click="saveItem">
         Save
       </v-btn>
 
@@ -194,6 +204,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { baseActionMixin, dropzoneMixin } from '@/mixins/formMixin'
 import BaseForm from '@/components/BaseForm'
 import DatePicker from '@/components/DatePicker'
 import MyDropzone from '@/components/MyDropzone'
@@ -205,6 +216,8 @@ import client from '@/services/client.js'
 const today = new Date().toISOString().substr(0, 10)
 
 export default {
+  name: 'submitform',
+  mixins: [baseActionMixin, dropzoneMixin],
   components: {
     BaseForm,
     DatePicker,
@@ -218,7 +231,6 @@ export default {
   },
   data() {
     return {
-      id: '',
       item: {
         title: '',
         slug: '',
@@ -249,23 +261,27 @@ export default {
       categoryOptions: 'categoryOptions',
       rules: 'rules'
     }),
-    dropzoneSplashVm() {
-      if (this.contentType !== 'datasets') {
-        return this.$refs.DropzoneSplash.$refs.MyDropzone
+    dropzoneList() {
+      const contentType = this.contentType
+
+      return {
+        image:
+          contentType === 'apps'
+            ? this.$refs.DropzoneImage.$refs.MyDropzone
+            : null,
+        splash:
+          contentType === 'articles'
+            ? this.$refs.DropzoneSplash.$refs.MyDropzone
+            : null,
+        images:
+          contentType === 'articles'
+            ? this.$refs.DropzoneImages.$refs.MyDropzone
+            : null,
+        data:
+          contentType === 'datasets'
+            ? this.$refs.DropzoneData.$refs.MyDropzone
+            : null
       }
-      return null
-    },
-    dropzoneImagesVm() {
-      if (this.contentType === 'articles') {
-        return this.$refs.DropzoneImages.$refs.MyDropzone
-      }
-      return null
-    },
-    dropzoneDataVm() {
-      if (this.contentType === 'datasets') {
-        return this.$refs.DropzoneData.$refs.MyDropzone
-      }
-      return null
     }
   },
   watch: {
@@ -279,71 +295,16 @@ export default {
       }
     },
     content(newContent, oldContent) {
-      const content = newContent
-
-      if (this.update && content && Object.keys(content).length) {
-        this.item.title = newContent.title
-        this.item.slug = content.slug
-        this.item.categories = content.categories
-        this.item.tags = content.tags ? content.tags.join(', ') : ''
-
-        if (this.contentType === 'apps') {
-          this.item.url = content.url ? content.url : 'https://'
-          this.item.description = content.description
-        } else if (this.contentType === 'articles') {
-          console.log(content.markdown)
-          this.item.markdown = content.markdown
-          this.item.summary = content.summary
-        } else if (this.contentType === 'datasets') {
-          this.item.description = content.description
-        }
+      if (this.update && newContent && Object.keys(newContent).length) {
+        this.item = newContent
+        this.item.date = this.item.date.slice(0, 10)
+        this.item.tags = this.item.tags ? this.item.tags.join(', ') : ''
 
         this.saved = true
       }
     }
   },
   methods: {
-    addContentTypeProperties(item) {
-      if (this.contentType === 'apps') {
-        if (this.dropzoneSplashVm.getAcceptedFiles().length) {
-          item.image = this.dropzoneSplashVm.getAcceptedFiles()[0].dataURL
-        }
-      } else if (this.contentType === 'articles') {
-        if (this.dropzoneSplashVm.getAcceptedFiles().length) {
-          item.splash = this.dropzoneSplashVm.getAcceptedFiles()[0].dataURL
-        }
-
-        if (this.dropzoneImagesVm.getAcceptedFiles()) {
-          item.images = this.dropzoneImagesVm.getAcceptedFiles().map(file => {
-            return {
-              title: file.name,
-              src: file.dataURL
-            }
-          })
-        }
-      } else if (this.contentType === 'datasets') {
-        if (this.dropzoneDataVm.getAcceptedFiles()) {
-          const file = this.dropzoneDataVm.getAcceptedFiles()[0]
-          const reader = new FileReader()
-
-          reader.onload = e => this.$emit('load', e.target.result)
-          reader.readAsText(file)
-
-          item.datacsv = reader.result
-        }
-      }
-    },
-    removeAllDropzonFiles() {
-      const dropzoneVms = [
-        this.dropzoneDataVm,
-        this.dropzoneSplashVm,
-        this.dropzoneImagesVm
-      ]
-
-      dropzoneVms.forEach(vm => {
-        if (vm) vm.removeAllFiles()
-      })
-    },
     removeEmptyProperties(obj) {
       Object.keys(obj).forEach(key => {
         ;(obj[key] === undefined || obj[key] === null) && delete obj[key]
@@ -374,41 +335,28 @@ export default {
       this.saved = false
       this.valid = false
     },
-    titleToSlug() {
-      this.item.slug = this.item.title
-        .replace(/[^\w\s]/gi, '')
-        .replace(/\s/gi, '-')
-        .toLowerCase()
-    },
-    onMain() {
-      if (this.update) {
-        console.log(this.contentType)
-        this.$store.dispatch('content/updateItem', this.contentType)
-        alert('Update submitted--back to home!')
-      } else {
-        this.$store.dispatch('content/submitItem', this.contentType)
-        alert('New item submitted--back to home!')
-      }
-      this.$router.push('/')
-    },
-    onReset() {
-      this.resetItem(this.update)
-      this.removeAllDropzonFiles()
-    },
-    onSave() {
+    saveItem() {
       if (this.$refs.form.validate()) {
-        const item = { ...this.item }
+        let item = { ...this.item }
 
         item.tags = item.tags ? item.tags.split(',').map(el => el.trim()) : []
         item.markdown = this.contentType === 'articles' ? item.markdown : null
 
         this.removeEmptyProperties(item)
-        this.addContentTypeProperties(item)
+        this.addDropzoneFiles(item, this.contentType, this.dropzoneList)
 
         this.$store.dispatch('content/setItem', item)
         this.saved = true
 
         alert('Changes saved. Try preview.')
+      }
+    },
+    titleToSlug() {
+      if (!this.update) {
+        this.item.slug = this.item.title
+          .replace(/[^\w\s]/gi, '')
+          .replace(/\s/gi, '-')
+          .toLowerCase()
       }
     }
   }
