@@ -66,10 +66,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Image
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               ref="DropzoneImage"
               fileTypes=".jpg, .jpeg, .png"
@@ -103,10 +103,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Splash image
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               ref="DropzoneSplash"
               fileTypes=".jpg, .jpeg, .png"
@@ -117,10 +117,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Article images
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               key="DropzoneImages"
               ref="DropzoneImages"
@@ -167,10 +167,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Data file
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               key="DropzoneData"
               ref="DropzoneData"
@@ -205,6 +205,7 @@
 <script>
 import { mapState } from 'vuex'
 import { baseActionMixin, dropzoneMixin } from '@/mixins/formMixin'
+import BaseDropzoneTitle from '@/components/BaseDropzoneTitle'
 import BaseForm from '@/components/BaseForm'
 import DatePicker from '@/components/DatePicker'
 import MyDropzone from '@/components/MyDropzone'
@@ -219,6 +220,7 @@ export default {
   name: 'submitform',
   mixins: [baseActionMixin, dropzoneMixin],
   components: {
+    BaseDropzoneTitle,
     BaseForm,
     DatePicker,
     MyDropzone,
@@ -335,7 +337,7 @@ export default {
       this.saved = false
       this.valid = false
     },
-    saveItem() {
+    async saveItem() {
       if (this.$refs.form.validate()) {
         let item = { ...this.item }
 
@@ -343,7 +345,7 @@ export default {
         item.markdown = this.contentType === 'articles' ? item.markdown : null
 
         this.removeEmptyProperties(item)
-        this.addDropzoneFiles(item, this.contentType, this.dropzoneList)
+        await this.addDropzoneFiles(item, this.contentType, this.dropzoneList)
 
         this.$store.dispatch('content/setItem', item)
         this.saved = true

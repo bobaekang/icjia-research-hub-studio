@@ -21,9 +21,20 @@ const hasAcceptedFiles = dz => {
   return dz.getAcceptedFiles().length > 0
 }
 
+const readFileAsync = file => {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader()
+
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+
+    reader.readAsText(file)
+  })
+}
+
 export const dropzoneMixin = {
   methods: {
-    addDropzoneFiles(item, contentType, dropzoneList) {
+    async addDropzoneFiles(item, contentType, dropzoneList) {
       const _ = dropzoneList
 
       if (contentType === 'apps') {
@@ -45,24 +56,18 @@ export const dropzoneMixin = {
         }
       } else if (contentType === 'datasets') {
         if (hasAcceptedFiles(_.data)) {
-          const reader = new FileReader()
-          reader.readAsText(_.data.getAcceptedFiles()[0])
-          reader.onloadend = () => (item.datacsv = reader.result)
+          item.datacsv = await readFileAsync(_.data.getAcceptedFiles()[0])
         }
       }
 
       if (this.$options.name === 'postform') {
         if (hasAcceptedFiles(_.json)) {
-          const reader = new FileReader()
-          reader.readAsText(_.json.getAcceptedFiles()[0])
-          reader.onloadend = () =>
-            Object.assign(item, JSON.parse(reader.result))
+          const json = await readFileAsync(_.json.getAcceptedFiles()[0])
+          Object.assign(item, JSON.parse(json))
         }
 
         if (contentType === 'articles' && hasAcceptedFiles(_.markdown)) {
-          const reader = new FileReader()
-          reader.readAsText(_.markdown.getAcceptedFiles()[0])
-          reader.onloadend = () => (item.markdown = reader.result)
+          item.markdown = await readFileAsync(_.markdown.getAcceptedFiles()[0])
         }
       }
     },

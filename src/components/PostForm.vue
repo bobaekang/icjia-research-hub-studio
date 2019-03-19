@@ -8,10 +8,10 @@
     <v-form>
       <v-layout class="pl-3" row wrap>
         <v-flex class="px-3 pt-3" xs12>
-          <p class="greycolor">
+          <BaseDropzoneTitle :update="update">
             JSON file
-            <span v-if="update">(No change if not provided)</span>
-          </p>
+          </BaseDropzoneTitle>
+
           <MyDropzone
             key="DropzoneJson"
             ref="DropzoneJson"
@@ -25,10 +25,10 @@
 
         <template v-if="contentType === 'apps'">
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Image
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               ref="DropzoneImage"
               fileTypes=".jpg, .jpeg, .png"
@@ -41,10 +41,10 @@
 
         <template v-if="contentType === 'articles'">
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Splash image
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               ref="DropzoneSplash"
               fileTypes=".jpg, .jpeg, .png"
@@ -55,10 +55,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Article images
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               key="DropzoneImages"
               ref="DropzoneImages"
@@ -69,10 +69,10 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Article body
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               key="DropzoneMarkdown"
               ref="DropzoneMarkdown"
@@ -86,10 +86,10 @@
 
         <template v-if="contentType === 'datasets'">
           <v-flex class="px-3 pt-3" xs12>
-            <p class="greycolor">
+            <BaseDropzoneTitle :update="update">
               Data file
-              <span v-if="update">(No change if not provided)</span>
-            </p>
+            </BaseDropzoneTitle>
+
             <MyDropzone
               key="DropzoneData"
               ref="DropzoneData"
@@ -120,6 +120,7 @@
 <script>
 import { mapState } from 'vuex'
 import { baseActionMixin, dropzoneMixin } from '@/mixins/formMixin'
+import BaseDropzoneTitle from '@/components/BaseDropzoneTitle'
 import BaseForm from '@/components/BaseForm'
 import MyDropzone from '@/components/MyDropzone'
 import PreviewDialog from '@/components/PreviewDialog'
@@ -128,6 +129,7 @@ export default {
   name: 'postform',
   mixins: [baseActionMixin, dropzoneMixin],
   components: {
+    BaseDropzoneTitle,
     BaseForm,
     MyDropzone,
     PreviewDialog
@@ -198,11 +200,10 @@ export default {
       }
       this.saved = false
     },
-    saveItem() {
+    async saveItem() {
       let item = { ...this.item }
 
-      this.addDropzoneFiles(item, this.contentType, this.dropzoneList)
-      console.log(item)
+      await this.addDropzoneFiles(item, this.contentType, this.dropzoneList)
 
       this.$store.dispatch('content/setItem', item)
       this.saved = true
