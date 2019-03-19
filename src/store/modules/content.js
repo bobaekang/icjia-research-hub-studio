@@ -83,8 +83,8 @@ export const actions = {
     return await client.updateItemPublishStatus(contentType, id, false)
   },
 
-  async deleteItem({ commit, state }, contentType) {
-    return await client.deleteItem(contentType, state.itemIid)
+  async deleteItem({ commit }, { contentType, id }) {
+    return await client.deleteItem(contentType, id)
   },
   async submitItem({ commit, state }, contentType) {
     return await client.submitItem(contentType, state.item)
