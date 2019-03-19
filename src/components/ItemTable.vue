@@ -16,13 +16,15 @@
 
     <v-data-table
       class="item-table"
-      :headers="headers"
+      :headers="contentType !== 'authors' ? headers : headersAuthor"
       :items="items"
       :search="search"
       :pagination.sync="paginationSync"
     >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.date ? props.item.date.slice(0, 10) : '' }}</td>
+        <td v-if="contentType !== 'authors'">
+          {{ props.item.date ? props.item.date.slice(0, 10) : '' }}
+        </td>
 
         <td>{{ props.item.title }}</td>
 
@@ -105,6 +107,11 @@ export default {
     },
     isAdmin() {
       return this.$store.state.auth.role === 'Administrator'
+    },
+    headersAuthor() {
+      return this.headers.filter(el => {
+        return el.value !== 'date'
+      })
     }
   },
   watch: {
