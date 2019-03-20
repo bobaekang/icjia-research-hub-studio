@@ -16,10 +16,10 @@
     "markdown-it-anchor": "^5.0.2",
     "markdown-it-footnote": "^3.0.1",
     "nprogress": "^0.2.0",
-    "vue": "^2.6.9",
+    "vue": "^2.6.10",
     "vue-router": "^3.0.1",
     "vue-social-sharing": "^2.4.2",
-    "vuetify": "^1.5.6",
+    "vuetify": "^1.5.7",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
@@ -27,10 +27,10 @@
     "@vue/cli-plugin-eslint": "^3.5.1",
     "@vue/cli-service": "^3.5.1",
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.15.1",
+    "eslint": "^5.15.3",
     "eslint-plugin-vue": "^5.2.2",
     "vue-cli-plugin-vuetify": "^0.4.6",
-    "vue-template-compiler": "^2.6.9"
+    "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
     "root": true,
