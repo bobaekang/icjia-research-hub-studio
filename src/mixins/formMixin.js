@@ -48,8 +48,12 @@ export const dropzoneMixin = {
 
         if (hasAcceptedFiles(_.images)) {
           item.images = _.images.getAcceptedFiles().map(file => {
+            console.log(file)
             return {
-              title: file.name,
+              title: file.name
+                .split('.')
+                .slice(0, -1)
+                .join('.'),
               src: file.dataURL
             }
           })
