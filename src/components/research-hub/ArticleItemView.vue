@@ -347,12 +347,15 @@ export default {
   padding: 24px 12px;
 }
 
-.article-body >>> .article-figure p {
-  text-indent: 0;
-}
-
 .article-body >>> .article-figure img {
   max-width: 100%;
+  height: auto;
+}
+
+.article-body >>> .article-figure p,
+.article-body >>> .article-table p {
+  font-size: 16px;
+  text-indent: 0;
 }
 
 .article-body >>> .article-table {
