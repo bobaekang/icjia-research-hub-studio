@@ -72,7 +72,6 @@ export default {
   },
   methods: {
     onInput(e) {
-      console.log(e)
       this.$emit('update:markdown', e)
     },
     syncScrollEditor() {
