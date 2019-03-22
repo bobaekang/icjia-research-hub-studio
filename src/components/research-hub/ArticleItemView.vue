@@ -347,6 +347,14 @@ export default {
   padding: 24px 12px;
 }
 
+.article-body >>> .article-figure p {
+  text-indent: 0;
+}
+
+.article-body >>> .article-figure img {
+  max-width: 100%;
+}
+
 .article-body >>> .article-table {
   margin-left: auto;
   margin-right: auto;
