@@ -148,7 +148,15 @@ export default {
       return this.$vuetify.breakpoint.name === 'md'
     },
     articleBody() {
-      return this.item.markdown ? md.render(this.item.markdown) : ''
+      if (this.item.markdown) {
+        let markdown = this.item.markdown
+        if (this.item.images) {
+          this.item.images.forEach(image => {
+            markdown += `\n\n[${image.title}]: ${image.src}`
+          })
+        }
+        return md.render(markdown)
+      } else return ''
     },
     headings() {
       if (this.item.markdown) {
