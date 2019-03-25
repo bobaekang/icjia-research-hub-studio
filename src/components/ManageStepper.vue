@@ -1,5 +1,5 @@
 <template>
-  <BaseStepper :stepNumTotal="2">
+  <BaseStepper :stepNumTotal="2" @stepper-navigate-before="navigateBefore">
     <template v-slot:stepHeader1>
       Select content type
     </template>
@@ -49,6 +49,12 @@ export default {
   watch: {
     contentType() {
       this.publish = false
+    }
+  },
+  methods: {
+    navigateBefore() {
+      this.$store.dispatch('content/setItem', {})
+      this.$store.dispatch('content/setItemId', '')
     }
   }
 }
