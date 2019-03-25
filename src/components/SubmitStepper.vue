@@ -41,6 +41,7 @@ export default {
   methods: {
     navigateBefore() {
       this.$store.dispatch('content/setItem', {})
+      this.$store.dispatch('content/setItemId', '')
     }
   }
 }

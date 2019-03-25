@@ -87,6 +87,7 @@ export default {
     navigateBefore(step) {
       if (step.to === 2) {
         this.$store.dispatch('content/setItem', {})
+        this.$store.dispatch('content/setItemId', '')
       }
     }
   }
