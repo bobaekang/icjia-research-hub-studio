@@ -50,7 +50,7 @@
 
         <v-flex class="px-3" xs12 md6 lg4>
           <v-text-field
-            v-model="item.tags"
+            v-model="item.tagString"
             label="Tags"
             hint="Separate tags with commas"
           />
@@ -238,7 +238,8 @@ export default {
         slug: '',
         date: today,
         categories: [],
-        tags: '',
+        tags: [],
+        tagString: '',
         authors: null,
         agegroup: null,
         timeperiod: null,
@@ -300,7 +301,7 @@ export default {
       if (this.update && newContent && Object.keys(newContent).length) {
         this.item = newContent
         this.item.date = this.item.date.slice(0, 10)
-        this.item.tags = this.item.tags ? this.item.tags.join(', ') : ''
+        this.item.tagString = this.item.tags ? this.item.tags.join(', ') : ''
 
         this.saved = true
       }
@@ -325,7 +326,8 @@ export default {
           slug: '',
           date: today,
           categories: [],
-          tags: '',
+          tags: [],
+          tagString: '',
           authors: null,
           description: null,
           markdown: '',
@@ -341,8 +343,11 @@ export default {
       if (this.$refs.form.validate()) {
         let item = { ...this.item }
 
-        item.tags = item.tags ? item.tags.split(',').map(el => el.trim()) : []
+        item.tags = this.item.tagString
+          ? this.item.tagString.split(',').map(el => el.trim())
+          : []
         item.markdown = this.contentType === 'articles' ? item.markdown : null
+        delete item.tagString
 
         this.removeEmptyProperties(item)
         await this.addDropzoneFiles(item, this.contentType, this.dropzoneList)
