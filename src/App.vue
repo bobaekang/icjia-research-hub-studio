@@ -72,6 +72,10 @@ a {
   font-size: 0.8em;
 }
 
+.large {
+  font-size: 1.1em;
+}
+
 .bold {
   font-weight: bold;
 }

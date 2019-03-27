@@ -1,7 +1,9 @@
 <template>
   <v-card>
     <v-card-title>
-      <h3>Content type: {{ contentType }}</h3>
+      <p class="font-lato bold large">
+        Content type: {{ contentType[0].toUpperCase() + contentType.slice(1) }}
+      </p>
 
       <v-spacer></v-spacer>
 
@@ -36,17 +38,67 @@
           </PreviewDialog>
 
           <template v-if="type === 'manage'">
-            <v-btn v-if="publish" icon @click="unpublishItem(props.item)">
-              <v-icon class="greyicon">close</v-icon>
-            </v-btn>
+            <template v-if="isRoleUser">
+              <template v-if="isStatusSubmitted">
+                <v-btn icon @click="updateToCreated(props.item)">
+                  <v-icon class="greyicon">close</v-icon>
+                </v-btn>
+              </template>
 
-            <v-btn v-else icon @click="publishItem(props.item)">
-              <v-icon class="greyicon">check</v-icon>
-            </v-btn>
+              <template v-if="isStatusCreated">
+                <v-btn icon @click="updateToSubmitted(props.item)">
+                  <v-icon class="greyicon">check</v-icon>
+                </v-btn>
+                <v-btn icon @click="deleteItem(props.item)">
+                  <v-icon color="error">delete_forever</v-icon>
+                </v-btn>
+              </template>
+            </template>
 
-            <v-btn v-if="isAdmin" icon @click="deleteItem(props.item)">
-              <v-icon color="error">delete_forever</v-icon>
-            </v-btn>
+            <template v-if="isRoleManager">
+              <v-btn
+                v-if="isStatusSubmitted"
+                icon
+                @click="updateToPublished(props.item)"
+              >
+                <v-icon class="greyicon">check</v-icon>
+              </v-btn>
+
+              <v-btn
+                v-if="isStatusPublished"
+                icon
+                @click="updateToSubmitted(props.item)"
+              >
+                <v-icon class="greyicon">close</v-icon>
+              </v-btn>
+            </template>
+
+            <template v-if="isRoleAdmin">
+              <template v-if="isStatusPublished">
+                <v-btn icon @click="updateToSubmitted(props.item)">
+                  <v-icon class="greyicon">close</v-icon>
+                </v-btn>
+              </template>
+
+              <template v-if="isStatusSubmitted">
+                <v-btn icon @click="updateToPublished(props.item)">
+                  <v-icon class="greyicon">check</v-icon>
+                </v-btn>
+                <v-btn icon @click="updateToCreated(props.item)">
+                  <v-icon class="greyicon">close</v-icon>
+                </v-btn>
+              </template>
+
+              <template v-if="isStatusCreated">
+                <v-btn icon @click="updateToSubmitted(props.item)">
+                  <v-icon class="greyicon">check</v-icon>
+                </v-btn>
+              </template>
+
+              <v-btn icon @click="deleteItem(props.item)">
+                <v-icon color="error">delete_forever</v-icon>
+              </v-btn>
+            </template>
           </template>
 
           <v-btn v-if="type === 'update'" icon @click="editItem(props.item)">
@@ -71,7 +123,7 @@ export default {
   },
   props: {
     contentType: String,
-    publish: Boolean,
+    status: String,
     type: String
   },
   data() {
@@ -105,8 +157,23 @@ export default {
     items() {
       return this.$store.state.content.itemlist
     },
-    isAdmin() {
+    isRoleAdmin() {
       return this.$store.state.auth.role === 'Administrator'
+    },
+    isRoleManager() {
+      return this.$store.state.auth.role === 'R&A Manager'
+    },
+    isRoleUser() {
+      return this.$store.state.auth.role === 'R&A User'
+    },
+    isStatusCreated() {
+      return this.status === 'created'
+    },
+    isStatusPublished() {
+      return this.status === 'published'
+    },
+    isStatusSubmitted() {
+      return this.status === 'submitted'
     },
     headersAuthor() {
       return this.headers.filter(el => {
@@ -118,20 +185,20 @@ export default {
     contentType() {
       this.$store.dispatch('content/fetchItemList', {
         contentType: this.contentType,
-        publish: this.publish
+        status: this.status
       })
     },
-    publish() {
+    status() {
       this.$store.dispatch('content/fetchItemList', {
         contentType: this.contentType,
-        publish: this.publish
+        status: this.status
       })
     }
   },
   created() {
     this.$store.dispatch('content/fetchItemList', {
       contentType: this.contentType,
-      publish: this.publish
+      status: this.status
     })
   },
   methods: {
@@ -141,36 +208,52 @@ export default {
         id: item._id
       })
     },
-    async publishItem(item) {
-      const res = await this.$store.dispatch('content/publishItem', {
+    async updateToCreated(item) {
+      const res = await this.$store.dispatch('content/updateItemToCreated', {
         contentType: this.contentType,
         id: item._id
       })
 
-      if (res.status === 200) {
-        alert('Now publisehd: ' + item.title)
+      if (res && res.status === 200) {
+        alert('Status updated to created: ' + item.title)
         this.$store.dispatch('content/fetchItemList', {
           contentType: this.contentType,
-          publish: this.publish
+          status: this.status
         })
       } else {
-        alert('Failed to publish: ' + item.title)
+        alert('Failed to update status: ' + item.title)
       }
     },
-    async unpublishItem(item) {
-      const res = await this.$store.dispatch('content/unpublishItem', {
+    async updateToPublished(item) {
+      const res = await this.$store.dispatch('content/updateItemToPublished', {
         contentType: this.contentType,
         id: item._id
       })
 
-      if (res.status === 200) {
-        alert('Now unpublisehd: ' + item.title)
+      if (res && res.status === 200) {
+        alert('Status updated to publisehd: ' + item.title)
         this.$store.dispatch('content/fetchItemList', {
           contentType: this.contentType,
-          publish: this.publish
+          status: this.status
         })
       } else {
-        alert('Failed to unpublish: ' + item.title)
+        alert('Failed to update status: ' + item.title)
+      }
+    },
+    async updateToSubmitted(item) {
+      const res = await this.$store.dispatch('content/updateItemToSubmitted', {
+        contentType: this.contentType,
+        id: item._id
+      })
+
+      if (res && res.status === 200) {
+        alert('Status updated to submitted: ' + item.title)
+        this.$store.dispatch('content/fetchItemList', {
+          contentType: this.contentType,
+          status: this.status
+        })
+      } else {
+        alert('Failed to update status: ' + item.title)
       }
     },
     async deleteItem(item) {
@@ -179,11 +262,11 @@ export default {
         id: item._id
       })
 
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         alert('Item is deleted.')
         this.$store.dispatch('content/fetchItemList', {
           contentType: this.contentType,
-          publish: this.publish
+          status: this.status
         })
       } else {
         alert('Failed to delete: ' + item.title)
@@ -195,7 +278,7 @@ export default {
         id: item._id
       })
 
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         alert('Item is selected. Proceed to edit.')
       } else {
         alert('Failed to select: ' + item.title)

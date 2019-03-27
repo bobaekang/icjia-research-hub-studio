@@ -9,9 +9,10 @@ export const state = {
     'law enforcement',
     'other'
   ],
+  timeperiodOptions: ['calendar', 'fiscal-Federal', 'fiscal-Illinois', 'other'],
   rules: {
     required: value => !!value || 'Required.',
     timeperiod: value =>
-      value.match(/^\d{4}-\d{4}$/g) || 'Correct format: yyyy-yyyy'
+      /^\d{4}-\d{4}$/g.test(value) || 'Correct format: yyyy-yyyy'
   }
 }

@@ -2,7 +2,10 @@
   <v-layout row wrap>
     <v-flex xs12 class="mb-3">
       <v-layout>
-        <h3>Content type: {{ contentType }}</h3>
+        <p class="font-lato bold large">
+          Content type:
+          {{ contentType[0].toUpperCase() + contentType.slice(1) }}
+        </p>
 
         <v-spacer></v-spacer>
 
@@ -34,10 +37,13 @@
             Make sure to preview the content before you {{ formType }} it!
             <br />
 
-            <template v-if="formType === 'submit'">
-              You will be able to update your submission later.
+            <template v-if="formType === 'create'">
               <br />
-              Your submission will be published once a manager approves it.
+              You will be able to update or submit this draft later.
+              <br />
+              Once you submit a draft, a manager can review the submission.
+              <br />
+              Your submission will be published when a manager approves it.
             </template>
           </template>
         </BaseButtonDialog>

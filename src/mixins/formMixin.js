@@ -3,10 +3,10 @@ export const baseActionMixin = {
     onMain() {
       if (this.update) {
         this.$store.dispatch('content/updateItem', this.contentType)
-        alert('Update submitted--back to home!')
+        alert('Item updated--back to home!')
       } else {
-        this.$store.dispatch('content/submitItem', this.contentType)
-        alert('New item submitted--back to home!')
+        this.$store.dispatch('content/createItem', this.contentType)
+        alert('New item created--back to home!')
       }
       this.$router.push('/')
     },

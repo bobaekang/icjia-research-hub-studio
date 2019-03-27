@@ -8,10 +8,10 @@
           fill-height
           row
           wrap
-          class="text-center"
+          class="task-card"
         >
           <v-flex xs12>
-            <div class="font-lato task-card uppercase">
+            <div class="font-lato uppercase large">
               {{ task.title }}
             </div>
             <div v-if="!task.permission" class="admin-only pt-2">
@@ -35,15 +35,15 @@ export default {
 
 <style scoped>
 .task-card {
-  font-size: 1.2em;
+  text-align: center;
 }
 
 .task-card:hover {
   font-weight: 600;
 }
 
-.text-center {
-  text-align: center;
+.large {
+  font-size: 1.2em;
 }
 
 .admin-only {

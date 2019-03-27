@@ -5,7 +5,7 @@
     </template>
 
     <template v-slot:stepHeader2>
-      Submit
+      Create
     </template>
 
     <template v-slot:stepItem1>
@@ -16,21 +16,21 @@
     </template>
 
     <template v-slot:stepItem2>
-      <SubmitForm :contentType="contentType" :update="false" />
+      <CreateForm :contentType="contentType" :update="false" />
     </template>
   </BaseStepper>
 </template>
 
 <script>
 import BaseStepper from '@/components/BaseStepper'
-import SubmitForm from '@/components/SubmitForm'
 import ContentTypeSelector from '@/components/ContentTypeSelector'
+import CreateForm from '@/components/CreateForm'
 
 export default {
   components: {
     BaseStepper,
-    SubmitForm,
-    ContentTypeSelector
+    ContentTypeSelector,
+    CreateForm
   },
   data() {
     return {

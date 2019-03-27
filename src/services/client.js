@@ -42,16 +42,16 @@ export default {
   },
 
   // all
-  async deleteItem(contentType, id) {
-    return await client
-      .delete(`/${contentType}/${id}`)
-      .catch(err => console.log(err))
-  },
-  async submitItem(contentType, item) {
-    item.publish = false
+  async createItem(contentType, item) {
+    item.status = 'created'
 
     return await client
       .post(`/${contentType}`, item)
+      .catch(err => console.log(err))
+  },
+  async deleteItem(contentType, id) {
+    return await client
+      .delete(`/${contentType}/${id}`)
       .catch(err => console.log(err))
   },
   async updateItem(contentType, item, id) {
@@ -59,7 +59,7 @@ export default {
       .put(`/${contentType}/${id}`, item)
       .catch(err => console.log(err))
   },
-  async updateItemPublishStatus(contentType, id, publish) {
+  async updateItemStatus(contentType, id, status) {
     const type = contentType.slice(0, contentType.length - 1)
     const updateType = `update${type[0].toUpperCase()}${type.slice(1)}`
 
@@ -71,11 +71,11 @@ export default {
               id: "${id}"
             },
             data: {
-              publish: ${publish.toString()}
+              status: "${status}"
             }
           }) {
             ${type} {
-              publish
+              status
             }
           }
         }`
@@ -107,11 +107,11 @@ export default {
         console.log(err)
       })
   },
-  async getAppList(publish) {
+  async getAppList(status) {
     return await client
       .post('/graphql', {
         query: `{
-        apps (sort: "date:desc", where: { publish: ${publish} }) {
+        apps (sort: "date:desc", where: { status: "${status}" }) {
           _id
           date
           title
@@ -150,11 +150,11 @@ export default {
         console.log(err)
       })
   },
-  async getArticleList(publish) {
+  async getArticleList(status) {
     return await client
       .post('/graphql', {
         query: `{
-        articles (sort: "date:desc", where: { publish: ${publish} }) {
+        articles (sort: "date:desc", where: { status: "${status}" }) {
           _id
           date
           title
@@ -205,11 +205,11 @@ export default {
             name
             url
           }
-          apps (sort: "date:desc", where: { publish: false }) {
+          apps (sort: "date:desc", where: { status: "published" }) {
             title
             slug
           }
-          articles (sort: "date:desc", where: { publish: false }) {
+          articles (sort: "date:desc", where: { status: "published" }) {
             title
             slug
           }
@@ -220,11 +220,11 @@ export default {
         console.log(err)
       })
   },
-  async getDatasetList(publish) {
+  async getDatasetList(status) {
     return await client
       .post('graphql', {
         query: `{
-        datasets (sort: "date:desc", where: { publish: ${publish} }) {
+        datasets (sort: "date:desc", where: { status: "${status}" }) {
           _id
           date
           title

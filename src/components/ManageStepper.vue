@@ -16,11 +16,16 @@
     </template>
 
     <template v-slot:stepItem2>
-      <v-btn outline color="primary" @click="publish = !publish">
-        {{ publish ? 'published' : 'submitted' }}
-      </v-btn>
+      <v-radio-group v-model="status" row>
+        <v-radio
+          v-for="status in statusOptions"
+          :key="status"
+          :label="status[0].toUpperCase() + status.slice(1)"
+          :value="status"
+        ></v-radio>
+      </v-radio-group>
 
-      <ItemTable type="manage" :contentType="contentType" :publish="publish" />
+      <ItemTable type="manage" :contentType="contentType" :status="status" />
     </template>
   </BaseStepper>
 </template>
@@ -43,12 +48,24 @@ export default {
     return {
       contentTypes: this.$store.state.content.types,
       contentType: 'apps',
-      publish: false
+      status: 'submitted'
+    }
+  },
+  computed: {
+    statusOptions() {
+      switch (this.$store.state.auth.role) {
+        case 'R&A User':
+          return ['submitted', 'created']
+        case 'R&A Manager':
+          return ['published', 'submitted']
+        default:
+          return ['published', 'submitted', 'created']
+      }
     }
   },
   watch: {
     contentType() {
-      this.publish = false
+      this.status = 'submitted'
     }
   },
   methods: {

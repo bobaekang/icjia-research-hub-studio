@@ -55,39 +55,42 @@ export const actions = {
 
     return res
   },
-  async fetchItemList({ commit }, { contentType, publish }) {
+  async fetchItemList({ commit }, { contentType, status }) {
     let res
     let itemlist
 
     if (contentType === 'apps') {
-      res = await client.getAppList(publish)
+      res = await client.getAppList(status)
       itemlist = res.data.data.apps
     } else if (contentType === 'authors') {
       res = await client.getAuthorList()
       itemlist = res.data.data.authors
     } else if (contentType === 'articles') {
-      res = await client.getArticleList(publish)
+      res = await client.getArticleList(status)
       itemlist = res.data.data.articles
     } else if (contentType === 'datasets') {
-      res = await client.getDatasetList(publish)
+      res = await client.getDatasetList(status)
       itemlist = res.data.data.datasets
     }
 
     commit('SET_ITEM_LIST', itemlist)
   },
 
-  async publishItem({ commit }, { contentType, id }) {
-    return await client.updateItemPublishStatus(contentType, id, true)
+  async updateItemToPublished({ commit }, { contentType, id }) {
+    return await client.updateItemStatus(contentType, id, 'published')
   },
-  async unpublishItem({ commit }, { contentType, id }) {
-    return await client.updateItemPublishStatus(contentType, id, false)
+  async updateItemToSubmitted({ commit }, { contentType, id }) {
+    return await client.updateItemStatus(contentType, id, 'submitted')
+  },
+  async updateItemToCreated({ commit }, { contentType, id }) {
+    return await client.updateItemStatus(contentType, id, 'created')
   },
 
   async deleteItem({ commit }, { contentType, id }) {
     return await client.deleteItem(contentType, id)
   },
-  async submitItem({ commit, state }, contentType) {
-    return await client.submitItem(contentType, state.item)
+  async createItem({ commit, state }, contentType) {
+    return await client.createItem(contentType, state.item)
   },
   async updateItem({ commit, state }, contentType) {
     return await client.updateItem(contentType, state.item, state.itemId)

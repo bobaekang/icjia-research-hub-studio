@@ -1,23 +1,23 @@
 <template>
   <BaseViewLayout>
-    <h1>Post a new item</h1>
+    <h1>Post update</h1>
 
     <p class="py-2">
-      Create a new item to be published.
+      Post updates to existing items.
     </p>
 
-    <PostStepper />
+    <UpdateStepper type="post" />
   </BaseViewLayout>
 </template>
 
 <script>
 import BaseViewLayout from '@/components/BaseViewLayout'
-import PostStepper from '@/components/PostStepper'
+import UpdateStepper from '@/components/UpdateStepper'
 
 export default {
   components: {
     BaseViewLayout,
-    PostStepper
+    UpdateStepper
   }
 }
 </script>

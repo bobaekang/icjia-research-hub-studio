@@ -1,7 +1,7 @@
 <template>
   <BaseForm
     :contentType="contentType"
-    formType="submit"
+    formType="create"
     @form-main="onMain"
     @form-reset="onReset"
   >
@@ -159,10 +159,19 @@
 
           <v-flex class="px-3" xs12 md6 lg4>
             <v-text-field
-              v-model="item.timeperiod"
+              v-model="item.timeperiodString"
               label="Time period"
               hint="Format: yyyy-yyyy"
               :rules="[rules.timeperiod]"
+            />
+          </v-flex>
+
+          <v-flex class="px-3" xs12 md6 lg4>
+            <v-select
+              v-model="item.timeperiodType"
+              label="Time period type"
+              clearable
+              :items="timeperiodOptions"
             />
           </v-flex>
 
@@ -217,7 +226,7 @@ import client from '@/services/client.js'
 const today = new Date().toISOString().substr(0, 10)
 
 export default {
-  name: 'submitform',
+  name: 'createform',
   mixins: [baseActionMixin, dropzoneMixin],
   components: {
     BaseDropzoneTitle,
@@ -243,6 +252,8 @@ export default {
         authors: null,
         agegroup: null,
         timeperiod: null,
+        timeperiodString: null,
+        timeperiodType: null,
         description: null,
         markdown: '',
         summary: null,
@@ -262,6 +273,7 @@ export default {
     ...mapState('form', {
       agegroupOptions: 'agegroupOptions',
       categoryOptions: 'categoryOptions',
+      timeperiodOptions: 'timeperiodOptions',
       rules: 'rules'
     }),
     dropzoneList() {
@@ -303,6 +315,12 @@ export default {
         this.item.date = this.item.date.slice(0, 10)
         this.item.tagString = this.item.tags ? this.item.tags.join(', ') : ''
 
+        if (this.item.hasOwnProperty('timeperiod')) {
+          this.item.timeperiodString =
+            this.item.timeperiod.yearmin + '-' + this.item.timeperiod.yearmax
+          this.item.timeperiodType = this.item.timeperiod.yeartype
+        }
+
         this.saved = true
       }
     }
@@ -329,11 +347,14 @@ export default {
           tags: [],
           tagString: '',
           authors: null,
+          agegroup: null,
+          timeperiod: null,
+          timeperiodString: null,
+          timeperiodType: null,
           description: null,
           markdown: '',
           summary: null,
-          url: null,
-          datacsv: null
+          url: null
         }
       }
       this.saved = false
@@ -347,7 +368,17 @@ export default {
           ? this.item.tagString.split(',').map(el => el.trim())
           : []
         item.markdown = this.contentType === 'articles' ? item.markdown : null
+        item.timeperiod = this.item.timeperiodString
+          ? {
+              yeartype: this.item.timeperiodType,
+              yearmax: this.item.timeperiodString.split('-')[0],
+              yearmin: this.item.timeperiodString.split('-')[1]
+            }
+          : null
+
         delete item.tagString
+        delete item.timeperiodString
+        delete item.timeperiodType
 
         this.removeEmptyProperties(item)
         await this.addDropzoneFiles(item, this.contentType, this.dropzoneList)

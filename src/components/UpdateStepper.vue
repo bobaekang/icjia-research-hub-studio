@@ -16,16 +16,22 @@
     </template>
 
     <template v-slot:stepItem2>
-      <v-btn
-        v-if="type === 'post' && contentType !== 'authors'"
-        outline
-        color="primary"
-        @click="publish = !publish"
-      >
-        {{ publish ? 'published' : 'submitted' }}
-      </v-btn>
+      <template v-if="type === 'post'">
+        <v-radio-group v-if="contentType !== 'authors'" v-model="status" row>
+          <v-radio
+            v-for="status in statusOptions"
+            :key="status"
+            :label="status[0].toUpperCase() + status.slice(1)"
+            :value="status"
+          ></v-radio>
+        </v-radio-group>
 
-      <ItemTable type="update" :contentType="contentType" :publish="publish" />
+        <ItemTable type="update" :contentType="contentType" :status="status" />
+      </template>
+
+      <template v-if="type === 'create'">
+        <ItemTable type="update" :contentType="contentType" status="created" />
+      </template>
     </template>
 
     <template v-slot:stepHeader3>
@@ -34,8 +40,8 @@
 
     <template v-slot:stepItem3>
       <v-flex class="no-shadow">
-        <SubmitForm
-          v-if="type === 'submit'"
+        <CreateForm
+          v-if="type === 'create'"
           :contentType="contentType"
           :update="true"
         />
@@ -53,17 +59,17 @@
 <script>
 import BaseStepper from '@/components/BaseStepper'
 import ContentTypeSelector from '@/components/ContentTypeSelector'
+import CreateForm from '@/components/CreateForm'
 import ItemTable from '@/components/ItemTable'
 import PostForm from '@/components/PostForm'
-import SubmitForm from '@/components/SubmitForm'
 
 export default {
   components: {
     BaseStepper,
     ContentTypeSelector,
+    CreateForm,
     ItemTable,
-    PostForm,
-    SubmitForm
+    PostForm
   },
   props: {
     type: String
@@ -75,12 +81,17 @@ export default {
           ? this.$store.state.content.typesAll
           : this.$store.state.content.types,
       contentType: 'apps',
-      publish: false
+      status: 'submitted'
+    }
+  },
+  computed: {
+    statusOptions() {
+      return ['published', 'submitted', 'created']
     }
   },
   watch: {
     contentType() {
-      this.publish = false
+      this.status = 'submitted'
     }
   },
   methods: {

@@ -24,7 +24,7 @@ const router = new Router({
     {
       path: '/post-new',
       name: 'post-new',
-      component: () => import('./views/Post.vue'),
+      component: () => import('./views/PostNew.vue'),
       meta: {
         requiresAuth: true,
         userNotAllowed: true,
@@ -34,7 +34,7 @@ const router = new Router({
     {
       path: '/post-update',
       name: 'post-update',
-      component: () => import('./views/Update.vue'),
+      component: () => import('./views/PostUpdate.vue'),
       meta: {
         requiresAuth: true,
         userNotAllowed: true,
@@ -47,14 +47,14 @@ const router = new Router({
       component: () => import('./views/Manage.vue'),
       meta: {
         requiresAuth: true,
-        userNotAllowed: true,
+        userNotAllowed: false,
         managerNotAllowed: false
       }
     },
     {
-      path: '/submit-new',
-      name: 'submit',
-      component: () => import('./views/SubmitNew.vue'),
+      path: '/create',
+      name: 'create',
+      component: () => import('./views/Create.vue'),
       meta: {
         requiresAuth: true,
         userNotAllowed: false,
@@ -62,9 +62,9 @@ const router = new Router({
       }
     },
     {
-      path: '/submit-update',
-      name: 'submit-update',
-      component: () => import('./views/SubmitUpdate.vue'),
+      path: '/update',
+      name: 'update',
+      component: () => import('./views/Update.vue'),
       meta: {
         requiresAuth: true,
         userNotAllowed: false,
