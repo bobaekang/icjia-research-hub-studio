@@ -17,6 +17,7 @@
       <v-toolbar-items class="hidden-sm-and-down">
         <template v-if="isLoggedIn">
           <v-btn v-for="(view, i) in views" :key="i" :to="`/${view.path}`" flat>
+            <v-icon v-if="/post/.test(view.name)" color="error">warning</v-icon>
             <template>{{ view.name }}</template>
           </v-btn>
 
@@ -35,7 +36,12 @@
             :key="i"
             :to="`/${view.path}`"
           >
-            <v-list-tile-title class="slot">{{ view.name }}</v-list-tile-title>
+            <v-list-tile-title class="slot">
+              <v-icon v-if="/post/.test(view.name)" color="error">{{
+                'warning'
+              }}</v-icon>
+              <template>{{ view.name }}</template>
+            </v-list-tile-title>
           </v-list-tile>
           <v-list-tile>
             <v-list-tile-title class="slot" @click="logout">
@@ -56,7 +62,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      height: 75,
+      height: 60,
       title: 'Research Hub',
       logo: {
         url:
@@ -76,10 +82,10 @@ export default {
       return `${this.height}px`
     },
     logoHpixel() {
-      return `${this.height * 0.85}px`
+      return `${this.height * 0.9}px`
     },
     views() {
-      let views = [{ name: 'home', path: '/' }]
+      let views = [{ name: 'home', path: '' }]
 
       switch (this.$store.state.auth.role) {
         case 'Administrator':
