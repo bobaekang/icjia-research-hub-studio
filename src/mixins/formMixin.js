@@ -33,6 +33,15 @@ const readFileAsync = file => {
 }
 
 export const dropzoneMixin = {
+  data() {
+    return {
+      msgDropzoneCsv: 'Drop a CSV file here to upload',
+      msgDropzoneImage: 'Drop an image (JPEG or PNG only) here to upload',
+      msgDropzoneImages: 'Drop images (JPEG or PNG only) here to upload',
+      msgDropzoneJson: 'Drop a JSON file here to upload',
+      msgDropzoneMarkdown: 'Drop a markdown file here to upload'
+    }
+  },
   methods: {
     async addDropzoneFiles(item, contentType, dropzoneList) {
       const _ = dropzoneList
