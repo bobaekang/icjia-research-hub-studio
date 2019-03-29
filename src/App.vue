@@ -88,6 +88,10 @@ a {
   text-transform: uppercase;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
+
 .greycolor {
   color: rgba(0, 0, 0, 0.54);
 }

@@ -31,9 +31,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.capitalize {
-  text-transform: capitalize;
-}
-</style>
