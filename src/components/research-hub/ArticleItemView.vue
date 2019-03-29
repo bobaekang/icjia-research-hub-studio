@@ -22,12 +22,12 @@
           <v-divider class="my-3"></v-divider>
 
           <v-btn v-if="article.reportpdf" block outline class="small">
-            Get PDF
+            <template>{{ 'Get PDF' }}</template>
             <v-icon>get_app</v-icon>
           </v-btn>
 
           <v-btn v-if="article.slidespdf" block outline class="small">
-            Get slides
+            <template>{{ 'Get slides' }}</template>
             <v-icon>get_app</v-icon>
           </v-btn>
         </div>
@@ -40,34 +40,33 @@
               <div class="greycolor font-lato uppercase">
                 <span v-for="type in article.type" :key="type">{{ type }}</span>
 
-                &nbsp;|&nbsp;
+                <template>{{ '&nbsp;&nbsp;|&nbsp;&nbsp;' }}</template>
 
                 <span
                   v-for="(category, i) in article.categories"
                   :key="category"
+                  class="uppercase"
                 >
-                  {{ category }}
-                  <span v-if="i + 1 < article.categories.length">
-                    ,&nbsp;
-                  </span>
+                  <template v-if="i > 0">{{ ', ' }}</template>
+                  <template>{{ category }}</template>
                 </span>
+
+                <template>{{ '&nbsp;&nbsp;' }}</template>
 
                 <template v-if="article.tags">
                   <BaseItemPropChip v-for="tag of article.tags" :key="tag">
-                    {{ tag ? tag.toUpperCase() : '' }}
+                    <template>{{ tag }}</template>
                   </BaseItemPropChip>
                 </template>
               </div>
 
-              <BaseButton to="/articles">
-                back
-              </BaseButton>
+              <BaseButton to="/articles">back</BaseButton>
             </v-layout>
 
             <h1 class="article-title">{{ article.title }}</h1>
 
             <div class="article-summary greycolor font-lato my-3">
-              {{ article.summary }}
+              <template>{{ article.summary }}</template>
             </div>
 
             <div>
@@ -76,21 +75,23 @@
                 :key="i"
                 class="uppercase font-oswald"
               >
-                <span v-if="isBeforeLastAuthor(article.authors.length, i)">
-                  &nbsp;and&nbsp;
-                </span>
+                <template v-if="i > 0">{{
+                  article.authors.length > i + 1 ? ', ' : ' and '
+                }}</template>
 
-                <router-link :to="getAuthorPath(author.slug)">
-                  {{ author.title }}
+                <router-link :to="author.slug | getAuthorPath">
+                  <template>{{ author.title }}</template>
                 </router-link>
+              </span>
 
-                <span v-if="i + 2 < article.authors.length">,&nbsp;</span>
+              <template>{{ '&nbsp;&nbsp;|&nbsp;&nbsp;' }}</template>
+
+              <span v-if="article.date" class="uppercase font-oswald">
+                <template>{{ article.date | formatDate }}</template>
               </span>
-              &nbsp;|&nbsp;
-              <span class="uppercase font-oswald">
-                {{ article.date ? article.date.slice(0, 10) : '' }}
-              </span>
-              &nbsp;|&nbsp;
+
+              <template>{{ '&nbsp;&nbsp;|&nbsp;&nbsp;' }}</template>
+
               <v-icon id="print-button" @click="printArticle">fa-print</v-icon>
             </div>
 
@@ -112,6 +113,7 @@
 </template>
 
 <script>
+import { allContentMixin, articleMixin } from '@/mixins/contentMixin'
 import ArticleItemViewTOC from '@/components/research-hub/ArticleItemViewTOC'
 import BaseButton from '@/components/research-hub/BaseButton'
 import BaseItemPropChip from '@/components/research-hub/BaseItemPropChip'
@@ -138,6 +140,7 @@ const md = require('markdown-it')(mdOpts)
   .use(require('markdown-it-anchor'), mdAnchorOpts)
 
 export default {
+  mixins: [allContentMixin, articleMixin],
   components: {
     ArticleItemViewTOC,
     BaseButton,
@@ -185,12 +188,6 @@ export default {
     }
   },
   methods: {
-    isBeforeLastAuthor(length, i) {
-      return length > 1 && length === i + 1
-    },
-    getAuthorPath(slug) {
-      return `/authors/${slug}`
-    },
     onScroll(e) {
       if (typeof window === 'undefined') return
 
@@ -223,7 +220,6 @@ export default {
       document
         .querySelectorAll('link[rel="stylesheet"], style')
         .forEach(node => {
-          console.log(node)
           style += node.outerHTML
         })
 
@@ -240,6 +236,9 @@ export default {
 </script>
 
 <style scoped>
+a {
+  white-space: normal;
+}
 .article-type {
   color: grey;
 }
