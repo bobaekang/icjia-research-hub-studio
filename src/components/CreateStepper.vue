@@ -1,12 +1,8 @@
 <template>
   <BaseStepper :stepNumTotal="2" @stepper-navigate-before="navigateBefore">
-    <template v-slot:stepHeader1>
-      Select content type
-    </template>
+    <template v-slot:stepHeader1>{{ stepHeader1 }}</template>
 
-    <template v-slot:stepHeader2>
-      Create
-    </template>
+    <template v-slot:stepHeader2>{{ stepHeader2 }}</template>
 
     <template v-slot:stepItem1>
       <ContentTypeSelector
@@ -35,7 +31,9 @@ export default {
   data() {
     return {
       contentType: 'apps',
-      contentTypes: this.$store.state.content.types
+      contentTypes: this.$store.state.content.types,
+      stepHeader1: 'Select content type',
+      stepHeader2: 'Create'
     }
   },
   methods: {

@@ -1,8 +1,6 @@
 <template>
   <BaseStepper :stepNumTotal="3" @stepper-navigate-before="navigateBefore">
-    <template v-slot:stepHeader1>
-      Select content type
-    </template>
+    <template v-slot:stepHeader1>{{ stepHeader1 }}</template>
 
     <template v-slot:stepItem1>
       <ContentTypeSelector
@@ -11,9 +9,7 @@
       />
     </template>
 
-    <template v-slot:stepHeader2>
-      Select item
-    </template>
+    <template v-slot:stepHeader2>{{ stepHeader2 }}</template>
 
     <template v-slot:stepItem2>
       <template v-if="type === 'post'">
@@ -34,9 +30,7 @@
       </template>
     </template>
 
-    <template v-slot:stepHeader3>
-      Update
-    </template>
+    <template v-slot:stepHeader3>{{ stepHeader3 }}</template>
 
     <template v-slot:stepItem3>
       <v-flex class="no-shadow">
@@ -81,7 +75,10 @@ export default {
           ? this.$store.state.content.typesAll
           : this.$store.state.content.types,
       contentType: 'apps',
-      status: 'submitted'
+      status: 'submitted',
+      stepHeader1: 'Select content type',
+      stepHeader2: 'Select item',
+      stepHeader3: 'Update'
     }
   },
   computed: {

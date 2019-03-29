@@ -8,9 +8,7 @@
     <v-form>
       <v-layout class="pl-3" row wrap>
         <v-flex class="px-3 pt-3" xs12>
-          <BaseDropzoneTitle :update="update">
-            JSON file
-          </BaseDropzoneTitle>
+          <BaseDropzoneTitle :update="update">JSON file</BaseDropzoneTitle>
 
           <MyDropzone
             key="DropzoneJson"
@@ -19,59 +17,51 @@
             :maxOne="true"
             :limitFilesize="false"
           >
-            Drop a JSON file here to upload
+            <template>{{ msgDropzoneJson }}</template>
           </MyDropzone>
         </v-flex>
 
         <template v-if="contentType === 'apps'">
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Image
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Image</BaseDropzoneTitle>
 
             <MyDropzone
               ref="DropzoneImage"
               fileTypes=".jpg, .jpeg, .png"
               :maxOne="true"
             >
-              Drop an Image (JPEG or PNG only) here to upload
+              <template>{{ msgDropzoneImage }}</template>
             </MyDropzone>
           </v-flex>
         </template>
 
         <template v-if="contentType === 'articles'">
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Splash image
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Splash image</BaseDropzoneTitle>
 
             <MyDropzone
               ref="DropzoneSplash"
               fileTypes=".jpg, .jpeg, .png"
               :maxOne="true"
             >
-              Drop a splash image (JPEG or PNG only) here to upload
+              <template>{{ msgDropzoneImage }}</template>
             </MyDropzone>
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Article images
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Figures</BaseDropzoneTitle>
 
             <MyDropzone
               key="DropzoneImages"
               ref="DropzoneImages"
               fileTypes=".jpg, .jpeg, .png"
             >
-              Drop images (JPEG or PNG only) here to upload
+              <template>{{ msgDropzoneImages }}</template>
             </MyDropzone>
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Article body
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Article body</BaseDropzoneTitle>
 
             <MyDropzone
               key="DropzoneMarkdown"
@@ -79,16 +69,14 @@
               fileTypes=".md"
               :maxOne="true"
             >
-              Drop a markdown file here to upload
+              <template>{{ msgDropzoneMarkdown }}</template>
             </MyDropzone>
           </v-flex>
         </template>
 
         <template v-if="contentType === 'datasets'">
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Data file
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Data file</BaseDropzoneTitle>
 
             <MyDropzone
               key="DropzoneData"
@@ -97,7 +85,7 @@
               :maxOne="true"
               :limitFilesize="false"
             >
-              Drop a CSV file here to upload
+              <template>{{ msgDropzoneCsv }}</template>
             </MyDropzone>
           </v-flex>
         </template>
@@ -105,14 +93,9 @@
 
       <div style="height: 50px;"></div>
 
-      <v-btn outline @click="saveItem">
-        Save
-      </v-btn>
-
+      <v-btn outline @click="saveItem">Save</v-btn>
       <PreviewDialog v-if="saved" :contentType="contentType" :icon="false" />
-      <v-btn v-else outline disabled>
-        Preview
-      </v-btn>
+      <v-btn v-else outline disabled>Preview</v-btn>
     </v-form>
   </BaseForm>
 </template>

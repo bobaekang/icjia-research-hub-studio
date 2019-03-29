@@ -2,13 +2,14 @@
   <v-layout row wrap>
     <v-flex xs6>
       <h3>
-        Markdown
+        <template>{{ 'Markdown' }}</template>
         <small>
-          (use
+          <template>{{ '(use' }}</template>
           <a href="https://markdown.icjia.cloud/" target="_blank">
-            ICJIA markdown editor<v-icon small>launch</v-icon>
+            <template>{{ 'ICJIA markdown editor' }}</template>
+            <v-icon small>launch</v-icon>
           </a>
-          )
+          <template>{{ ')' }}</template>
         </small>
       </h3>
       <v-textarea

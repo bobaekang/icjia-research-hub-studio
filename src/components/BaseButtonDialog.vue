@@ -1,12 +1,7 @@
 <template>
-  <v-dialog v-model="dialog" width="500" :disabled="!buttonCondition">
-    <v-btn
-      outline
-      slot="activator"
-      :color="buttonType"
-      :disabled="!buttonCondition"
-    >
-      {{ buttonName }}
+  <v-dialog v-model="dialog" width="500" :disabled="!btnCondition">
+    <v-btn outline slot="activator" :color="btnType" :disabled="!btnCondition">
+      <template>{{ btnName }}</template>
     </v-btn>
 
     <v-card>
@@ -22,13 +17,8 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn flat @click="dialog = false">
-          back
-        </v-btn>
-
-        <v-btn :color="buttonType" flat @click="onClick">
-          {{ buttonName }}
-        </v-btn>
+        <v-btn flat @click="dialog = false">back</v-btn>
+        <v-btn :color="btnType" flat @click="onClick">{{ btnName }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -37,9 +27,9 @@
 <script>
 export default {
   props: {
-    buttonName: String,
-    buttonType: String,
-    buttonCondition: {
+    btnName: String,
+    btnType: String,
+    btnCondition: {
       type: Boolean,
       default: true
     }

@@ -22,9 +22,7 @@
         <v-stepper-content :key="`content${step}`" :step="step">
           <v-layout align-center>
             <v-btn v-if="stepNum > 1" icon @click="navigateBefore">
-              <v-icon>
-                navigate_before
-              </v-icon>
+              <v-icon>navigate_before</v-icon>
             </v-btn>
 
             <v-flex class="no-shadow mx-3">
@@ -37,9 +35,7 @@
               @click="navigateNext"
               :disabled="itemNotSelected"
             >
-              <v-icon>
-                navigate_next
-              </v-icon>
+              <v-icon>navigate_next</v-icon>
             </v-btn>
           </v-layout>
         </v-stepper-content>

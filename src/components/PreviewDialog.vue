@@ -16,11 +16,11 @@
         </v-btn>
 
         <v-btn flat @click="view = !view">
-          {{ view ? 'show card' : 'show view' }}
+          <template>{{ view ? 'show card' : 'show view' }}</template>
         </v-btn>
 
         <v-toolbar-title style="text-transform: uppercase">
-          Preview type: {{ contentType }} {{ view ? 'view' : '' }}
+          <template>{{ msgTitle }}</template>
         </v-toolbar-title>
       </v-toolbar>
 
@@ -69,6 +69,9 @@ export default {
   computed: {
     item() {
       return this.$store.state.content.item
+    },
+    msgTitle() {
+      return `Preview type: ${this.contentType} ${this.view ? 'view' : ''}`
     }
   },
   methods: {

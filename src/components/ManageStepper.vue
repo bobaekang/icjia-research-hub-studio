@@ -1,8 +1,6 @@
 <template>
   <BaseStepper :stepNumTotal="2" @stepper-navigate-before="navigateBefore">
-    <template v-slot:stepHeader1>
-      Select content type
-    </template>
+    <template v-slot:stepHeader1>{{ stepHeader1 }}</template>
 
     <template v-slot:stepItem1>
       <ContentTypeSelector
@@ -11,9 +9,7 @@
       />
     </template>
 
-    <template v-slot:stepHeader2>
-      Manage
-    </template>
+    <template v-slot:stepHeader2>{{ stepHeader2 }}</template>
 
     <template v-slot:stepItem2>
       <v-radio-group v-model="status" row>
@@ -48,7 +44,9 @@ export default {
     return {
       contentTypes: this.$store.state.content.types,
       contentType: 'apps',
-      status: 'submitted'
+      status: 'submitted',
+      stepHeader1: 'Select content type',
+      stepHeader2: 'Manage'
     }
   },
   computed: {

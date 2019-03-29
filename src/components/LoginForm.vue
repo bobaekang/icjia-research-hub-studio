@@ -30,7 +30,7 @@
         />
 
         <v-btn block color="primary" @click="login" @keyup.enter="login">
-          log in
+          <template>{{ 'log in' }}</template>
         </v-btn>
 
         <v-card-text

@@ -66,16 +66,14 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Image
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Image</BaseDropzoneTitle>
 
             <MyDropzone
               ref="DropzoneImage"
               fileTypes=".jpg, .jpeg, .png"
               :maxOne="true"
             >
-              Drop an Image (JPEG or PNG only) here to upload
+              <template>{{ msgDropzoneImage }}</template>
             </MyDropzone>
           </v-flex>
 
@@ -103,30 +101,26 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Splash image
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Splash image</BaseDropzoneTitle>
 
             <MyDropzone
               ref="DropzoneSplash"
               fileTypes=".jpg, .jpeg, .png"
               :maxOne="true"
             >
-              Drop a splash image (JPEG or PNG only) here to upload
+              <template>{{ msgDropzoneImage }}</template>
             </MyDropzone>
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Article images
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Figures</BaseDropzoneTitle>
 
             <MyDropzone
               key="DropzoneImages"
               ref="DropzoneImages"
               fileTypes=".jpg, .jpeg, .png"
             >
-              Drop images (JPEG or PNG only) here to upload
+              <template>{{ msgDropzoneImages }}</template>
             </MyDropzone>
           </v-flex>
 
@@ -176,9 +170,7 @@
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
-            <BaseDropzoneTitle :update="update">
-              Data file
-            </BaseDropzoneTitle>
+            <BaseDropzoneTitle :update="update">Data file</BaseDropzoneTitle>
 
             <MyDropzone
               key="DropzoneData"
@@ -187,7 +179,7 @@
               :maxOne="true"
               :limitFilesize="false"
             >
-              Drop a CSV file here to upload
+              <template>{{ msgDropzoneCsv }}</template>
             </MyDropzone>
           </v-flex>
 
@@ -199,14 +191,9 @@
 
       <div style="height: 50px;"></div>
 
-      <v-btn outline @click="saveItem">
-        Save
-      </v-btn>
-
+      <v-btn outline @click="saveItem">Save</v-btn>
       <PreviewDialog v-if="saved" :contentType="contentType" :icon="false" />
-      <v-btn v-else outline disabled>
-        Preview
-      </v-btn>
+      <v-btn v-else outline disabled>Preview</v-btn>
     </v-form>
   </BaseForm>
 </template>

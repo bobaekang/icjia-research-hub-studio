@@ -2,7 +2,8 @@
   <v-card>
     <v-card-title>
       <p class="font-lato bold large">
-        Content type: {{ contentType[0].toUpperCase() + contentType.slice(1) }}
+        <template>{{ 'Content type: ' }}</template>
+        <span class="capitalize">{{ contentType }}</span>
       </p>
 
       <v-spacer></v-spacer>
@@ -24,8 +25,8 @@
       :pagination.sync="paginationSync"
     >
       <template slot="items" slot-scope="props">
-        <td v-if="contentType !== 'authors'">
-          {{ props.item.date ? props.item.date.slice(0, 10) : '' }}
+        <td v-if="contentType !== 'authors' && props.item.date">
+          <template>{{ props.item.date.slice(0, 10) }}</template>
         </td>
 
         <td>{{ props.item.title }}</td>
@@ -33,7 +34,7 @@
         <td class="justify-end layout px-3">
           <PreviewDialog :contentType="contentType" :icon="true">
             <v-icon class="greyicon" @click="previewItem(props.item)">
-              visibility
+              <template>{{ 'visibility' }}</template>
             </v-icon>
           </PreviewDialog>
 
@@ -108,7 +109,7 @@
       </template>
 
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
-        Your search for "{{ search }}" found no results.
+        <template>{{ msgNoResult }}</template>
       </v-alert>
     </v-data-table>
   </v-card>
@@ -179,6 +180,9 @@ export default {
       return this.headers.filter(el => {
         return el.value !== 'date'
       })
+    },
+    msgNoResult() {
+      return `Your search for "${this.search}" found no results.`
     }
   },
   watch: {

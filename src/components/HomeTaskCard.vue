@@ -16,7 +16,7 @@
             </div>
             <div v-if="!task.permission" class="admin-only pt-2">
               <v-icon color="error">warning</v-icon>
-              Admin only
+              <template>{{ 'Admin only' }}</template>
             </div>
           </v-flex>
         </v-layout>
