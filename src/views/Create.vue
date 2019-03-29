@@ -1,11 +1,8 @@
 <template>
   <BaseViewLayout>
-    <h1>Create contents</h1>
+    <template v-slot:title>{{ title }}</template>
 
-    <p class="py-2">
-      You can fill out the following form, preview the result, and create a new
-      item.
-    </p>
+    <template v-slot:description>{{ description }}</template>
 
     <CreateStepper />
   </BaseViewLayout>
@@ -19,6 +16,13 @@ export default {
   components: {
     BaseViewLayout,
     CreateStepper
+  },
+  data() {
+    return {
+      title: 'Create contents',
+      description:
+        'You can fill out the following form, preview the result, and create a new item.'
+    }
   }
 }
 </script>

@@ -1,11 +1,8 @@
 <template>
   <BaseViewLayout>
-    <h1>Update contents</h1>
+    <template v-slot:title>{{ title }}</template>
 
-    <p class="py-2">
-      Make updates to existing drafts. Select an item to update, make changes,
-      and apply the update.
-    </p>
+    <template v-slot:description>{{ description }}</template>
 
     <UpdateStepper type="create" />
   </BaseViewLayout>
@@ -19,6 +16,13 @@ export default {
   components: {
     BaseViewLayout,
     UpdateStepper
+  },
+  data() {
+    return {
+      title: 'Update contents',
+      description:
+        'Make updates to existing drafts. Select an item to update, make changes, and apply the update.'
+    }
   }
 }
 </script>

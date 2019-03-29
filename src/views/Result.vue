@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    This is result
+    <p>This is result</p>
   </v-container>
 </template>
 

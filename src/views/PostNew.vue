@@ -1,10 +1,14 @@
 <template>
   <BaseViewLayout>
-    <h1>Post new</h1>
+    <template v-slot:title>{{ title }}</template>
 
-    <p class="py-2">
-      Post new items of any type and status.
-    </p>
+    <template v-slot:description>
+      <template>{{ description }}</template>
+      <span class="greycolor ml-3">
+        <v-icon color="error">warning</v-icon>
+        <template>{{ 'Admin only' }}</template>
+      </span>
+    </template>
 
     <PostStepper />
   </BaseViewLayout>
@@ -18,6 +22,12 @@ export default {
   components: {
     BaseViewLayout,
     PostStepper
+  },
+  data() {
+    return {
+      title: 'Post new',
+      description: 'Post new items of any type and status.'
+    }
   }
 }
 </script>

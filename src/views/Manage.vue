@@ -1,11 +1,8 @@
 <template>
   <BaseViewLayout>
-    <h1>Manage contents</h1>
+    <template v-slot:title>{{ title }}</template>
 
-    <p class="py-2">
-      Review and publish submissions or take down published items to make
-      changes.
-    </p>
+    <template v-slot:description>{{ description }}</template>
 
     <ManageStepper />
   </BaseViewLayout>
@@ -19,6 +16,13 @@ export default {
   components: {
     BaseViewLayout,
     ManageStepper
+  },
+  data() {
+    return {
+      title: 'Manage contents',
+      description:
+        'Review and publish submissions or take down published items to make changes.'
+    }
   }
 }
 </script>
