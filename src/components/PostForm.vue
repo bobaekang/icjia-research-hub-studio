@@ -7,6 +7,18 @@
   >
     <v-form>
       <v-layout class="pl-3" row wrap>
+        <v-flex v-if="contentType !== 'authors'" class="px-3" xs12>
+          <p class="greycolor">Status</p>
+          <v-radio-group v-model="status" row>
+            <v-radio
+              v-for="status in statusOptions"
+              :key="status"
+              :label="status[0].toUpperCase() + status.slice(1)"
+              :value="status"
+            ></v-radio>
+          </v-radio-group>
+        </v-flex>
+
         <v-flex class="px-3 pt-3" xs12>
           <BaseDropzoneTitle :update="update">JSON file</BaseDropzoneTitle>
 
@@ -124,6 +136,8 @@ export default {
   data() {
     return {
       item: {},
+      status: 'published',
+      statusOptions: ['published', 'submitted', 'created'],
       saved: false
     }
   },
@@ -179,13 +193,14 @@ export default {
         })
       } else {
         this.$store.dispatch('content/setItem', {})
-        this.item = {}
+        this.item = { status: 'publisehd' }
       }
       this.removeDropzoneFiles(this.dropzoneList)
       this.saved = false
     },
     async saveItem() {
       let item = { ...this.item }
+      if (!this.update) item.status = this.status
 
       await this.addDropzoneFiles(item, this.contentType, this.dropzoneList)
 
