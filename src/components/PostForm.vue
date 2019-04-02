@@ -181,6 +181,7 @@ export default {
         this.$store.dispatch('content/setItem', {})
         this.item = {}
       }
+      this.removeDropzoneFiles(this.dropzoneList)
       this.saved = false
     },
     async saveItem() {
