@@ -1,7 +1,7 @@
 export const namespaced = true
 
 export const state = {
-  agegroupOptions: ['juvenile', 'adult', 'juvenile/adult'],
+  agegroupOptions: ['all', 'adult', 'juvenile'],
   categoryOptions: [
     'corrections',
     'courts',
