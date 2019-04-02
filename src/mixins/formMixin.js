@@ -67,8 +67,13 @@ export const dropzoneMixin = {
           })
         }
       } else if (contentType === 'datasets') {
+        const datafile = _.data.getAcceptedFiles()[0]
         if (hasAcceptedFiles(_.data)) {
-          item.datacsv = await readFileAsync(_.data.getAcceptedFiles()[0])
+          item.datafilename = datafile.name
+            .split('.')
+            .slice(0, -1)
+            .join('.')
+          item.datacsv = await readFileAsync(datafile)
         }
       }
 
