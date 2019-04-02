@@ -10,7 +10,7 @@ export const state = {
     'other'
   ],
   timeperiodOptions: ['calendar', 'fiscal-Federal', 'fiscal-Illinois', 'other'],
-  unitOptions: ['national', 'statewide', 'county', 'municipal', 'other'],
+  unitOptions: ['national', 'state', 'county', 'municipal', 'other'],
   rules: {
     required: value => !!value || 'Required.',
     timeperiod: value =>
