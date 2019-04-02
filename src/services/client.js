@@ -43,7 +43,7 @@ export default {
 
   // all
   async createItem(contentType, item) {
-    item.status = 'created'
+    item.status = item.status || 'created'
 
     return await client
       .post(`/${contentType}`, item)
