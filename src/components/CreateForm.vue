@@ -117,11 +117,7 @@
           <v-flex class="px-3 pt-3" xs12>
             <BaseDropzoneTitle :update="update">Figures</BaseDropzoneTitle>
 
-            <MyDropzone
-              key="DropzoneImages"
-              ref="DropzoneImages"
-              fileTypes=".jpg, .jpeg, .png"
-            >
+            <MyDropzone ref="DropzoneImages" fileTypes=".jpg, .jpeg, .png">
               <template>{{ msgDropzoneImages }}</template>
             </MyDropzone>
           </v-flex>
@@ -208,7 +204,6 @@
             <BaseDropzoneTitle :update="update">Data file</BaseDropzoneTitle>
 
             <MyDropzone
-              key="DropzoneData"
               ref="DropzoneData"
               fileTypes=".csv"
               :maxOne="true"
@@ -281,6 +276,8 @@ export default {
   },
   data() {
     return {
+      authorOptions: [],
+      dropzoneList: {},
       item: {
         title: '',
         slug: '',
@@ -306,7 +303,6 @@ export default {
         unit: null,
         url: null
       },
-      authorOptions: [],
       saved: false,
       valid: false
     }
@@ -323,29 +319,7 @@ export default {
       timeperiodOptions: 'timeperiodOptions',
       unitOptions: 'unitOptions',
       rules: 'rules'
-    }),
-    dropzoneList() {
-      const contentType = this.contentType
-
-      return {
-        image:
-          contentType === 'apps'
-            ? this.$refs.DropzoneImage.$refs.MyDropzone
-            : null,
-        splash:
-          contentType === 'articles'
-            ? this.$refs.DropzoneSplash.$refs.MyDropzone
-            : null,
-        images:
-          contentType === 'articles'
-            ? this.$refs.DropzoneImages.$refs.MyDropzone
-            : null,
-        data:
-          contentType === 'datasets'
-            ? this.$refs.DropzoneData.$refs.MyDropzone
-            : null
-      }
-    }
+    })
   },
   watch: {
     contentType(newContentType, oldContentType) {
@@ -371,6 +345,39 @@ export default {
 
         this.saved = true
       }
+    }
+  },
+  mounted() {
+    switch (this.contentType) {
+      case 'apps':
+        this.dropzoneList.image = this.$refs.DropzoneImage.$refs.MyDropzone
+        break
+      case 'articles':
+        this.dropzoneList.images = this.$refs.DropzoneImages.$refs.MyDropzone
+        this.dropzoneList.splash = this.$refs.DropzoneSplash.$refs.MyDropzone
+        break
+      case 'datasets':
+        this.dropzoneList.data = this.$refs.DropzoneData.$refs.MyDropzone
+        break
+      default:
+        break
+    }
+  },
+  updated() {
+    this.dropzoneList = {}
+    switch (this.contentType) {
+      case 'apps':
+        this.dropzoneList.image = this.$refs.DropzoneImage.$refs.MyDropzone
+        break
+      case 'articles':
+        this.dropzoneList.images = this.$refs.DropzoneImages.$refs.MyDropzone
+        this.dropzoneList.splash = this.$refs.DropzoneSplash.$refs.MyDropzone
+        break
+      case 'datasets':
+        this.dropzoneList.data = this.$refs.DropzoneData.$refs.MyDropzone
+        break
+      default:
+        break
     }
   },
   methods: {
@@ -469,7 +476,8 @@ export default {
           url: null
         }
       }
-      this.removeDropzoneFiles(this.dropzoneList)
+
+      if (this.dropzoneList) this.removeDropzoneFiles(this.dropzoneList)
       this.saved = false
       this.valid = false
     },

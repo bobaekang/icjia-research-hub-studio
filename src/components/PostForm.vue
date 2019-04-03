@@ -135,6 +135,7 @@ export default {
   },
   data() {
     return {
+      dropzoneList: {},
       item: {},
       status: 'published',
       statusOptions: ['published', 'submitted', 'created'],
@@ -145,33 +146,7 @@ export default {
     ...mapState('content', {
       content: 'item',
       contentId: 'itemId'
-    }),
-    dropzoneList() {
-      const contentType = this.contentType
-      return {
-        json: this.$refs.DropzoneJson.$refs.MyDropzone,
-        image:
-          contentType === 'apps'
-            ? this.$refs.DropzoneImage.$refs.MyDropzone
-            : null,
-        splash:
-          contentType === 'articles'
-            ? this.$refs.DropzoneSplash.$refs.MyDropzone
-            : null,
-        images:
-          contentType === 'articles'
-            ? this.$refs.DropzoneImages.$refs.MyDropzone
-            : null,
-        markdown:
-          contentType === 'articles'
-            ? this.$refs.DropzoneMarkdown.$refs.MyDropzone
-            : null,
-        data:
-          contentType === 'datasets'
-            ? this.$refs.DropzoneData.$refs.MyDropzone
-            : null
-      }
-    }
+    })
   },
   watch: {
     contentType() {
@@ -182,6 +157,43 @@ export default {
         this.item = this.content
         this.saved = true
       }
+    }
+  },
+  mounted() {
+    this.dropzoneList.json = this.$refs.DropzoneJson.$refs.MyDropzone
+    switch (this.contentType) {
+      case 'apps':
+        this.dropzoneList.image = this.$refs.DropzoneImage.$refs.MyDropzone
+        break
+      case 'articles':
+        this.dropzoneList.images = this.$refs.DropzoneImages.$refs.MyDropzone
+        this.dropzoneList.markdown = this.$refs.DropzoneMarkdown.$refs.MyDropzone
+        this.dropzoneList.splash = this.$refs.DropzoneSplash.$refs.MyDropzone
+        break
+      case 'datasets':
+        this.dropzoneList.data = this.$refs.DropzoneData.$refs.MyDropzone
+        break
+      default:
+        break
+    }
+  },
+  updated() {
+    this.dropzoneList = {}
+    this.dropzoneList.json = this.$refs.DropzoneJson.$refs.MyDropzone
+    switch (this.contentType) {
+      case 'apps':
+        this.dropzoneList.image = this.$refs.DropzoneImage.$refs.MyDropzone
+        break
+      case 'articles':
+        this.dropzoneList.images = this.$refs.DropzoneImages.$refs.MyDropzone
+        this.dropzoneList.markdown = this.$refs.DropzoneMarkdown.$refs.MyDropzone
+        this.dropzoneList.splash = this.$refs.DropzoneSplash.$refs.MyDropzone
+        break
+      case 'datasets':
+        this.dropzoneList.data = this.$refs.DropzoneData.$refs.MyDropzone
+        break
+      default:
+        break
     }
   },
   methods: {
@@ -195,7 +207,7 @@ export default {
         this.$store.dispatch('content/setItem', {})
         this.item = { status: 'publisehd' }
       }
-      this.removeDropzoneFiles(this.dropzoneList)
+      if (this.dropzoneList) this.removeDropzoneFiles(this.dropzoneList)
       this.saved = false
     },
     async saveItem() {
