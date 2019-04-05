@@ -94,6 +94,10 @@ a {
   text-transform: capitalize;
 }
 
+.light {
+  font-weight: 300;
+}
+
 .greycolor {
   color: rgba(0, 0, 0, 0.54);
 }
