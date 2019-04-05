@@ -12,7 +12,7 @@
 
     <v-card-title primary-title>
       <v-layout row wrap>
-        <BaseItemTitleDisplay :to="appPath">
+        <BaseItemTitleDisplay :to="app.slug | path('apps')">
           <template>{{ app.title }}</template>
         </BaseItemTitleDisplay>
 
@@ -24,40 +24,54 @@
       </v-layout>
     </v-card-title>
 
-    <v-container py-0 px-3 class="font-lato small">
-      <template v-if="app.contributors">
-        <template>{{ 'Contributed by ' }}</template>
-        <span v-for="(contributor, i) in app.contributors" :key="i">
-          <template v-if="i > 1">{{
-            app.contributors.length > i + 1 ? ', ' : ' and '
-          }}</template>
+    <v-container py-0 px-3>
+      <BaseItemPropDisplay name="Contributors">
+        <template v-if="app.contributors">
+          <span v-for="(contributor, i) in app.contributors" :key="i">
+            <template v-if="i > 1">{{
+              app.contributors.length > i + 1 ? ', ' : ' and '
+            }}</template>
 
-          <a :href="contributor.url" target="_blank">
-            <template>{{ contributor.title }}</template>
-          </a>
+            <a :href="contributor.url" target="_blank">
+              <template>{{ contributor.title }}</template>
+            </a>
+          </span>
+        </template>
+
+        <template v-else>{{ 'ICJIA R&A staff' }}</template>
+      </BaseItemPropDisplay>
+
+      <BaseItemPropDisplay v-if="app.categories" name="Categories">
+        <span v-for="(category, i) in app.categories" :key="i">
+          <template v-if="i > 0">{{ ', ' }}</template>
+          <template>{{ category | capitalize }}</template>
         </span>
-      </template>
-
-      <template v-else>{{ 'Created by ICJIA R&A staff' }}</template>
+      </BaseItemPropDisplay>
     </v-container>
 
     <v-card-actions>
       <v-spacer></v-spacer>
 
-      <BaseButton :to="appPath" icon="more_horiz">more</BaseButton>
+      <BaseButton :to="app.slug | path('apps')" icon="more_horiz">
+        <template>{{ 'more' }}</template>
+      </BaseButton>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import { allContentMixin } from '@/mixins/contentMixin'
 import BaseButton from '@/components/research-hub/BaseButton'
 import BaseItemPropChip from '@/components/research-hub/BaseItemPropChip'
+import BaseItemPropDisplay from '@/components/research-hub/BaseItemPropDisplay'
 import BaseItemTitleDisplay from '@/components/research-hub/BaseItemTitleDisplay'
 
 export default {
+  mixins: [allContentMixin],
   components: {
     BaseButton,
     BaseItemPropChip,
+    BaseItemPropDisplay,
     BaseItemTitleDisplay
   },
   props: {
@@ -66,9 +80,6 @@ export default {
   computed: {
     app() {
       return this.item
-    },
-    appPath() {
-      return `/apps/${this.item.slug}`
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="mb-5">
     <v-card-title primary-title>
       <h2>
         <span class="small pl-2" style="color: #666">Datasets</span>
@@ -9,19 +9,7 @@
 
       <v-spacer />
 
-      <DatasetDownloadButton
-        v-if="dataset.datacsv && dataset.datacsv !== ''"
-        :data="dataset.datacsv"
-        :name="dataset.datafilename"
-        type="csv"
-      />
-
-      <DatasetDownloadButton
-        v-else
-        :data="dataset.datafile.url"
-        :name="dataset.datafile.name"
-        type="file"
-      />
+      <DatasetDownloadButton :id="dataset._id" :isDataCsv="isDataCsv" />
 
       <BaseButton to="/datasets">back</BaseButton>
     </v-card-title>
@@ -29,7 +17,7 @@
     <v-divider />
 
     <v-container>
-      <h3 class="pb-2">About this dataset</h3>
+      <h2 class="mb-3 light">About this dataset</h2>
       <v-layout row wrap>
         <v-flex sm12 md6 lg4>
           <BaseItemPropDisplay name="Updated">
@@ -94,8 +82,29 @@
       <v-divider></v-divider>
 
       <v-container class="hidden-sm-and-down">
-        <h3 class="pb-2">Variables</h3>
+        <h2 class="mb-3 light">Variables</h2>
         <div ref="variables" class="variables-table font-lato small pb-2"></div>
+      </v-container>
+    </template>
+
+    <template v-if="dataset.apps.length || dataset.articles.length">
+      <v-divider></v-divider>
+
+      <v-container>
+        <h2 class="mb-3 light">Related</h2>
+
+        <ul class="font-lato">
+          <li v-for="(app, i) in dataset.apps" :key="`app${i}`">
+            <router-link :to="app.slug | path('apps')">
+              <template>{{ `[APP] ${app.title}` }}</template>
+            </router-link>
+          </li>
+          <li v-for="(article, i) in dataset.articles" :key="`article${i}`">
+            <router-link :to="article.slug | path('articles')">
+              <template>{{ `[ARTICLE] ${article.title}` }}</template>
+            </router-link>
+          </li>
+        </ul>
       </v-container>
     </template>
   </v-card>
@@ -122,10 +131,14 @@ export default {
   computed: {
     dataset() {
       return this.item
+    },
+    isDataCsv() {
+      return this.item.datafilename && this.item.datafilename !== ''
     }
   },
   mounted() {
-    this.$refs.variables.innerHTML = this.array2table(this.dataset.variables)
+    if (this.dataset.variables)
+      this.$refs.variables.innerHTML = this.array2table(this.dataset.variables)
   },
   methods: {
     array2table(array) {

@@ -100,6 +100,16 @@ export default {
           contributors
           description
           url
+          articles (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
+          datasets (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
         }
       }`
       })
@@ -115,6 +125,7 @@ export default {
           _id
           date
           title
+          slug
         }
       }`
       })
@@ -139,9 +150,20 @@ export default {
           summary
           images
           markdown
+          apps (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
           authors {
             _id
             title
+            slug
+          }
+          datasets (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
           }
         }
       }`
@@ -158,6 +180,7 @@ export default {
           _id
           date
           title
+          slug
         }
       }`
       })
@@ -174,6 +197,7 @@ export default {
         authors (sort: "title") {
           _id
           title
+          slug
         }
       }`
       })
@@ -183,6 +207,30 @@ export default {
   },
 
   // datsets
+  async getDataById(id, csv) {
+    const data = csv
+      ? `
+      datacsv
+      datafilename
+      `
+      : `
+      datafile {
+        name
+        url
+      }`
+
+    return await client
+      .post('graphql', {
+        query: `{
+          dataset (id: "${id}" ) {
+            ${data}
+          }
+        }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  },
   async getDataset(id) {
     return await client
       .post('graphql', {
@@ -228,6 +276,7 @@ export default {
           _id
           date
           title
+          slug
         }
       }`
       })

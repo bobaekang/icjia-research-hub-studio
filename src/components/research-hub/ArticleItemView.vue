@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-5">
     <SocialSharing :url="baseUrl + article.slug" :title="article.title" />
 
     <v-img :height="splashHeight" :src="article.splash"></v-img>
@@ -69,7 +69,7 @@
               <template>{{ article.summary }}</template>
             </div>
 
-            <div>
+            <div class="mb-3">
               <span
                 v-for="(author, i) in article.authors"
                 :key="i"
@@ -79,7 +79,7 @@
                   article.authors.length > i + 1 ? ', ' : ' and '
                 }}</template>
 
-                <router-link :to="author.slug | getAuthorPath">
+                <router-link :to="author.slug | path('authors')">
                   <template>{{ author.title }}</template>
                 </router-link>
               </span>
@@ -95,16 +95,38 @@
               <v-icon id="print-button" @click="printArticle">fa-print</v-icon>
             </div>
 
+            <template v-if="article.apps.length || article.datasets.length">
+              <v-divider></v-divider>
+
+              <v-container>
+                <h2 class="mb-3 light">Related</h2>
+
+                <ul class="font-lato">
+                  <li v-for="(app, i) in article.apps" :key="`article${i}`">
+                    <router-link :to="app.slug | path('apps')">
+                      <template>{{ `[APP] ${app.title}` }}</template>
+                    </router-link>
+                  </li>
+                  <li
+                    v-for="(dataset, i) in article.datasets"
+                    :key="`dataset${i}`"
+                  >
+                    <router-link :to="dataset.slug | path('datasets')">
+                      <template>{{ `[DATASET] ${dataset.title}` }}</template>
+                    </router-link>
+                  </li>
+                </ul>
+              </v-container>
+            </template>
+
             <v-divider />
 
             <div
               ref="article-body"
-              class="article-body py-3"
+              class="article-body"
               v-html="articleBody"
               v-scroll="onScroll"
             />
-
-            <div style="height: 100px"></div>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -113,7 +135,7 @@
 </template>
 
 <script>
-import { allContentMixin, articleMixin } from '@/mixins/contentMixin'
+import { allContentMixin } from '@/mixins/contentMixin'
 import ArticleItemViewTOC from '@/components/research-hub/ArticleItemViewTOC'
 import BaseButton from '@/components/research-hub/BaseButton'
 import BaseItemPropChip from '@/components/research-hub/BaseItemPropChip'
@@ -140,7 +162,7 @@ const md = require('markdown-it')(mdOpts)
   .use(require('markdown-it-anchor'), mdAnchorOpts)
 
 export default {
-  mixins: [allContentMixin, articleMixin],
+  mixins: [allContentMixin],
   components: {
     ArticleItemViewTOC,
     BaseButton,
@@ -329,9 +351,9 @@ a {
   padding-inline-start: 40px;
 }
 
-.article-body >>> p {
+/* .article-body >>> p {
   text-indent: 1.5em;
-}
+} */
 
 .article-body >>> hr {
   background: transparent;

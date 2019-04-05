@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="ma-3">
     <v-layout row>
       <v-img
         class="hidden-sm-and-down"
@@ -20,7 +20,7 @@
         <div>
           <v-container class="py-2">
             <v-layout row wrap>
-              <BaseItemTitleDisplay :to="articlePath">
+              <BaseItemTitleDisplay :to="article.slug | path('articles')">
                 <template>{{ article.title }}</template>
               </BaseItemTitleDisplay>
 
@@ -45,7 +45,7 @@
                   article.authors.length > i + 1 ? ', ' : ' and '
                 }}</template>
 
-                <router-link :to="author.slug | getAuthorPath">
+                <router-link :to="author.slug | path('authors')">
                   <template>{{ author.title }}</template>
                 </router-link>
               </span>
@@ -78,7 +78,7 @@
             <v-icon>{{ summaryIcon }}</v-icon>
           </v-btn>
 
-          <BaseButton :to="articlePath" icon="more_horiz">
+          <BaseButton :to="article.slug | path('articles')" icon="more_horiz">
             <template>{{ 'more' }}</template>
           </BaseButton>
         </v-card-actions>
@@ -99,7 +99,7 @@ import BaseItemPropDisplay from '@/components/research-hub/BaseItemPropDisplay'
 import BaseItemTitleDisplay from '@/components/research-hub/BaseItemTitleDisplay'
 
 export default {
-  mixins: [allContentMixin, articleMixin],
+  mixins: [allContentMixin],
   components: {
     BaseButton,
     BaseItemPropChip,
@@ -117,9 +117,6 @@ export default {
   computed: {
     article() {
       return this.item
-    },
-    articlePath() {
-      return `/articles/${this.article.slug}`
     },
     summaryIcon() {
       return this.showSummary ? 'keyboard_arrow_down' : 'keyboard_arrow_up'

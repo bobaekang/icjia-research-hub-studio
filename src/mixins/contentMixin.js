@@ -5,14 +5,9 @@ export const allContentMixin = {
     },
     capitalize(str) {
       return str[0].toUpperCase() + str.slice(1)
-    }
-  }
-}
-
-export const articleMixin = {
-  filters: {
-    getAuthorPath(slug) {
-      return `/authors/${slug}`
+    },
+    path(slug, type) {
+      return `/${type}/${slug}`
     }
   }
 }
