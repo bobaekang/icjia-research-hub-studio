@@ -10,6 +10,19 @@ export const state = {
   typesAll: ['apps', 'authors', 'articles', 'datasets']
 }
 
+export const getters = {
+  itemToPost: state => {
+    let item = state.item
+
+    if (item.apps) item.apps = item.apps.map(el => el._id)
+    if (item.articles) item.articles = item.articles.map(el => el._id)
+    if (item.authors) item.authors = item.authors.map(el => el._id)
+    if (item.datasets) item.datasets = item.datasets.map(el => el._id)
+
+    return item
+  }
+}
+
 export const mutations = {
   SET_ITEM(state, payload) {
     state.item = payload
@@ -89,10 +102,14 @@ export const actions = {
   async deleteItem({ commit }, { contentType, id }) {
     return await client.deleteItem(contentType, id)
   },
-  async createItem({ commit, state }, contentType) {
-    return await client.createItem(contentType, state.item)
+  async createItem({ commit, state, getters }, contentType) {
+    return await client.createItem(contentType, getters.itemToPost, state.item)
   },
-  async updateItem({ commit, state }, contentType) {
-    return await client.updateItem(contentType, state.item, state.itemId)
+  async updateItem({ commit, state, getters }, contentType) {
+    return await client.updateItem(
+      contentType,
+      getters.itemToPost,
+      state.itemId
+    )
   }
 }

@@ -67,6 +67,34 @@
             />
           </v-flex>
 
+          <v-flex xs12>
+            <v-layout row wrap>
+              <v-flex class="px-3" xs12 md6 lg4>
+                <v-select
+                  v-model="item.articles"
+                  item-text="title"
+                  label="Related articles"
+                  clearable
+                  multiple
+                  return-object
+                  :items="articleOptions"
+                />
+              </v-flex>
+
+              <v-flex class="px-3" xs12 md6 lg4>
+                <v-select
+                  v-model="item.datasets"
+                  item-text="title"
+                  label="Related datasets"
+                  clearable
+                  multiple
+                  return-object
+                  :items="datasetOptions"
+                />
+              </v-flex>
+            </v-layout>
+          </v-flex>
+
           <v-flex class="px-3 pt-3" xs12>
             <BaseDropzoneTitle :update="update">Image</BaseDropzoneTitle>
 
@@ -97,9 +125,38 @@
               label="Authors"
               clearable
               multiple
+              return-object
               :items="authorOptions"
               :rules="[rules.required]"
             />
+          </v-flex>
+
+          <v-flex xs12>
+            <v-layout row wrap>
+              <v-flex class="px-3" xs12 md6 lg4>
+                <v-select
+                  v-model="item.apps"
+                  item-text="title"
+                  label="Related apps"
+                  clearable
+                  multiple
+                  return-object
+                  :items="appOptions"
+                />
+              </v-flex>
+
+              <v-flex class="px-3" xs12 md6 lg4>
+                <v-select
+                  v-model="item.datasets"
+                  item-text="title"
+                  label="Related datasets"
+                  clearable
+                  multiple
+                  return-object
+                  :items="datasetOptions"
+                />
+              </v-flex>
+            </v-layout>
           </v-flex>
 
           <v-flex class="px-3 pt-3" xs12>
@@ -200,6 +257,34 @@
             />
           </v-flex>
 
+          <v-flex xs12>
+            <v-layout row wrap>
+              <v-flex class="px-3" xs12 md6 lg4>
+                <v-select
+                  v-model="item.apps"
+                  item-text="title"
+                  label="Related apps"
+                  clearable
+                  multiple
+                  return-object
+                  :items="appOptions"
+                />
+              </v-flex>
+
+              <v-flex class="px-3" xs12 md6 lg4>
+                <v-select
+                  v-model="item.articles"
+                  item-text="title"
+                  label="Related articles"
+                  clearable
+                  multiple
+                  return-object
+                  :items="articleOptions"
+                />
+              </v-flex>
+            </v-layout>
+          </v-flex>
+
           <v-flex class="px-3 pt-3" xs12>
             <BaseDropzoneTitle :update="update">Data file</BaseDropzoneTitle>
 
@@ -276,8 +361,13 @@ export default {
   },
   data() {
     return {
+      appOptions: [],
+      articleOptions: [],
       authorOptions: [],
+      datasetOptions: [],
+
       dropzoneList: {},
+
       item: {
         title: '',
         slug: '',
@@ -301,7 +391,10 @@ export default {
         variables: null,
         variableString: null,
         unit: null,
-        url: null
+        url: null,
+        apps: null,
+        articles: null,
+        datasets: null,
       },
       saved: false,
       valid: false
@@ -322,14 +415,8 @@ export default {
     })
   },
   watch: {
-    contentType(newContentType, oldContentType) {
+    async contentType(newContentType, oldContentType) {
       this.resetItem(false)
-
-      if (newContentType === 'articles' && !this.authorOptions.length) {
-        client.getAuthorList().then(res => {
-          this.authorOptions = res.data.data.authors
-        })
-      }
     },
     content(newContent, oldContent) {
       if (this.update && newContent && Object.keys(newContent).length) {
@@ -347,7 +434,21 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
+    let res
+
+    res = await client.getAuthorList()
+    this.authorOptions = res.data.data.authors
+
+    res = await client.getAppList('published')
+    this.appOptions = res.data.data.apps
+
+    res = await client.getArticleList('published')
+    this.articleOptions = res.data.data.articles
+
+    res = await client.getDatasetList('published')
+    this.datasetOptions = res.data.data.datasets
+
     switch (this.contentType) {
       case 'apps':
         this.dropzoneList.image = this.$refs.DropzoneImage.$refs.MyDropzone
@@ -419,7 +520,7 @@ export default {
         ? this.item.variableString.split(/[\r\n]+/).map(row => {
             const rowArr = row.split('|').map(el => el.trim())
             return {
-              title: rowArr[0],
+              name: rowArr[0],
               type: rowArr[1],
               definition: rowArr[2],
               values: rowArr[3]
@@ -463,6 +564,9 @@ export default {
           description: null,
           notes: null,
           noteString: null,
+          apps: null,
+          articles: null,
+          datasets: null,
           sources: null,
           sourceTitleString: null,
           sourceUrlString: null,
