@@ -4,7 +4,7 @@
       <h3>
         <template>{{ 'Markdown' }}</template>
         <small>
-          <template>{{ '(use' }}</template>
+          <template>{{ ' (use ' }}</template>
           <a href="https://markdown.icjia.cloud/" target="_blank">
             <template>{{ 'ICJIA markdown editor' }}</template>
             <v-icon small>launch</v-icon>
