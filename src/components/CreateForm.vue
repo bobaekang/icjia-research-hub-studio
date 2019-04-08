@@ -119,6 +119,17 @@
         <template v-if="contentType === 'articles'">
           <v-flex class="px-3" xs12 md6 lg4>
             <v-select
+              v-model="item.type"
+              label="Type"
+              clearable
+              multiple
+              :items="typeOptions"
+              :rules="[rules.required]"
+            />
+          </v-flex>
+
+          <v-flex class="px-3" xs12 md6 lg4>
+            <v-select
               v-model="item.authors"
               item-text="title"
               item-value="_id"
@@ -388,13 +399,14 @@ export default {
         timeperiod: null,
         timeperiodString: null,
         timeperiodType: null,
+        type: null,
         variables: null,
         variableString: null,
         unit: null,
         url: null,
         apps: null,
         articles: null,
-        datasets: null,
+        datasets: null
       },
       saved: false,
       valid: false
@@ -410,6 +422,7 @@ export default {
       agegroupOptions: 'agegroupOptions',
       categoryOptions: 'categoryOptions',
       timeperiodOptions: 'timeperiodOptions',
+      typeOptions: 'typeOptions',
       unitOptions: 'unitOptions',
       rules: 'rules'
     })
@@ -574,6 +587,7 @@ export default {
           timeperiod: null,
           timeperiodString: null,
           timeperiodType: null,
+          type: null,
           variables: null,
           variableString: null,
           unit: null,
