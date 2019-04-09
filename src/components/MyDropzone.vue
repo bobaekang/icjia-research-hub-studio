@@ -37,18 +37,6 @@ export default {
   },
   data() {
     return {
-      dropzoneOptions: {
-        url: 'https://httpbin.org/post',
-        thumbnailWidth: 150,
-        maxFilesize: this.limitFilesize ? 0.5 : null,
-        maxFiles: this.maxOne ? 1 : null,
-        acceptedFiles: this.fileTypes,
-        addRemoveLinks: true,
-        autoProcessQueue: false,
-        accept(file, done) {
-          done()
-        }
-      },
       fileAdded: false,
       error: false,
       removedFile: false,
@@ -57,6 +45,24 @@ export default {
       myProgress: 0,
       isMounted: false,
       dDuplicate: false
+    }
+  },
+  computed: {
+    dropzoneOptions() {
+      let options = {
+        url: 'https://httpbin.org/post',
+        thumbnailWidth: 150,
+        acceptedFiles: this.fileTypes,
+        addRemoveLinks: true,
+        autoProcessQueue: false,
+        accept(file, done) {
+          done()
+        }
+      }
+      if (this.maxOne) options.maxFiles = 1
+      if (this.limitFilesize) options.maxFilesize = 0.5
+
+      return options
     }
   },
   methods: {
