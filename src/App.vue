@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <the-toolbar></the-toolbar>
+    <TheToolbar />
 
     <router-view></router-view>
 
-    <the-footer></the-footer>
+    <TheFooter />
   </v-app>
 </template>
 
@@ -21,84 +21,11 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Lato');
-@import url('https://fonts.googleapis.com/css?family=Oswald');
 @import url('https://fonts.googleapis.com/css?family=Gentium+Book+Basic');
 
 .application {
   color: #333;
   font-family: 'Gentium Book Basic', serif;
   font-size: 16px;
-}
-
-h1 {
-  font-family: 'Oswald', sans-serif;
-  font-weight: 400;
-}
-
-h2,
-h3 {
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-}
-
-a {
-  text-decoration: none;
-}
-
-.v-btn {
-  font-family: 'Lato', sans-serif;
-}
-
-.view-title {
-  font-size: 2em;
-  font-family: 'Oswald', sans-serif;
-  color: white;
-  background-color: #466c8c;
-}
-
-.section-title {
-  border-bottom: 1px #999 solid;
-  text-transform: uppercase;
-}
-
-.font-oswald {
-  font-family: 'Oswald', sans-serif;
-}
-
-.font-lato {
-  font-family: 'Lato', sans-serif;
-}
-
-.small {
-  font-size: 0.8em;
-}
-
-.large {
-  font-size: 1.1em;
-}
-
-.bold {
-  font-weight: bold;
-}
-
-.italic {
-  font-style: italic;
-}
-
-.uppercase {
-  text-transform: uppercase;
-}
-
-.capitalize {
-  text-transform: capitalize;
-}
-
-.light {
-  font-weight: 300;
-}
-
-.greycolor {
-  color: rgba(0, 0, 0, 0.54);
 }
 </style>

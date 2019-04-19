@@ -12,6 +12,7 @@
     "axios": "^0.18.0",
     "dropzone": "^5.5.1",
     "file-saver": "^2.0.1",
+    "icjia-research-hub-lib": "github:bobaekang/icjia-research-hub-lib",
     "markdown-it": "^8.4.2",
     "markdown-it-anchor": "^5.0.2",
     "markdown-it-footnote": "^3.0.1",
