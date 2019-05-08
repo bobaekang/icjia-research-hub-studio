@@ -114,7 +114,9 @@
 
 <script>
 import { mapState } from 'vuex'
-import { baseActionMixin, dropzoneMixin } from '@/mixins/formMixin'
+import dropzoneMixin from '@/mixins/dropzoneMixin'
+import formMixin from '@/mixins/formMixin'
+
 import BaseDropzoneTitle from '@/components/BaseDropzoneTitle'
 import BaseForm from '@/components/BaseForm'
 import MyDropzone from '@/components/MyDropzone'
@@ -122,7 +124,7 @@ import PreviewDialog from '@/components/PreviewDialog'
 
 export default {
   name: 'postform',
-  mixins: [baseActionMixin, dropzoneMixin],
+  mixins: [dropzoneMixin, formMixin],
   components: {
     BaseDropzoneTitle,
     BaseForm,

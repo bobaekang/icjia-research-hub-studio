@@ -16,8 +16,7 @@ client.interceptors.response.use(response => {
   return response
 })
 
-export default {
-  //auth
+export const auth = {
   login(user) {
     return new Promise((resolve, reject) => {
       client
@@ -39,9 +38,267 @@ export default {
   },
   logout() {
     delete client.defaults.headers.common['Authorization']
-  },
+  }
+}
 
-  // all
+export const appGetters = {
+  async getSingle(id) {
+    const res = await client
+      .post('/graphql', {
+        query: `{
+        app (id: "${id}") {
+          title
+          slug
+          external
+          date
+          categories
+          tags
+          image
+          contributors
+          description
+          url
+          citation
+          funding
+          articles (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
+          datasets (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
+        }
+      }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    return {
+      status: res.status,
+      data: res.data ? res.data.data.app : null
+    }
+  },
+  async getList(status) {
+    const res = await client
+      .post('/graphql', {
+        query: `{
+        apps (sort: "date:desc", where: { status: "${status}" }) {
+          _id
+          date
+          title
+          slug
+        }
+      }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    return {
+      status: res.status,
+      data: res.data ? res.data.data.apps : null
+    }
+  }
+}
+
+export const articleGetters = {
+  async getSingle(id) {
+    const res = await client
+      .post('/graphql', {
+        query: `{
+        article (id: "${id}") {
+          title
+          slug
+          external
+          date
+          type
+          categories
+          tags
+          splash
+          thumbnail
+          abstract
+          images
+          markdown
+          citation
+          doi
+          funding
+          apps (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
+          authors {
+            _id
+            title
+            slug
+          }
+          datasets (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
+        }
+      }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    return {
+      status: res.status,
+      data: res.data ? res.data.data.article : null
+    }
+  },
+  async getList(status) {
+    const res = await client
+      .post('/graphql', {
+        query: `{
+        articles (sort: "date:desc", where: { status: "${status}" }) {
+          _id
+          date
+          title
+          slug
+        }
+      }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    return {
+      status: res.status,
+      data: res.data ? res.data.data.articles : null
+    }
+  }
+}
+
+export const authorGetters = {
+  async getList() {
+    const res = await client
+      .post('/graphql', {
+        query: `{
+        authors (sort: "title") {
+          _id
+          title
+          slug
+        }
+      }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    return {
+      status: res.status,
+      data: res.data ? res.data.data.authors : null
+    }
+  }
+}
+
+export const datasetGetters = {
+  async getData(id, csv) {
+    const data = csv
+      ? `
+      datacsv
+      datafilename
+      `
+      : `
+      datafile {
+        name
+        url
+      }`
+
+    const res = await client
+      .post('graphql', {
+        query: `{
+          dataset (id: "${id}" ) {
+            ${data}
+          }
+        }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    return {
+      status: res.status,
+      data: res.data ? res.data.data.dataset : null
+    }
+  },
+  async getSingle(id) {
+    const res = await client
+      .post('graphql', {
+        query: `{
+        dataset (id: "${id}") {
+          title
+          slug
+          external
+          date
+          categories
+          tags
+          sources
+          timeperiod
+          agegroup
+          unit
+          variables
+          description
+          notes
+          citation
+          funding
+          datacsv
+          datafile {
+            name
+            url
+          }
+          apps (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
+          articles (sort: "date:desc", where: { status: "published" }) {
+            _id
+            title
+            slug
+          }
+        }
+      }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    return {
+      status: res.status,
+      data: res.data ? res.data.data.dataset : null
+    }
+  },
+  async getList(status) {
+    const res = await client
+      .post('graphql', {
+        query: `{
+        datasets (sort: "date:desc", where: { status: "${status}" }) {
+          _id
+          date
+          title
+          slug
+        }
+      }`
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    return {
+      status: res.status,
+      data: res.data ? res.data.data.datasets : null
+    }
+  }
+}
+
+export const jobs = {
   async createItem(contentType, item) {
     item.status = item.status || 'created'
 
@@ -83,205 +340,7 @@ export default {
       .catch(err => {
         console.log(err)
       })
-  },
-
-  // apps
-  async getApp(id) {
-    return await client
-      .post('/graphql', {
-        query: `{
-        app (id: "${id}") {
-          title
-          slug
-          date
-          categories
-          tags
-          image
-          contributors
-          description
-          url
-          articles (sort: "date:desc", where: { status: "published" }) {
-            _id
-            title
-            slug
-          }
-          datasets (sort: "date:desc", where: { status: "published" }) {
-            _id
-            title
-            slug
-          }
-        }
-      }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },
-  async getAppList(status) {
-    return await client
-      .post('/graphql', {
-        query: `{
-        apps (sort: "date:desc", where: { status: "${status}" }) {
-          _id
-          date
-          title
-          slug
-        }
-      }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },
-
-  // articles
-  async getArticle(id) {
-    return await client
-      .post('/graphql', {
-        query: `{
-        article (id: "${id}") {
-          title
-          slug
-          date
-          type
-          categories
-          tags
-          splash
-          summary
-          images
-          markdown
-          apps (sort: "date:desc", where: { status: "published" }) {
-            _id
-            title
-            slug
-          }
-          authors {
-            _id
-            title
-            slug
-          }
-          datasets (sort: "date:desc", where: { status: "published" }) {
-            _id
-            title
-            slug
-          }
-        }
-      }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },
-  async getArticleList(status) {
-    return await client
-      .post('/graphql', {
-        query: `{
-        articles (sort: "date:desc", where: { status: "${status}" }) {
-          _id
-          date
-          title
-          slug
-        }
-      }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },
-
-  // authors
-  async getAuthorList() {
-    return await client
-      .post('/graphql', {
-        query: `{
-        authors (sort: "title") {
-          _id
-          title
-          slug
-        }
-      }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },
-
-  // datsets
-  async getDataById(id, csv) {
-    const data = csv
-      ? `
-      datacsv
-      datafilename
-      `
-      : `
-      datafile {
-        name
-        url
-      }`
-
-    return await client
-      .post('graphql', {
-        query: `{
-          dataset (id: "${id}" ) {
-            ${data}
-          }
-        }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },
-  async getDataset(id) {
-    return await client
-      .post('graphql', {
-        query: `{
-        dataset (id: "${id}") {
-          title
-          slug
-          date
-          categories
-          tags
-          sources
-          timeperiod
-          agegroup
-          unit
-          variables
-          description
-          notes
-          datacsv
-          datafile {
-            name
-            url
-          }
-          apps (sort: "date:desc", where: { status: "published" }) {
-            title
-            slug
-          }
-          articles (sort: "date:desc", where: { status: "published" }) {
-            title
-            slug
-          }
-        }
-      }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },
-  async getDatasetList(status) {
-    return await client
-      .post('graphql', {
-        query: `{
-        datasets (sort: "date:desc", where: { status: "${status}" }) {
-          _id
-          date
-          title
-          slug
-        }
-      }`
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }
 }
+
+export default client

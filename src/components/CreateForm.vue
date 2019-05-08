@@ -132,7 +132,6 @@
             <v-select
               v-model="item.authors"
               item-text="title"
-              item-value="_id"
               label="Authors"
               clearable
               multiple
@@ -200,8 +199,8 @@
 
           <v-flex class="px-3" xs12 md10 lg6>
             <v-textarea
-              v-model="item.summary"
-              label="Summary"
+              v-model="item.abstract"
+              label="Abstract"
               :rules="[rules.required]"
             />
           </v-flex>
@@ -332,10 +331,25 @@
         </template>
       </v-layout>
 
+      <v-layout row wrap>
+        <v-flex class="px-3" xs12 md10 lg6>
+          <v-textarea v-model="item.citation" label="Suggested citation" />
+        </v-flex>
+
+        <v-flex class="px-3" xs12 md10 lg6>
+          <v-textarea v-model="item.funding" label="Funding acknowledgement" />
+        </v-flex>
+      </v-layout>
+
       <div style="height: 50px;"></div>
 
       <v-btn outline @click="saveItem">Save</v-btn>
-      <PreviewDialog v-if="saved" :contentType="contentType" :icon="false" />
+      <PreviewDialog
+        v-if="saved"
+        :contentType="contentType"
+        :icon="false"
+        :local="true"
+      />
       <v-btn v-else outline disabled>Preview</v-btn>
     </v-form>
   </BaseForm>
@@ -343,7 +357,9 @@
 
 <script>
 import { mapState } from 'vuex'
-import { baseActionMixin, dropzoneMixin } from '@/mixins/formMixin'
+import dropzoneMixin from '@/mixins/dropzoneMixin'
+import formMixin from '@/mixins/formMixin'
+
 import BaseDropzoneTitle from '@/components/BaseDropzoneTitle'
 import BaseForm from '@/components/BaseForm'
 import DatePicker from '@/components/DatePicker'
@@ -351,13 +367,18 @@ import MyDropzone from '@/components/MyDropzone'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import PreviewDialog from '@/components/PreviewDialog'
 
-import client from '@/services/client.js'
+import {
+  appGetters,
+  articleGetters,
+  authorGetters,
+  datasetGetters
+} from '@/services/client.js'
 
 const today = new Date().toISOString().substr(0, 10)
 
 export default {
   name: 'createform',
-  mixins: [baseActionMixin, dropzoneMixin],
+  mixins: [dropzoneMixin, formMixin],
   components: {
     BaseDropzoneTitle,
     BaseForm,
@@ -388,17 +409,20 @@ export default {
         tagString: '',
         markdown: '',
         agegroup: null,
+        abstract: null,
         authors: null,
+        citation: null,
         description: null,
+        funding: null,
         notes: null,
         noteString: null,
         sources: null,
         sourceTitleString: null,
         sourceUrlString: null,
-        summary: null,
         timeperiod: null,
         timeperiodString: null,
         timeperiodType: null,
+        thumbnail: null,
         type: null,
         variables: null,
         variableString: null,
@@ -448,19 +472,10 @@ export default {
     }
   },
   async mounted() {
-    let res
-
-    res = await client.getAuthorList()
-    this.authorOptions = res.data.data.authors
-
-    res = await client.getAppList('published')
-    this.appOptions = res.data.data.apps
-
-    res = await client.getArticleList('published')
-    this.articleOptions = res.data.data.articles
-
-    res = await client.getDatasetList('published')
-    this.datasetOptions = res.data.data.datasets
+    this.authorOptions = (await authorGetters.getList()).data
+    this.appOptions = (await appGetters.getList('published')).data
+    this.articleOptions = (await articleGetters.getList('published')).data
+    this.datasetOptions = (await datasetGetters.getList('published')).data
 
     switch (this.contentType) {
       case 'apps':
@@ -553,7 +568,13 @@ export default {
     },
     removeEmptyProperties(obj) {
       Object.keys(obj).forEach(key => {
-        ;(obj[key] === undefined || obj[key] === null) && delete obj[key]
+        if (obj[key] === undefined || obj[key] === null) {
+          delete obj[key]
+        } else if (Array.isArray(obj[key])) {
+          obj[key].forEach((val, i, arr) => {
+            if (val === undefined) arr.splice(i, 1)
+          })
+        }
       })
     },
     resetItem(update) {
@@ -572,9 +593,12 @@ export default {
           tags: [],
           tagString: '',
           markdown: '',
+          abstract: null,
           agegroup: null,
           authors: null,
+          citation: null,
           description: null,
+          funding: null,
           notes: null,
           noteString: null,
           apps: null,
@@ -583,10 +607,10 @@ export default {
           sources: null,
           sourceTitleString: null,
           sourceUrlString: null,
-          summary: null,
           timeperiod: null,
           timeperiodString: null,
           timeperiodType: null,
+          thumbnail: null,
           type: null,
           variables: null,
           variableString: null,

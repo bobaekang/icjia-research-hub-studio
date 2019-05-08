@@ -25,19 +25,19 @@
       </v-toolbar>
 
       <PreviewDialogApp
-        v-if="contentType == 'apps'"
+        v-if="contentType == 'apps' && item"
         :item="item"
         :view="view"
       />
 
       <PreviewDialogArticle
-        v-if="contentType == 'articles'"
+        v-if="contentType == 'articles' && item"
         :item="item"
         :view="view"
       />
 
       <PreviewDialogDataset
-        v-if="contentType == 'datasets'"
+        v-if="contentType == 'datasets' && item"
         :item="item"
         :view="view"
       />
@@ -46,6 +46,11 @@
 </template>
 
 <script>
+import {
+  appGetters,
+  articleGetters,
+  datasetGetters
+} from '@/services/client.js'
 import PreviewDialogApp from '@/components/PreviewDialogApp'
 import PreviewDialogArticle from '@/components/PreviewDialogArticle'
 import PreviewDialogDataset from '@/components/PreviewDialogDataset'
@@ -58,18 +63,21 @@ export default {
   },
   props: {
     contentType: String,
-    icon: Boolean
+    icon: Boolean,
+    id: String,
+    local: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
       dialog: false,
-      view: false
+      view: false,
+      item: this.local ? this.$store.state.content.item : null
     }
   },
   computed: {
-    item() {
-      return this.$store.state.content.item
-    },
     msgTitle() {
       return `Preview type: ${this.contentType} ${this.view ? 'view' : ''}`
     }
@@ -78,6 +86,27 @@ export default {
     closePreview() {
       this.dialog = false
       this.view = false
+    }
+  },
+  async created() {
+    if (!this.local) {
+      let res
+
+      switch (this.contentType) {
+        case 'apps':
+          res = await appGetters.getSingle(this.id)
+          break
+        case 'articles':
+          res = await articleGetters.getSingle(this.id)
+          break
+        case 'datasets':
+          res = await datasetGetters.getSingle(this.id)
+          break
+        default:
+          break
+      }
+
+      this.item = res.data
     }
   }
 }

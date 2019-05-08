@@ -1,9 +1,8 @@
-import client from '@/services/client.js'
+import { auth } from '@/services/client.js'
 
 export const namespaced = true
 
 export const state = {
-  client,
   isLoggedIn: false,
   role: ''
 }
@@ -15,7 +14,7 @@ export const mutations = {
   LOGOUT(state) {
     state.isLoggedIn = false
     state.role = ''
-    client.logout()
+    auth.logout()
   },
   SET_ROLE(state, payload) {
     state.role = payload
@@ -25,7 +24,7 @@ export const mutations = {
 export const actions = {
   login({ commit }, user) {
     return new Promise((resolve, reject) => {
-      client.login(user).then(
+      auth.login(user).then(
         res => {
           commit('LOGIN')
           commit('SET_ROLE', res.data.user.role.name)

@@ -18,6 +18,7 @@
     </v-card-title>
 
     <v-data-table
+      v-if="items"
       class="item-table"
       :headers="contentType !== 'authors' ? headers : headersAuthor"
       :items="items"
@@ -32,7 +33,11 @@
         <td>{{ props.item.title }}</td>
 
         <td class="justify-end layout px-3">
-          <PreviewDialog :contentType="contentType" :icon="true">
+          <PreviewDialog
+            :contentType="contentType"
+            :icon="true"
+            :id="props.item._id"
+          >
             <v-icon class="greyicon" @click="previewItem(props.item)">
               <template>{{ 'visibility' }}</template>
             </v-icon>
@@ -151,6 +156,7 @@ export default {
         descending: true,
         sortBy: 'date'
       },
+      componentKey: 0,
       search: ''
     }
   },
@@ -205,7 +211,19 @@ export default {
       status: this.status
     })
   },
+  mounted() {
+    this.$watch(
+      'status',
+      () => {
+        this.rerender()
+      },
+      { immediate: true }
+    )
+  },
   methods: {
+    rerender() {
+      this.componentKey += 1
+    },
     async previewItem(item) {
       await this.$store.dispatch('content/fetchItem', {
         contentType: this.contentType,
