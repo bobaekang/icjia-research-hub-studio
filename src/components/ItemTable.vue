@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import PreviewDialog from '@/components/PreviewDialog'
+const PreviewDialog = () => import('@/components/PreviewDialog')
 
 export default {
   components: {

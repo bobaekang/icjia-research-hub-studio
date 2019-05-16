@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import BaseStepper from '@/components/BaseStepper'
-import ContentTypeSelector from '@/components/ContentTypeSelector'
-import CreateForm from '@/components/CreateForm'
+const BaseStepper = () => import('@/components/BaseStepper')
+const ContentTypeSelector = () => import('@/components/ContentTypeSelector')
+const CreateForm = () => import('@/components/CreateForm')
 
 export default {
   components: {

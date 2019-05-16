@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import BaseViewLayout from '@/components/BaseViewLayout'
-import UpdateStepper from '@/components/UpdateStepper'
+const BaseViewLayout = () => import('@/components/BaseViewLayout')
+const UpdateStepper = () => import('@/components/UpdateStepper')
 
 export default {
   components: {

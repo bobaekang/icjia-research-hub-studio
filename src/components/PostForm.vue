@@ -117,10 +117,10 @@ import { mapState } from 'vuex'
 import dropzoneMixin from '@/mixins/dropzoneMixin'
 import formMixin from '@/mixins/formMixin'
 
-import BaseDropzoneTitle from '@/components/BaseDropzoneTitle'
-import BaseForm from '@/components/BaseForm'
-import MyDropzone from '@/components/MyDropzone'
-import PreviewDialog from '@/components/PreviewDialog'
+const BaseDropzoneTitle = () => import('@/components/BaseDropzoneTitle')
+const BaseForm = () => import('@/components/BaseForm')
+const MyDropzone = () => import('@/components/MyDropzone')
+const PreviewDialog = () => import('@/components/PreviewDialog')
 
 export default {
   name: 'postform',

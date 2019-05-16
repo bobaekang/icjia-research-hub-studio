@@ -51,11 +51,11 @@
 </template>
 
 <script>
-import BaseStepper from '@/components/BaseStepper'
-import ContentTypeSelector from '@/components/ContentTypeSelector'
-import CreateForm from '@/components/CreateForm'
-import ItemTable from '@/components/ItemTable'
-import PostForm from '@/components/PostForm'
+const BaseStepper = () => import('@/components/BaseStepper')
+const ContentTypeSelector = () => import('@/components/ContentTypeSelector')
+const CreateForm = () => import('@/components/CreateForm')
+const ItemTable = () => import('@/components/ItemTable')
+const PostForm = () => import('@/components/PostForm')
 
 export default {
   components: {

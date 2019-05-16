@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import BaseDropzone from '@/components/BaseDropzone'
+const BaseDropzone = () => import('@/components/BaseDropzone')
 
 export default {
   components: {

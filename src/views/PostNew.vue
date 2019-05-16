@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import BaseViewLayout from '@/components/BaseViewLayout'
-import PostStepper from '@/components/PostStepper'
+const BaseViewLayout = () => import('@/components/BaseViewLayout')
+const PostStepper = () => import('@/components/PostStepper')
 
 export default {
   components: {

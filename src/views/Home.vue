@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import HomeTaskCard from '@/components/HomeTaskCard'
+const HomeTaskCard = () => import('@/components/HomeTaskCard')
 
 export default {
   components: {

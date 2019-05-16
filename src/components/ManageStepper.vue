@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import BaseStepper from '@/components/BaseStepper'
-import ContentTypeSelector from '@/components/ContentTypeSelector'
-import ItemTable from '@/components/ItemTable'
+const BaseStepper = () => import('@/components/BaseStepper')
+const ContentTypeSelector = () => import('@/components/ContentTypeSelector')
+const ItemTable = () => import('@/components/ItemTable')
 
 export default {
   components: {

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import BaseButtonDialog from '@/components/BaseButtonDialog'
+const BaseButtonDialog = () => import('@/components/BaseButtonDialog')
 
 export default {
   components: {

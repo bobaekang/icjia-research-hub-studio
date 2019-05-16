@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import TheToolbar from './components/TheToolbar'
-import TheFooter from './components/TheFooter'
+const TheToolbar = () => import('./components/TheToolbar')
+const TheFooter = () => import('./components/TheFooter')
 
 export default {
   components: {

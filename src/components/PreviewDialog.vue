@@ -51,9 +51,9 @@ import {
   articleGetters,
   datasetGetters
 } from '@/services/client.js'
-import PreviewDialogApp from '@/components/PreviewDialogApp'
-import PreviewDialogArticle from '@/components/PreviewDialogArticle'
-import PreviewDialogDataset from '@/components/PreviewDialogDataset'
+const PreviewDialogApp = () => import('@/components/PreviewDialogApp')
+const PreviewDialogArticle = () => import('@/components/PreviewDialogArticle')
+const PreviewDialogDataset = () => import('@/components/PreviewDialogDataset')
 
 export default {
   components: {

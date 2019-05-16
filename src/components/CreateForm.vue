@@ -360,12 +360,12 @@ import { mapState } from 'vuex'
 import dropzoneMixin from '@/mixins/dropzoneMixin'
 import formMixin from '@/mixins/formMixin'
 
-import BaseDropzoneTitle from '@/components/BaseDropzoneTitle'
-import BaseForm from '@/components/BaseForm'
-import DatePicker from '@/components/DatePicker'
-import MyDropzone from '@/components/MyDropzone'
-import MarkdownEditor from '@/components/MarkdownEditor'
-import PreviewDialog from '@/components/PreviewDialog'
+const BaseDropzoneTitle = () => import('@/components/BaseDropzoneTitle')
+const BaseForm = () => import('@/components/BaseForm')
+const DatePicker = () => import('@/components/DatePicker')
+const MyDropzone = () => import('@/components/MyDropzone')
+const MarkdownEditor = () => import('@/components/MarkdownEditor')
+const PreviewDialog = () => import('@/components/PreviewDialog')
 
 import {
   appGetters,
