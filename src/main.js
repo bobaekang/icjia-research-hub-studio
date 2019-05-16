@@ -1,13 +1,13 @@
 import Vue from 'vue'
-import ResearchHubLib from 'icjia-research-hub-lib'
-import 'icjia-research-hub-lib/dist/icjia-research-hub-lib.css'
+import './plugins/vuetify'
+
+import 'icjia-research-hub-lib/dist/index.css'
 
 import App from './App.vue'
 import router from './router'
 import store from './store/index'
 
 Vue.config.productionTip = false
-Vue.use(ResearchHubLib)
 
 new Vue({
   router,

@@ -11,7 +11,20 @@
 </template>
 
 <script>
+const RHArticleCard = () =>
+  import('icjia-research-hub-lib/packages/icjia-research-hub-lib').then(
+    lib => lib.ArticleCard
+  )
+const RHArticleView = () =>
+  import('icjia-research-hub-lib/packages/icjia-research-hub-lib').then(
+    lib => lib.ArticleView
+  )
+
 export default {
+  components: {
+    RHArticleCard,
+    RHArticleView
+  },
   props: {
     item: Object,
     view: Boolean

@@ -17,7 +17,20 @@
 </template>
 
 <script>
+const RHAppCard = () =>
+  import('icjia-research-hub-lib/packages/icjia-research-hub-lib').then(
+    lib => lib.AppCard
+  )
+const RHAppView = () =>
+  import('icjia-research-hub-lib/packages/icjia-research-hub-lib').then(
+    lib => lib.AppView
+  )
+
 export default {
+  components: {
+    RHAppCard,
+    RHAppView
+  },
   props: {
     item: Object,
     view: Boolean

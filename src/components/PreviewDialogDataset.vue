@@ -13,7 +13,20 @@
 </template>
 
 <script>
+const RHDatasetCard = () =>
+  import('icjia-research-hub-lib/packages/icjia-research-hub-lib').then(
+    lib => lib.DatasetCard
+  )
+const RHDatasetView = () =>
+  import('icjia-research-hub-lib/packages/icjia-research-hub-lib').then(
+    lib => lib.DatasetView
+  )
+
 export default {
+  components: {
+    RHDatasetCard,
+    RHDatasetView
+  },
   props: {
     item: Object,
     view: Boolean
